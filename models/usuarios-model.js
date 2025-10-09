@@ -14,7 +14,16 @@ const usuarioModel = {
     },
 
     criar_empresa: async (id_usuario, cnpj, razao_social, site) => {
+
+        const [rowsUser] = await db.query('SELECT * FROM usuarios WHERE id_usuario = ?', [id_usuario]);
+        
         try {
+            // Verifica se o usuário portador do ID está registrado no banco de dados
+            if(rowsUser.length && rowsUser.affectedRows == 0){
+                return console.log('Usuário não encontrado ou cadastrado.');
+            }
+            console.log(rowsUser);
+
             const sql = 'CALL criar_empresa (?, ?, ?, ?)';
             await db.execute(sql, [id_usuario, cnpj, razao_social, site]);
             return true;
