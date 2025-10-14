@@ -15,3 +15,4 @@ app.listen(PORT, () => {
 //Rotas para teste
 app.post('/criar-usuario', usuarioController.criar_usuario);
 app.post('/criar-empresa', usuarioController.criar_empresa);
+app.post('/criar-candidato', usuarioController.criar_candidato);

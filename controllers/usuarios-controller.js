@@ -23,7 +23,18 @@ const usuarioController = {
             }
 
         } catch (error) {
-            console.error('Erro ao criar usuário.', error);
+            switch(error.code){
+                case 'ER_DUP_ENTRY':
+                   return res.status(409).json({
+                        Error: 'Já existe um usuário com esse email.'
+                    });
+
+                case 'INTERNAL ERROR':
+                    default:
+                       return res.status(500).json({
+                            Error: 'Erro interno no servidor.'
+                        });
+            }
         }
     },
 
@@ -54,6 +65,49 @@ const usuarioController = {
             switch(error.code){
                 case 'ER_DUP_ENTRY':
                    return res.status(409).json({
+                        Error: 'Já existe uma empresa com esse ID.'
+                    });
+
+                case 'ER_NO_REFERENCED_ROW_2':
+                   return res.status(409).json({
+                        Error: 'Erro de integridade: chave estrangeira inválida ou inexistente.'
+                    });
+                
+                case 'INTERNAL ERROR':
+                    default:
+                       return res.status(500).json({
+                            Error: 'Erro interno no servidor.'
+                        });
+            }
+        }
+    },
+
+    criar_candidato: async(req, res) => {
+        const {id_usuario, cpf, curriculo_link, descricao_pessoal} = req.body;
+        try {
+            if(!id_usuario || !cpf || !curriculo_link || !descricao_pessoal){
+                return res.status(400).json({
+                    error: 'ID, CPF, currrículo e descrição profissional são obrigatórios.'
+                });
+            }
+
+            const criarCandidato = usuarioModel.criar_candidato(id_usuario, cpf, curriculo_link, descricao_pessoal);
+            
+            if(criarCandidato){
+                res.status(201).json({
+                    message: 'Candidato cadastrado com sucesso.'
+                })
+            } else {
+                return res.status(500).json({
+                    error: 'Erro ao cadastrar o candidato.'
+                })
+            }
+        } catch (error) {
+
+            //Tratamento dos erros vindos do banco
+            switch(error.code){
+                case 'ER_DUP_ENTRY':
+                   return res.status(409).json({
                         Error: 'Já existe um usuário com esse identificador.'
                     });
 
@@ -68,6 +122,7 @@ const usuarioController = {
                             Error: 'Erro interno no servidor.'
                         });
             }
+            
         }
     }
 };

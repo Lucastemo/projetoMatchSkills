@@ -22,7 +22,7 @@ const usuarioModel = {
             if(rowsUser.length && rowsUser.affectedRows == 0){
                 return console.log('Usuário não encontrado ou cadastrado.');
             }
-            console.log(rowsUser);
+            // console.log(rowsUser);
 
             const sql = 'CALL criar_empresa (?, ?, ?, ?)';
             await db.execute(sql, [id_usuario, cnpj, razao_social, site]);
