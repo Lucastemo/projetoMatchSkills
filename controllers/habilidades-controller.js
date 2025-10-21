@@ -1,6 +1,7 @@
 const habilidadesModel = require ('../models/habilidades-model')
 
 const habilidadesController = {
+
     criar_habilidade: async(req, res)=> {
         const {nome, categoria} = req.body;
 
@@ -122,6 +123,31 @@ const habilidadesController = {
                             Error: 'Erro interno no servidor.'
                         });
             }
+        }
+    },
+
+    // parte do controller de buscar as habilidades feita pelo o Angelo
+    listar_habilidade: async(req, res)=> {
+        try {
+            const habilidades = await habilidadesModel.listar_habilidades();
+            return res.status(200).json({ data: habilidades });
+        } catch (error) {
+            console.error("Erro ao listar habilidades:", error);
+            return res.status(500).json({ error: "Erro interno no servidor ao listar habilidades." });
+        }
+    },
+
+    buscar_habilidade: async(req, res)=> {
+        const { termo } = req.query;
+        try {
+            if (!termo) {
+                return res.status(400).json({ error: "O termo de busca é obrigatório." });
+            }
+            const habilidades = await habilidadesModel.buscar_habilidades(termo);
+            return res.status(200).json({ data: habilidades });
+        } catch (error) {
+            console.error("Erro ao buscar habilidades:", error);
+            return res.status(500).json({ error: "Erro interno no servidor ao buscar habilidades." });
         }
     }
 }

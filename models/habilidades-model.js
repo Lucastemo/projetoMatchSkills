@@ -1,6 +1,7 @@
 const db  = require('../config/db.js');
 
 const habilidadesModel = {
+
     criar_habilidade: async(nome, categoria)=> {
 
         try {
@@ -36,6 +37,30 @@ const habilidadesModel = {
 
         } catch (error) {
             console.log('Erro ao criar a habilidade da vaga.', error);
+            throw error;
+        }
+    },
+
+    //parte de buscar as habilidades feita pelo Angelo
+    listar_habilidade: async()=>{
+        try {
+            const [rows] = await db.execute('SELECT * FROM habilidades');
+            return rows;
+        } catch (error) {
+            console.error('Erro ao listar habilidades no modelo:', error);
+            throw error;
+        }
+    },
+
+    buscar_habilidade: async()=>{
+        try {
+            const [rows] = await db.execute(
+                'SELECT * FROM habilidades WHERE nome LIKE ? OR categoria LIKE ?',
+                [`%${termo_busca}%`, `%${termo_busca}%`]
+            );
+            return rows;
+        } catch (error) {
+            console.error('Erro ao buscar habilidades no modelo:', error);
             throw error;
         }
     }
