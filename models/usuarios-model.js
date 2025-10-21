@@ -20,7 +20,8 @@ const usuarioModel = {
         try {
             // Verifica se o usuário portador do ID está registrado no banco de dados
             if(rowsUser.length && rowsUser.affectedRows == 0){
-                return console.log('Usuário não encontrado ou cadastrado.');
+                return rowsUser [0] && 
+                console.log('Usuário não encontrado ou cadastrado.');
             }
             // console.log(rowsUser);
 
@@ -44,7 +45,19 @@ const usuarioModel = {
             console.log('Erro ao criar candidato.', error);
             throw error;
         }
+    },
+
+    //Função para verificar o email do usuario
+   verificarEmail: async (email) => {
+    try {
+        const [usuario] = await db.query('SELECT * FROM usuarios WHERE email = ?', [email]);
+        return usuario || [];
+    } catch (error) {
+        console.error('Erro ao verificar email:', error);
+        throw error;
     }
+}
+
 }
 
 module.exports = usuarioModel;

@@ -124,6 +124,34 @@ const usuarioController = {
             }
             
         }
+    },
+
+    verificarLogin: async(req, res) => {
+        const {email, senha} = req.body;
+
+        try {
+            if(!email || !senha){
+                return res.status(400).json
+                ({error: 'Email e senha e são obrigatórios. '});
+            }
+
+             const usuario = await usuarioModel.verificarEmail(email);
+            const usuarioEncontrado = usuario[0];
+
+             if(senha !== usuarioEncontrado.senha){
+                return res.status(401).json({message: 'Email ou senha incorretos.'})
+            }
+
+            req.session.user = usuarioEncontrado;
+
+            if(req.session.user){
+                return res.status(200).json({ message: 'Usuário logado com sucesso.' });
+            }
+
+        } catch (error) {
+        console.error('Erro durante o login:', error);
+        return res.status(500).json({ error: 'Ocorreu um erro ao processar a solicitação.' });
+        }
     }
 };
 
