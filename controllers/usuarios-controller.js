@@ -135,18 +135,25 @@ const usuarioController = {
                 ({error: 'Email e senha e são obrigatórios. '});
             }
 
-             const usuario = await usuarioModel.verificarEmail(email);
+            const usuario = await usuarioModel.verificarEmail(email);
+
+             if (!usuario || usuario.length === 0) {
+            return res.status(404).json({ error: 'Usuário não encontrado.' });
+            }
             const usuarioEncontrado = usuario[0];
 
              if(senha !== usuarioEncontrado.senha){
                 return res.status(401).json({message: 'Email ou senha incorretos.'})
             }
 
-            req.session.user = usuarioEncontrado;
-
-            if(req.session.user){
-                return res.status(200).json({ message: 'Usuário logado com sucesso.' });
+           /* req.session.user = {
+                id: usuarioEncontrado.id_usuario,
+                email: usuarioEncontrado.email
             }
+
+            return res.status(200).json({ message: 'Usuário logado com sucesso.',
+                                            inf: req.session.user
+             });*/
 
         } catch (error) {
         console.error('Erro durante o login:', error);

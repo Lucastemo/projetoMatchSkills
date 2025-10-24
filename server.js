@@ -11,9 +11,9 @@ const PORT = process.env.PORT;
 const sessaoUsuario = session({
   secret: SECRET,
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
 
-  cookie: { secure: true, maxAge: 7200 },
+  cookie: { maxAge: 7200 },
 });
 
 app.use(express.json());
