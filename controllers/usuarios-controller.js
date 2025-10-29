@@ -1,6 +1,6 @@
-const usuarioModel = require('../models/usuarios-model');
+const usuarioModel = require('../models/usuarios-model.js');
 
-const usuarioController = {
+module.exports = {
     criar_usuario: async (req, res) => {
         const {nome, email, senha, tipo_usuario} = req.body;
         try {
@@ -146,20 +146,30 @@ const usuarioController = {
                 return res.status(401).json({message: 'Email ou senha incorretos.'})
             }
 
-           /* req.session.user = {
+            req.session.user = {
                 id: usuarioEncontrado.id_usuario,
-                email: usuarioEncontrado.email
+                email: usuarioEncontrado.email,
+                tipo: usuarioEncontrado.tipo_usuario
             }
 
-            return res.status(200).json({ message: 'Usuário logado com sucesso.',
-                                            inf: req.session.user
-             });*/
+            return res.status(200).json({
+                auth: true,
+                nome: usuarioEncontrado.nome,
+                tipo: usuarioEncontrado.tipo_usuario
+            });
 
         } catch (error) {
         console.error('Erro durante o login:', error);
         return res.status(500).json({ error: 'Ocorreu um erro ao processar a solicitação.' });
         }
+    },
+
+    logout: (req, res) => {
+        req.session.destroy(err => {
+            if(err){
+                return res.status(500).json({message: 'Erro ao encerrar a sessão.'})};
+            res.clearCookie('connect.sid');
+            res.status(200).json({ message: 'Logout realizado com sucesso.' });
+        })
     }
 };
-
-module.exports = usuarioController;

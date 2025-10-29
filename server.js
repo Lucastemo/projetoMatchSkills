@@ -1,32 +1,31 @@
-require("dotenv").config();
-const db = require("./config/db.js");
-const express = require("express");
+require('dotenv').config();
+require('./config/db.js');
+const express = require('express');
+const path = require('path');
 const session = require('express-session');
-const SECRET = process.env.SESSION_SECRET;
-const usuarioController = require("./controllers/usuarios-controller.js");
+const {sessionConfig} = require('./config/session.js');
+
+const usuarioRoutes = require('./routes/usuarios-routes.js');
 
 const app = express();
-const PORT = process.env.PORT;
-
-const sessaoUsuario = session({
-  secret: SECRET,
-  resave: false,
-  saveUninitialized: false,
-
-  cookie: { maxAge: 7200 },
-});
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
-app.use(sessaoUsuario);
+app.use(express.urlencoded({extended: true}));
+app.use('/css', express.static(path.join(__dirname, 'public', 'css')));
+app.use('/img', express.static(path.join(__dirname, 'public', 'img')));
+app.use(session(sessionConfig));
 
-app.listen(PORT, () => {
-  console.log("Servidor OK.");
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/login.html'));
 });
 
-//Rotas para teste
-app.post("/criar-usuario", usuarioController.criar_usuario);
-app.post("/criar-empresa", usuarioController.criar_empresa);
-app.post("/criar-candidato", usuarioController.criar_candidato);
+app.use('/usuarios', usuarioRoutes);
 
-//Teste login
-app.post("/login", usuarioController.verificarLogin);
+app.use((req, res) => {
+  res.status(404).send("Página não encontrada");
+});
+
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`)
+});
