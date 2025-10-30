@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil da Empresa - Match Skills</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <a id="topo"></a>
+    <nav class="navbar">
+        <div class="container">
+            <img src="img/logomatchskills1.svg" alt="Match Skills Logo" class="logo">
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="buscar-vagas.html">Buscar Vagas</a></li>
+                <li><a href="buscar-empresas.html">Buscar Empresas</a></li>
+                <li><a href="sobre-nos.html">Sobre Nós</a></li>
+            </ul>
+            <div class="nav-user">
+                <img src="https://via.placeholder.com/100/CCCCCC/FFFFFF?text=USER" alt="Foto de Perfil" class="profile-pic">
+                <a href="#" class="logout-btn">Sair</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <header class="public-profile-header">
+                <img src="https://via.placeholder.com/150/333333/FFFFFF?text=EMPRESA" alt="Logo da Empresa" class="profile-pic">
+                <div class="header-info">
+                    <h1>Empresa Tech S/A</h1>
+                    <p>Software e Serviços | <a href="#" style="color: #fff;">www.empresatech.com</a></p>
+                </div>
+            </header>
+
+            <div class="public-profile-body">
+                <main>
+                    <div class="card no-translateY">
+                        <h2>Sobre Nós</h2>
+                        <p>A Empresa Tech S/A é líder em soluções de software customizado, focada em transformar digitalmente negócios em toda a América Latina. Valorizamos a inovação, a colaboração e o desenvolvimento contínuo de nossos talentos. Venha fazer parte do nosso time!</p>
+                    </div>
+
+                    <div class="card no-translateY">
+                        <h2>Vagas Abertas (2)</h2>
+                        <div class="results-list" style="grid-template-columns: 1fr;">
+                            <div class="job-card" style="grid-template-columns: 1fr 200px;">
+                                <div class="job-info">
+                                    <h3>Desenvolvedor(a) Front-End Pleno</h3>
+                                    <p class="company-name">Remoto</p>
+                                    <div class="job-skills">
+                                        <span class="skill-tag">React</span>
+                                        <span class="skill-tag">TypeScript</span>
+                                    </div>
+                                </div>
+                                <div class="job-actions">
+                                    <button class="btn btn-primary" data-modal-target="#modalVagaComum">Ver detalhes</button>
+                                </div>
+                            </div>
+                            <div class="job-card" style="grid-template-columns: 1fr 200px;">
+                                <div class="job-info">
+                                    <h3>Analista de Dados Jr</h3>
+                                    <p class="company-name">São Paulo, SP (Híbrido)</p>
+                                    <div class="job-skills">
+                                        <span class="skill-tag">SQL</span>
+                                        <span class="skill-tag">Python</span>
+                                        <span class="skill-tag">Power BI</span>
+                                    </div>
+                                </div>
+                                <div class="job-actions">
+                                    <button class="btn btn-primary" data-modal-target="#modalVagaComum">Ver detalhes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+
+                <aside>
+                    <div class="card no-translateY">
+                        <h2>Informações</h2>
+                        <ul>
+                            <li><strong>Setor:</strong> Tecnologia e Software</li>
+                            <li><strong>Local:</strong> São Paulo, SP</li>
+                            <li><strong>Tamanho:</strong> 500-1000 funcionários</li>
+                        </ul>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <img src="img/logomatchskills1.svg" alt="Match Skills Logo" class="logo">
+            <ul class="footer-links">
+                <li><a href="sobre-nos.html">Sobre Nós</a></li>
+                <li><a href="perfil-candidato.html">Meu Perfil</a></li>
+                <li><a href="index.html">Início</a></li>
+                <li><a href="#topo">Voltar ao Topo</a></li>
+            </ul>
+        </div>
+    </footer>
+    
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+    <div class="modal" id="modalVagaComum">
+        <div class="modal-header"><h3>Detalhes da Vaga</h3><button class="modal-close" data-modal-close>&times;</button></div>
+        <div class="modal-body">
+             <div class="modal-company-header">
+                <img src="https://via.placeholder.com/100/333333/FFFFFF?text=EMPRESA" alt="Logo Empresa" class="company-logo">
+                <div class="company-info"><h4>Vaga na Empresa Tech S/A</h4></div>
+            </div>
+            <h5>Descrição e Requisitos</h5>
+            <p>Detalhes da vaga aparecerão aqui...</p>
+        </div>
+        <div class="modal-footer"><button class="btn btn-primary">Quero me candidatar!</button></div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
