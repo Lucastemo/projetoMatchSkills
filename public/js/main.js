@@ -102,4 +102,37 @@ document.addEventListener("DOMContentLoaded", () => {
             selectedSkills.appendChild(pill);
         }
     });
+
+    // --- Formatação de CPF e CNPJ ---
+    const cpfInput = document.getElementById("cpf");
+    const cnpjInput = document.getElementById("cnpj");
+
+    if (cpfInput) {
+        cpfInput.addEventListener("input", (e) => {
+            let value = e.target.value.replace(/\D/g, "");
+            if (value.length > 11) {
+                value = value.slice(0, 11);
+            }
+
+            value = value.replace(/(\d{3})(\d)/, "$1.$2");
+            value = value.replace(/(\d{3})(\d)/, "$1.$2");
+            value = value.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+            e.target.value = value;
+        });
+    }
+
+    if (cnpjInput) {
+        cnpjInput.addEventListener("input", (e) => {
+            let value = e.target.value.replace(/\D/g, "");
+            if (value.length > 14) {
+                value = value.slice(0, 14);
+            }
+            
+            value = value.replace(/(\d{2})(\d)/, "$1.$2");
+            value = value.replace(/(\d{3})(\d)/, "$1.$2");
+            value = value.replace(/(\d{3})(\d)/, "$1/$2");
+            value = value.replace(/(\d{4})(\d{1,2})$/, "$1-$2");
+            e.target.value = value;
+        });
+    }
 });

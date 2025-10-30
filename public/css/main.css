@@ -63,6 +63,10 @@
     margin-bottom: 10px;
 }
 
+.bigger-column-gap {
+    gap: 10px;
+}
+
 .page-title {
     font-size: 2.5rem;
     font-weight: 700;
@@ -111,7 +115,8 @@
 .form-group label {
     display: block;
     font-weight: 600;
-    margin-bottom: 8px;
+    /* Ajustado para não aplicar a todos os labels, como os de radio */
+    margin-bottom: 8px; 
     color: var(--primary-color);
 }
 .form-group input[type="text"],
@@ -127,6 +132,13 @@
     border: 1px solid var(--border-color);
     font-size: 1rem;
 }
+
+/* Remove o estilo de bloco para labels dentro do radio-group para alinhamento correto */
+.radio-group label {
+    display: inline-flex;
+    margin-bottom: 0;
+}
+
 .form-group textarea {
     min-height: 120px;
     resize: vertical;
