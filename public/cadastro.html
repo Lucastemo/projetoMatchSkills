@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Match Skills</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <a id="topo"></a>
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html"><img src="img/logomatchskills1.svg" alt="Match Skills Logo" class="logo"></a>
+            <ul class="nav-links">
+                <li><a href="buscar-vagas.html">Buscar Vagas</a></li>
+                <li><a href="buscar-empresas.html">Buscar Empresas</a></li>
+                <li><a href="sobre-nos.html">Sobre Nós</a></li>
+            </ul>
+            <div class="nav-user bigger-column-gap">
+                <a href="login.html" class="btn btn-secondary">Login</a>
+                <a href="cadastro.html" class="btn btn-primary">Cadastre-se</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container" style="max-width: 600px;">
+            <div class="card no-translateY">
+                <h1 class="page-title" style="text-align: center; font-size: 2rem;">Crie sua conta</h1>
+                <p class="page-subtitle" style="text-align: center; margin-bottom: 30px;">Junte-se à nossa comunidade de talentos e empresas.</p>
+
+                <form id="formCadastro">
+                    <div class="form-group">
+                        <label>Você é:</label>
+                        <div class="radio-group">
+                            <input type="radio" id="tipoCandidato" name="tipoCadastro" value="candidato" checked>
+                            <label for="tipoCandidato">Candidato</label>
+                            <input type="radio" id="tipoEmpresa" name="tipoCadastro" value="empresa">
+                            <label for="tipoEmpresa">Empresa</label>
+                        </div>
+                    </div>
+
+                    <!-- Campos para Candidato -->
+                    <div id="camposCandidato">
+                        <div class="form-group">
+                            <label for="nomeCompleto">Nome Completo</label>
+                            <input type="text" id="nomeCompleto" placeholder="Seu nome completo">
+                        </div>
+                        <div class="form-group">
+                            <label for="cpf">CPF</label>
+                            <input type="text" id="cpf" placeholder="000.000.000-00">
+                        </div>
+                    </div>
+
+                    <!-- Campos para Empresa -->
+                    <div id="camposEmpresa" style="display: none;">
+                        <div class="form-group">
+                            <label for="razaoSocial">Razão Social</label>
+                            <input type="text" id="razaoSocial" placeholder="Nome da sua empresa">
+                        </div>
+                        <div class="form-group">
+                            <label for="cnpj">CNPJ</label>
+                            <input type="text" id="cnpj" placeholder="00.000.000/0000-00">
+                        </div>
+                    </div>
+
+                    <!-- Campos Comuns -->
+                    <div class="form-group">
+                        <label for="email">E-mail</label>
+                        <input type="email" id="email" placeholder="seu@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="senha">Senha</label>
+                        <input type="password" id="senha" placeholder="Crie uma senha forte" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmarSenha">Confirmar Senha</label>
+                        <input type="password" id="confirmarSenha" placeholder="Confirme sua senha" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Criar Conta</button>
+
+                    <p style="text-align: center; margin-top: 20px;">
+                        Já tem uma conta? <a href="login.html">Faça login aqui</a>.
+                    </p>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <img src="img/logomatchskills1.svg" alt="Match Skills Logo" class="logo">
+            <p style="color: #ccc; font-size: 0.9rem;">© 2024 Match Skills. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+    
+    <script src="js/main.js"></script>
+    <script>
+        document.querySelectorAll('input[name="tipoCadastro"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.getElementById('camposCandidato').style.display = this.value === 'candidato' ? 'block' : 'none';
+                document.getElementById('camposEmpresa').style.display = this.value === 'empresa' ? 'block' : 'none';
+            });
+            if(radio.value === 'candidato') radio.checked = true;
+            else radio.checked = false;
+        });
+    </script>
+</body>
+</html>

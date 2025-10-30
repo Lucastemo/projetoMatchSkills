@@ -1,0 +1,290 @@
+/* css/style.css */
+
+/* --- Variáveis Globais e Reset --- */
+:root {
+    --primary-color: #6a1b9a; /* Roxo principal, inspirado no logo */
+    --secondary-color: #8e24aa;
+    --accent-color: #ab47bc;
+    --bg-color: #f4f4f9;      /* Fundo de página (lavanda bem claro) */
+    --card-bg-color: #ffffff;
+    --text-color: #333333;
+    --text-light: #666666;
+    --border-color: #ddd;
+    --premium-color: #ffd700; /* Destaque premium (dourado) */
+    --premium-bg: #fffbeb;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', 'Segoe UI', 'Roboto', sans-serif;
+}
+
+html {
+    scroll-behavior: smooth; /* Para o link "Voltar ao Topo" */
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+img {
+    max-width: 100%;
+}
+
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+}
+
+a:hover {
+    color: var(--secondary-color);
+}
+
+input[type="text"]{
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px 0 0 8px;
+    border: 1px solid var(--border-color);
+    font-size: 1rem;
+}
+
+input[type="text"] + .btn-primary{
+    height: 50px;
+}
+
+input[type="text"] + .btn-primary:hover{
+    background-color: var(--secondary-color);
+    color: #fff;
+    transform: translateY(0);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.main-content {
+    flex-grow: 1; /* Empurra o footer para baixo */
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+/* --- Navbar --- */
+.navbar {
+    background-color: var(--card-bg-color);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 8px 0;
+    border-bottom: 3px solid var(--primary-color);
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar .logo {
+    width: 130px;
+}
+
+.navbar .nav-links {
+    display: flex;
+    list-style: none;
+}
+
+.navbar .nav-links li {
+    margin: 0 15px;
+}
+
+.navbar .nav-links a {
+    font-weight: 500;
+    transition: color 0.3s ease; /* Mantém a transição de cor existente */
+    position: relative; /* Necessário para posicionar a linha abaixo */
+    padding-bottom: 5px; /* Espaço para a linha não sobrepor o texto */
+}
+
+/* Cria a linha animada abaixo do link */
+.navbar .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%; /* Começa no centro */
+    transform: translateX(-50%); /* Centraliza a linha */
+    width: 0; /* Começa sem largura */
+    height: 2px;
+    background-color: var(--primary-color);
+    transition: width 0.3s ease-in-out; /* Anima a largura */
+}
+
+.navbar .nav-user {
+    display: flex;
+    align-items: center;
+}
+
+.navbar .profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid var(--primary-color);
+    margin-right: 15px;
+    object-fit: cover;
+}
+
+.navbar .logout-btn {
+    background-color: transparent;
+    border: 1px solid var(--accent-color);
+    color: var(--accent-color);
+    padding: 6px 10px;
+    border-radius: 5px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.navbar .logout-btn:hover {
+    background-color: var(--accent-color);
+    color: #fff;
+}
+
+/* Expande a linha no hover */
+.navbar .nav-links a:hover::after {
+    width: 100%;
+}
+
+/* --- Custom Radio Button --- */
+.radio-group {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.radio-group input[type="radio"] {
+    /* Esconde o radio button original, mas o mantém acessível */
+    opacity: 0;
+    position: fixed;
+    width: 0;
+}
+
+.radio-group label {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 15px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    position: relative; /* Para o posicionamento do círculo */
+    padding-left: 40px; /* Espaço para o círculo customizado */
+}
+
+/* Círculo externo customizado */
+.radio-group label::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #fff;
+    border: 2px solid var(--primary-color);
+    transition: border-color 0.3s ease;
+}
+
+/* Círculo interno (aparece quando selecionado) */
+.radio-group label::after {
+    content: '';
+    position: absolute;
+    left: 17px; /* (10px de left + 20px de width)/2 + 2px de borda - 5px de width/2 */
+    top: 50%;
+    transform: translateY(-50%) scale(0); /* Começa invisível e escalonado para 0 */
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); /* Animação com "bounce" */
+}
+
+/* Estilos quando o radio está selecionado */
+.radio-group input[type="radio"]:checked + label {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 8px rgba(106, 27, 154, 0.3);
+}
+
+.radio-group input[type="radio"]:checked + label::after {
+    transform: translateY(-50%) scale(1); /* Faz o círculo interno crescer */
+}
+
+/* --- Footer --- */
+.footer {
+    background-color: #333;
+    color: #f4f4f4;
+    padding: 20px 0;
+    margin-top: auto;
+}
+
+.footer .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.footer .logo {
+    width: 130px;
+    /* Adiciona um brilho branco atrás do logo para contraste no fundo escuro.
+       O drop-shadow contorna a forma exata do SVG. */
+    filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.7));
+}
+
+.footer .footer-links {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.footer .footer-links li {
+    margin: 0 15px;
+}
+
+.footer .footer-links a {
+    color: #fff;
+    transition: color 0.3s ease;
+}
+
+.footer .footer-links a:hover {
+    color: var(--accent-color);
+}
+
+/* --- Responsividade Básica --- */
+@media (max-width: 768px) {
+    .navbar .container {
+        flex-direction: column;
+    }
+    .navbar .nav-links {
+        margin: 15px 0;
+    }
+    .footer .container {
+        flex-direction: column;
+        text-align: center;
+    }
+    .footer .logo {
+        margin-bottom: 20px;
+    }
+    .footer .footer-links {
+        flex-direction: column;
+    }
+    .footer .footer-links li {
+        margin: 5px 0;
+    }
+}

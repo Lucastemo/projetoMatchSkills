@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Vagas - Match Skills</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <a id="topo"></a>
+    <nav class="navbar">
+        <div class="container">
+            <img src="img/logomatchskills1.svg" alt="Match Skills Logo" class="logo">
+            <ul class="nav-links">
+                <li><a href="empresa-home.html">Início</a></li>
+                <li><a href="minhas-vagas.html">Minhas Vagas</a></li>
+                <li><a href="buscar-empresas.html">Buscar Empresas</a></li>
+                <li><a href="sobre-nos.html">Sobre Nós</a></li>
+            </ul>
+            <div class="nav-user">
+                <img src="https://via.placeholder.com/100/333333/FFFFFF?text=EMPRESA" alt="Foto de Perfil" class="profile-pic">
+                <a href="#" class="logout-btn">Sair</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <h1 class="page-title">Gerenciador de Vagas</h1>
+            <p class="page-subtitle">Visualize, edite e acompanhe os candidatos de suas vagas publicadas.</p>
+
+            <div class="premium-banner">
+                🌟 Você é um assinante Premium! Suas vagas recebem destaque nas buscas.
+            </div>
+
+            <section class="results-list">
+                <div class="card job-card-management">
+                    <div class="job-info">
+                        <h3>Desenvolvedor(a) Back-End Pleno</h3>
+                        <div class="job-skills">
+                            <span class="skill-tag">Node.js</span>
+                            <span class="skill-tag">SQL</span>
+                            <span class="skill-tag">TypeScript</span>
+                        </div>
+                    </div>
+                    <div class="job-actions">
+                        <a href="candidaturas.html" class="btn btn-primary">Ver Candidaturas (3)</a>
+                        <button class="btn btn-secondary" data-modal-target="#modalEditarVaga">Ver Detalhes / Editar</button>
+                    </div>
+                </div>
+
+                <div class="card job-card-management">
+                    <div class="job-info">
+                        <h3>UI/UX Designer Sênior</h3>
+                        <div class="job-skills">
+                            <span class="skill-tag">Figma</span>
+                            <span class="skill-tag">Design System</span>
+                            <span class="skill-tag">Pesquisa de Usuário</span>
+                        </div>
+                    </div>
+                    <div class="job-actions">
+                        <a href="candidaturas.html" class="btn btn-primary">Ver Candidaturas (8)</a>
+                        <button class="btn btn-secondary" data-modal-target="#modalEditarVaga">Ver Detalhes / Editar</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <img src="img/logomatchskills1.svg" alt="Match Skills Logo" class="logo">
+            <ul class="footer-links">
+                <li><a href="sobre-nos.html">Sobre Nós</a></li>
+                <li><a href="perfil-empresa.html">Meu Perfil</a></li>
+                <li><a href="empresa-home.html">Início</a></li>
+                <li><a href="#topo">Voltar ao Topo</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+    <div class="modal" id="modalEditarVaga">
+        <div class="modal-header">
+            <h3>Detalhes da Vaga</h3>
+            <button class="modal-close" data-modal-close>&times;</button>
+        </div>
+        <form class="modal-body">
+            <div class="form-group">
+                <label for="cargo">Cargo (Nome da Vaga)</label>
+                <input type="text" id="cargo" value="Desenvolvedor(a) Back-End Pleno">
+            </div>
+            
+            <div class="form-group">
+                <label for="skillsExigidas">Competências Exigidas</label>
+                <div class="multi-select-container">
+                    <input type="text" id="skillsExigidas" class="multi-select-input" placeholder="Buscar habilidades...">
+                    <div class="suggestions-dropdown"></div>
+                    <div class="selected-skills">
+                        <div class="skill-pill" data-skill="Node.js">Node.js <span class="remove-skill">×</span></div>
+                        <div class="skill-pill" data-skill="SQL">SQL <span class="remove-skill">×</span></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="skillsDiferenciais">Competências Diferenciais</label>
+                <div class="multi-select-container">
+                    <input type="text" id="skillsDiferenciais" class="multi-select-input" placeholder="Buscar habilidades...">
+                    <div class="suggestions-dropdown"></div>
+                    <div class="selected-skills">
+                        <div class="skill-pill" data-skill="AWS">AWS <span class="remove-skill">×</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="modalidade">Modalidade</label>
+                <select id="modalidade">
+                    <option value="presencial">Presencial</option>
+                    <option value="remoto" selected>Remoto</option>
+                    <option value="hibrido">Híbrido</option>
+                </select>
+            </div>
+
+            <div class="profile-grid-two">
+                <div class="form-group">
+                    <label for="cep">CEP</label>
+                    <input type="text" id="cep" value="01000-000">
+                </div>
+                <div class="form-group">
+                    <label for="estado">Estado</label>
+                    <select id="estado"><option>SP</option><option>RJ</option></select>
+                </div>
+                <div class="form-group">
+                    <label for="cidade">Cidade</label>
+                    <select id="cidade"><option>São Paulo</option></select>
+                </div>
+            </div>
+            
+        </form>
+        <div class="modal-footer">
+            <button class="btn btn-danger" data-modal-close>Excluir Vaga</button>
+            <button class="btn btn-primary" data-modal-close>Salvar Edições</button>
+        </div>
+    </div>
+    
+    <script src="js/main.js"></script>
+</body>
+</html>

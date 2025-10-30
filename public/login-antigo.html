@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/loginStyle.css">
+</head>
+<body>
+    <header>
+        <img src="img/logoAzul.png" alt="Logo">
+    </header>
+    <main class="login-container">
+    <div class="login-box">
+      <div class="loginBk">
+      <h2>Entrar</h2>
+
+      <button class="social-btn google">
+        <img src="https://img.icons8.com/color/48/google-logo.png" alt="Google">
+        <span>Continuar com Google</span>
+      </button>
+
+      <button class="social-btn linkedin">
+        <img src="https://img.icons8.com/fluency/48/linkedin.png" alt="LinkedIn">
+        <span>Continuar com LinkedIn</span>
+      </button>
+
+      <div class="divisor"></div>
+
+      <form id="form-login">
+        <input id="email-login" type="email" placeholder="E-mail" required>
+        <input id="senha-login" type="password" placeholder="Senha" required>
+
+        <a href="#" class="forgot">Esqueci a senha</a>
+        <button type="submit" class="login-btn">Entrar</button>
+      </form>
+      </div>
+      <a href="#" class="register">Cadastre-se</a>
+    </div>
+  </main>
+
+  <script>
+   document.getElementById('form-login').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const email = document.getElementById('email-login').value;
+    const senha = document.getElementById('senha-login').value;
+
+    try {
+      const res = await fetch('/usuarios/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type' : 'application/json' 
+        },
+        body: JSON.stringify({email, senha}),
+        credentials:"include"
+      })
+
+      const data = await res.json();
+      
+      if(res.ok && data.auth){
+      window.location.href = '/usuarios/menu';
+    } else {
+      alert(data.message || 'E-mail ou senha incorretos');
+    }
+    } catch (error) {
+        console.error('Erro durante o login:', error);
+        return res.status(500).json({ error: 'Ocorreu um erro ao processar a solicitação.' })
+    }
+   })
+  </script>
+</body>
+</html>

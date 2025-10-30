@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - Match Skills</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <a id="topo"></a>
+    <nav class="navbar">
+        <div class="container">
+            <img src="img/logomatchskills1.svg" alt="Match Skills Logo" class="logo">
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="buscar-vagas.html">Buscar Vagas</a></li>
+                <li><a href="buscar-empresas.html">Buscar Empresas</a></li>
+                <li><a href="sobre-nos.html">Sobre Nós</a></li>
+            </ul>
+            <div class="nav-user">
+                <!-- Este bloco pode ser dinâmico dependendo do login -->
+                <img src="https://via.placeholder.com/100/CCCCCC/FFFFFF?text=USER" alt="Foto de Perfil" class="profile-pic">
+                <a href="#" class="logout-btn">Sair</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="profile-layout">
+                <aside class="profile-sidebar">
+                    <img src="https://via.placeholder.com/200/333333/FFFFFF?text=EMPRESA" alt="Logo da Empresa" class="main-profile-pic">
+                    <h2>Empresa Tech S/A</h2>
+                    <p class="join-date">Membro desde 25 de Outubro, 2025</p>
+                    <a href="#" class="btn btn-primary">Modificar Dados</a>
+                    <a href="minhas-vagas.html" class="btn btn-secondary">Ver Minhas Vagas</a>
+                </aside>
+
+                <section class="profile-content">
+                    <div class="card no-translateY">
+                        <h3>Informações da Conta</h3>
+                        <form>
+                            <div class="form-group">
+                                <label for="razaoSocial">Razão Social</label>
+                                <input type="text" id="razaoSocial" value="Empresa Tech S/A" readonly>
+                            </div>
+                            <div class="profile-grid-two">
+                                <div class="form-group">
+                                    <label for="email">E-mail</label>
+                                    <input type="email" id="email" value="contato@empresatech.com" readonly>
+                                </div>
+                                <div class="form-group">
+                                    <label for="cnpj">CNPJ</label>
+                                    <input type="text" id="cnpj" value="12.345.678/0001-99" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="site">Site</label>
+                                <input type="text" id="site" value="https://www.empresatech.com" readonly>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <img src="img/logomatchskills1.svg" alt="Match Skills Logo" class="logo">
+            <ul class="footer-links">
+                <li><a href="sobre-nos.html">Sobre Nós</a></li>
+                <li><a href="perfil-candidato.html">Meu Perfil</a></li>
+                <li><a href="index.html">Início</a></li>
+                <li><a href="#topo">Voltar ao Topo</a></li>
+            </ul>
+        </div>
+    </footer>
+    
+    <script src="js/main.js"></script>
+</body>
+</html>

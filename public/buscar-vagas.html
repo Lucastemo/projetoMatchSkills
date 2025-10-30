@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Vagas - Match Skills</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <a id="topo"></a>
+    <nav class="navbar">
+        <div class="container">
+            <img src="img/logomatchskills1.svg" alt="Match Skills Logo" class="logo">
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="buscar-vagas.html">Buscar Vagas</a></li>
+                <li><a href="buscar-empresas.html">Buscar Empresas</a></li>
+                <li><a href="sobre-nos.html">Sobre Nós</a></li>
+            </ul>
+            <div class="nav-user">
+                <img src="https://via.placeholder.com/100/CCCCCC/FFFFFF?text=USER" alt="Foto de Perfil" class="profile-pic">
+                <a href="#" class="logout-btn">Sair</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="container">
+            <h1 class="page-title">Encontre sua vaga</h1>
+            <p class="page-subtitle">Filtre por habilidades ou use seu perfil para encontrar o "match" perfeito.</p>
+
+            <div class="card no-translateY">
+                <div class="form-group">
+                    <label for="skills">Buscar por habilidades e competências</label>
+                    <div class="multi-select-container">
+                        <input type="text" id="skills" class="multi-select-input" placeholder="Digite uma habilidade (ex: 'Node.js')">
+                        <div class="suggestions-dropdown"></div>
+                        <div class="selected-skills"></div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input type="checkbox" id="useProfile" checked>
+                    <label for="useProfile" style="display: inline-block; margin-left: 10px;">Buscar com base nas minhas habilidades salvas</label>
+                </div>
+                <button class="btn btn-primary">Buscar Vagas</button>
+            </div>
+
+            <section class="results-list">
+                <div class="card job-card premium">
+                    <img src="https://via.placeholder.com/100/ffd700/000?text=PREMIUM" alt="Logo Empresa" class="company-logo">
+                    <div class="job-info">
+                        <h3>Desenvolvedor(a) Back-End Sênior</h3>
+                        <p class="company-name">Empresa Dourada (Premium)</p>
+                        <div class="job-skills">
+                            <span class="skill-tag">Node.js</span>
+                            <span class="skill-tag">SQL</span>
+                            <span class="skill-tag">AWS</span>
+                        </div>
+                    </div>
+                    <div class="job-actions">
+                        <button class="btn btn-primary" data-modal-target="#modalVagaPremium">Ver mais detalhes</button>
+                        <a href="ver-empresa.html" class="company-link">Ver perfil da empresa</a>
+                    </div>
+                </div>
+
+                <div class="card job-card">
+                    <img src="https://via.placeholder.com/100/333333/FFFFFF?text=EMPRESA" alt="Logo Empresa" class="company-logo">
+                    <div class="job-info">
+                        <h3>Desenvolvedor(a) Front-End Pleno</h3>
+                        <p class="company-name">Empresa Tech S/A</p>
+                        <div class="job-skills">
+                            <span class="skill-tag">React</span>
+                            <span class="skill-tag">TypeScript</span>
+                            <span class="skill-tag">CSS</span>
+                        </div>
+                    </div>
+                    <div class="job-actions">
+                        <button class="btn btn-primary" data-modal-target="#modalVagaComum">Ver mais detalhes</button>
+                        <a href="ver-empresa.html" class="company-link">Ver perfil da empresa</a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <img src="img/logomatchskills1.svg" alt="Match Skills Logo" class="logo">
+            <ul class="footer-links">
+                <li><a href="sobre-nos.html">Sobre Nós</a></li>
+                <li><a href="perfil-candidato.html">Meu Perfil</a></li>
+                <li><a href="index.html">Início</a></li>
+                <li><a href="#topo">Voltar ao Topo</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+
+    <div class="modal premium" id="modalVagaPremium">
+        <div class="modal-header">
+            <h3>Detalhes da Vaga (Destaque Premium)</h3>
+            <button class="modal-close" data-modal-close>&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-company-header">
+                <img src="https://via.placeholder.com/100/ffd700/000?text=PREMIUM" alt="Logo Empresa" class="company-logo">
+                <div class="company-info">
+                    <h4>Desenvolvedor(a) Back-End Sênior</h4>
+                    <p>Empresa Dourada (Premium)</p>
+                    <a href="ver-empresa.html" class="company-link" style="text-align: left;">Ver perfil da empresa</a>
+                </div>
+            </div>
+            
+            <h5>Informações</h5>
+            <ul>
+                <li><strong>Local:</strong> São Paulo, SP</li>
+                <li><strong>Modalidade:</strong> Híbrido</li>
+            </ul>
+
+            <h5>Competências Exigidas</h5>
+            <ul>
+                <li>Node.js</li>
+                <li>SQL (PostgreSQL)</li>
+                <li>Arquitetura de Microsserviços</li>
+                <li>AWS</li>
+            </ul>
+            
+            <h5>Competências Diferenciais</h5>
+            <ul>
+                <li>Kubernetes</li>
+                <li>Gestão de Projetos Ágeis</li>
+            </ul>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary">Quero me candidatar!</button>
+        </div>
+    </div>
+
+    <div class="modal" id="modalVagaComum">
+        <div class="modal-header">
+            <h3>Detalhes da Vaga</h3>
+            <button class="modal-close" data-modal-close>&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="modal-company-header">
+                <img src="https://via.placeholder.com/100/333333/FFFFFF?text=EMPRESA" alt="Logo Empresa" class="company-logo">
+                <div class="company-info">
+                    <h4>Desenvolvedor(a) Front-End Pleno</h4>
+                    <p>Empresa Tech S/A</p>
+                    <a href="ver-empresa.html" class="company-link" style="text-align: left;">Ver perfil da empresa</a>
+                </div>
+            </div>
+            
+            <h5>Informações</h5>
+            <ul>
+                <li><strong>Local:</strong> Remoto (Brasil)</li>
+                <li><strong>Modalidade:</strong> Remoto</li>
+            </ul>
+
+            <h5>Competências Exigidas</h5>
+            <ul>
+                <li>React</li>
+                <li>TypeScript</li>
+                <li>CSS/SASS</li>
+                <li>Testes unitários</li>
+            </ul>
+            
+            <h5>Competências Diferenciais</h5>
+            <ul>
+                <li>Next.js</li>
+                <li>Design System</li>
+            </ul>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary">Quero me candidatar!</button>
+        </div>
+    </div>
+    
+    <script src="js/main.js"></script>
+</body>
+</html>

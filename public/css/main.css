@@ -1,0 +1,628 @@
+/* css/main.css */
+
+/* --- Componentes Utilitários --- */
+.btn {
+    display: inline-block;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+.btn-primary:hover {
+    background-color: var(--secondary-color);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+}
+.btn-secondary:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    color: #fff;
+}
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+.card {
+    background-color: var(--card-bg-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    padding: 25px;
+    margin-bottom: 25px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+.card:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+    transform: translateY(-5px);
+}
+
+.no-translateY {
+    transform: translateY(0) !important;
+}
+
+.bigger-spacing p{
+    margin-bottom: 10px;
+}
+
+.bigger-column-gap {
+    gap: 10px;
+}
+
+.page-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.page-subtitle {
+    font-size: 1.25rem;
+    color: var(--text-light);
+    margin-bottom: 30px;
+}
+
+/* --- Seções de Página --- */
+.hero-section {
+    background-color: var(--card-bg-color);
+    padding: 40px;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    margin-top: 40px;
+}
+.hero-section h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+}
+.hero-search {
+    display: flex;
+    justify-content: center;
+    max-width: 600px;
+    margin: 0 auto;
+}
+.hero-search input {
+    flex-grow: 1;
+    margin-right: -1px;
+}
+.hero-search .btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+/* --- Formulários --- */
+.form-group {
+    margin-bottom: 20px;
+}
+.form-group label {
+    display: block;
+    font-weight: 600;
+    /* Ajustado para não aplicar a todos os labels, como os de radio */
+    margin-bottom: 8px; 
+    color: var(--primary-color);
+}
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"],
+.form-group input[type="number"],
+.form-group input[type="file"],
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    font-size: 1rem;
+}
+
+/* Remove o estilo de bloco para labels dentro do radio-group para alinhamento correto */
+.radio-group label {
+    display: inline-flex;
+    margin-bottom: 0;
+}
+
+.form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 5px rgba(106, 27, 154, 0.3);
+}
+
+/* --- Perfil do Usuário --- */
+.profile-layout {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 40px;
+}
+.profile-sidebar {
+    text-align: center;
+}
+.profile-sidebar .main-profile-pic {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    border: 5px solid var(--card-bg-color);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+.profile-sidebar h2 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+.profile-sidebar .join-date {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-bottom: 20px;
+}
+.profile-sidebar .btn {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+}
+.profile-content .card {
+    padding: 40px;
+}
+.profile-content h3 {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 10px;
+    margin-bottom: 25px;
+}
+.profile-grid-two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* --- Componente Multi-Select (Skills) --- */
+.multi-select-container {
+    position: relative;
+}
+.multi-select-input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    font-size: 1rem;
+}
+.suggestions-dropdown {
+    display: none; /* Controlado por JS */
+    position: absolute;
+    width: 100%;
+    background: var(--card-bg-color);
+    border: 1px solid var(--border-color);
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 100;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.suggestions-dropdown .suggestion-item {
+    padding: 12px;
+    cursor: pointer;
+}
+.suggestions-dropdown .suggestion-item:hover {
+    background-color: var(--bg-color);
+}
+.selected-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+.skill-pill {
+    display: flex;
+    align-items: center;
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+.skill-pill .remove-skill {
+    margin-left: 8px;
+    color: #fff;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+/* --- Busca e Resultados --- */
+.search-bar {
+    display: flex;
+    margin-bottom: 30px;
+}
+.search-bar input {
+    flex-grow: 1;
+    margin-right: -1px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.search-bar .btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.results-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 25px;
+}
+
+/* Card de Empresa (Busca) */
+.company-card {
+    display: flex;
+    align-items: center;
+}
+.company-card .company-logo {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    margin-right: 20px;
+    object-fit: contain;
+    border: 1px solid var(--border-color);
+}
+.company-card .company-info h3 {
+    font-size: 1.3rem;
+    margin-bottom: 5px;
+}
+.company-card.premium {
+    border-left: 6px solid var(--premium-color);
+    background: var(--premium-bg);
+}
+
+/* Card de Vaga (Busca) */
+.job-card {
+    display: grid;
+    grid-template-columns: 100px 1fr 200px;
+    align-items: center;
+    gap: 20px;
+}
+.job-card .company-logo {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    object-fit: contain;
+    border: 1px solid var(--border-color);
+}
+.job-card .job-info h3 {
+    font-size: 1.4rem;
+    color: var(--primary-color);
+}
+.job-card .job-info .company-name {
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+.job-card .job-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+.job-card .skill-tag {
+    background-color: var(--bg-color);
+    color: var(--primary-color);
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+.job-card .job-actions {
+    text-align: right;
+}
+.job-card .job-actions .btn {
+    display: block;
+    width: 100%;
+}
+.job-card .job-actions .company-link {
+    display: block;
+    margin-top: 10px;
+    font-size: 0.9rem;
+    text-align: center;
+}
+.job-card.premium {
+    border-left: 6px solid var(--premium-color);
+    background: var(--premium-bg);
+}
+
+/* --- Modal --- */
+.modal-backdrop {
+    display: none; /* Controlado por JS */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.modal {
+    display: none; /* Controlado por JS */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--card-bg-color);
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    z-index: 1001;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    opacity: 0;
+    transform: translate(-50%, -60%);
+    transition: all 0.3s ease;
+}
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    border-bottom: 1px solid var(--border-color);
+}
+.modal-header h3 {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+.modal-close {
+    font-size: 2rem;
+    font-weight: 300;
+    color: var(--text-light);
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+.modal-body {
+    padding: 30px;
+}
+.modal-body .modal-company-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+}
+.modal-body .company-logo {
+    width: 70px;
+    height: 70px;
+    border-radius: 10px;
+    margin-right: 20px;
+}
+.modal-body .company-info h4 {
+    font-size: 1.3rem;
+}
+.modal-body h5 {
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+.modal-body ul {
+    list-style-position: inside;
+    margin-left: 10px;
+}
+.modal-footer {
+    padding: 20px 30px;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+}
+
+/* Animação do Modal */
+.modal-backdrop.show {
+    display: block;
+    opacity: 1;
+}
+.modal.show {
+    display: block;
+    opacity: 1;
+    transform: translate(-50%, -50%);
+}
+.modal.premium {
+    border-top: 6px solid var(--premium-color);
+}
+
+/* --- Página Minhas Vagas --- */
+.premium-banner {
+    background-color: var(--premium-bg);
+    border: 1px solid var(--premium-color);
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 30px;
+}
+.job-card-management {
+    display: grid;
+    grid-template-columns: 1fr 250px;
+    gap: 20px;
+    align-items: center;
+}
+.job-card-management .job-info h3 {
+    font-size: 1.4rem;
+    color: var(--primary-color);
+}
+.job-card-management .job-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+.job-card-management .skill-tag {
+    background-color: var(--bg-color);
+    color: var(--primary-color);
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+.job-card-management .job-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* --- Página Candidaturas --- */
+.applicants-header {
+    background-color: var(--card-bg-color);
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+.applicants-header .actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+}
+.candidate-card {
+    display: flex;
+    gap: 20px;
+}
+.candidate-card .candidate-pic {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.candidate-card .candidate-info h3 {
+    font-size: 1.3rem;
+}
+.candidate-card .skills-match {
+    margin-top: 10px;
+}
+.candidate-card .skills-match h4 {
+    font-size: 1rem;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+.candidate-card .skills-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+.candidate-card .skills-list span {
+    background-color: var(--bg-color);
+    color: var(--primary-color);
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.85rem;
+}
+.candidate-card.premium {
+    border-left: 6px solid var(--premium-color);
+    background: var(--premium-bg);
+}
+
+/* --- Perfil Público (Candidato / Empresa) --- */
+.public-profile-header {
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+    color: #fff;
+    padding: 50px 30px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+.public-profile-header .profile-pic {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: 5px solid #fff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+.public-profile-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 5px;
+}
+.public-profile-header p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+.public-profile-body {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 30px;
+}
+.public-profile-body h2 {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+.public-profile-body .card ul {
+    list-style: none;
+}
+.public-profile-body .card li {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--bg-color);
+}
+.public-profile-body .card li strong {
+    color: var(--primary-color);
+}
+.skill-category {
+    margin-bottom: 20px;
+}
+.skill-category h3 {
+    font-size: 1.2rem;
+    color: var(--secondary-color);
+    margin-bottom: 10px;
+}
+
+/* Responsividade de Layouts de Página */
+@media (max-width: 992px) {
+    .profile-layout {
+        grid-template-columns: 1fr;
+    }
+    .profile-sidebar {
+        grid-row: 1;
+    }
+    .public-profile-body {
+        grid-template-columns: 1fr;
+    }
+}
+@media (max-width: 768px) {
+    .job-card {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    .job-card .company-logo {
+        display: none; /* Esconde logo em telas pequenas */
+    }
+    .job-card .job-actions {
+        text-align: left;
+        margin-top: 15px;
+    }
+    .public-profile-header {
+        flex-direction: column;
+        text-align: center;
+    }
+}
