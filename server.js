@@ -6,6 +6,7 @@ const session = require('express-session');
 const {sessionConfig} = require('./config/session.js');
 
 const usuarioRoutes = require('./routes/usuarios-routes.js');
+const routes = require('./routes/routes.js');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -13,12 +14,11 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use('/css', express.static(path.join(__dirname, 'public', 'css')));
+app.use('/js', express.static(path.join(__dirname, 'public', 'js')));
 app.use('/img', express.static(path.join(__dirname, 'public', 'img')));
 app.use(session(sessionConfig));
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public/login.html'));
-});
+app.use('/', routes);
 
 app.use('/usuarios', usuarioRoutes);
 
