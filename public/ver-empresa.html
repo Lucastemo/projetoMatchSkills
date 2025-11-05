@@ -29,7 +29,7 @@
     <main class="main-content">
         <div class="container">
             <header class="public-profile-header">
-                <img src="https://via.placeholder.com/150/333333/FFFFFF?text=EMPRESA" alt="Logo da Empresa" class="profile-pic">
+                <img src="img/fotos-perfil/empresa-sem-foto.png" alt="Logo da Empresa" class="profile-pic" id="logoEmpresa">
                 <div class="header-info">
                     <h1>Empresa Tech S/A</h1>
                     <p>Software e Serviços | <a href="#" style="color: #fff;">www.empresatech.com</a></p>
@@ -118,5 +118,85 @@
     </div>
 
     <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+
+            if (id) {
+                try {
+                    // Fetch company data
+                    const empresaResponse = await fetch(`/api/empresas/${id}`);
+
+                    if (empresaResponse.status == 404){
+                        alert("Empresa não encontrada");
+                        window.location.href = "/buscar-empresas";
+                        return;
+                    }
+
+                    const empresaData = await empresaResponse.json();
+                    const empresa = empresaData[0];
+
+                    switch (empresa.tamanho){
+                        case "Pequena":
+                            empresa.tamanho = "Até 49 funcionários"
+                            break;
+                        case "Média":
+                            empresa.tamanho = "50-499 funcionários"
+                            break;
+                        case "Grande":
+                            empresa.tamanho = "Mais de 500 funcionários"
+                            break;
+                    }
+                    // Fetch vacancies data
+                    const vagasResponse = await fetch(`/api/vagas/empresa/${id}`);
+                    const vagasData = await vagasResponse.json();
+
+                    // Populate company info
+                    document.getElementById('logoEmpresa').src = empresa.foto || 'img/fotos-perfil/empresa-sem-foto.png';
+                    document.querySelector('.header-info h1').textContent = empresa.razao_social;
+                    document.querySelector('.header-info p').innerHTML = `${empresa.setor || 'Não informado'} | <a href="${empresa.site}" style="color: #fff;">${empresa.site || 'Não informado'}</a>`;
+                    document.querySelector('.card:nth-child(1) p').textContent = empresa.descricao || 'Não informado';
+                    document.querySelector('aside .card ul').innerHTML = `
+                        <li><strong>Setor:</strong> ${empresa.setor || 'Não informado'}</li>
+                        <li><strong>Local:</strong> ${empresa.local || 'Não informado'}</li>
+                        <li><strong>Tamanho:</strong> ${empresa.tamanho || 'Não informado'}</li>
+                    `;
+
+                    // Populate vacancies
+                    const vagasContainer = document.querySelector('.results-list');
+                    const vagasTitle = document.querySelector('.card:nth-child(2) h2');
+                    vagasContainer.innerHTML = ''; // Clear existing vacancies
+
+                    if (vagasData.length > 0) {
+                        vagasTitle.textContent = `Vagas Abertas (${vagasData.length})`;
+                        vagasData.forEach(vaga => {
+                            const vagaCard = document.createElement('div');
+                            vagaCard.classList.add('job-card');
+                            vagaCard.style.gridTemplateColumns = '1fr 200px';
+                            vagaCard.innerHTML = `
+                                <div class="job-info">
+                                    <h3>${vaga.titulo}</h3>
+                                    <p class="company-name">${vaga.localizacao}</p>
+                                    <div class="job-skills">
+                                        <!-- Skills can be added here if available in the vaga object -->
+                                    </div>
+                                </div>
+                                <div class="job-actions">
+                                    <button class="btn btn-primary" data-modal-target="#modalVagaComum">Ver detalhes</button>
+                                </div>
+                            `;
+                            vagasContainer.appendChild(vagaCard);
+                        });
+                    } else {
+                        vagasTitle.textContent = 'Nenhuma vaga aberta';
+                    }
+
+                } catch (error) {
+                    console.error('Erro ao carregar dados da empresa:', error);
+                }
+            }
+        });
+    </script>
 </body>
 </html>
