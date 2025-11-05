@@ -1,6 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
+const empresasController = require('../controllers/empresas-controller.js');
+
+// API
+
+router.get('/api/empresas/buscar', empresasController.buscar_empresas_por_nome);
+router.get('/api/empresas/:id', empresasController.buscar_empresa_por_id);
+
+// Front-end
 
 router.get('/buscar-empresas', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'public', 'buscar-empresas.html'));

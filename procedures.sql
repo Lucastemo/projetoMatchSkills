@@ -106,3 +106,23 @@ BEGIN
     VALUES (p_id_vaga, p_id_candidato, NOW(), p_status);
 END //
 DELIMITER ;
+
+-- Buscar empresas por nome
+DELIMITER //
+CREATE PROCEDURE buscar_empresas_por_nome(
+    IN p_nome VARCHAR(100)
+)
+BEGIN
+    SELECT * FROM empresas WHERE razao_social LIKE CONCAT('%', p_nome, '%');
+END //
+DELIMITER ;
+
+-- Buscar empresa por id
+DELIMITER //
+CREATE PROCEDURE buscar_empresa_por_id(
+    IN p_id INT
+)
+BEGIN
+    SELECT * FROM empresas WHERE id_empresa = p_id;
+END //
+DELIMITER ;
