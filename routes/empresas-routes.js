@@ -7,6 +7,7 @@ const empresasController = require('../controllers/empresas-controller.js');
 
 router.get('/api/empresas/buscar', empresasController.buscar_empresas_por_nome);
 router.get('/api/empresas/:id', empresasController.buscar_empresa_por_id);
+router.get('/api/empresas', empresasController.buscar_empresas_aleatorias);
 
 // Front-end
 

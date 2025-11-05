@@ -137,3 +137,15 @@ BEGIN
     UPDATE usuarios SET foto = p_foto_url WHERE id_usuario = p_id_usuario;
 END //
 DELIMITER ;
+
+-- Buscar empresas aleatórias
+DELIMITER //
+CREATE PROCEDURE buscar_empresas_aleatorias()
+BEGIN
+    SELECT e.*, u.foto 
+    FROM empresas e
+    JOIN usuarios u ON e.id_empresa = u.id_usuario
+    ORDER BY RAND()
+    LIMIT 10;
+END //
+DELIMITER ;

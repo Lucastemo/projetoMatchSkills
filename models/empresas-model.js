@@ -21,6 +21,17 @@ const empresaModel = {
             console.log('Erro ao buscar empresa por id.', error);
             throw error;
         }
+    },
+
+    buscar_empresas_aleatorias: async () => {
+        try {
+            const sql = 'CALL buscar_empresas_aleatorias()';
+            const [empresas] = await db.execute(sql);
+            return empresas;
+        } catch (error) {
+            console.log('Erro ao buscar empresas aleatórias.', error);
+            throw error;
+        }
     }
 };
 
