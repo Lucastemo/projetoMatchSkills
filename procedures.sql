@@ -6,11 +6,12 @@ CREATE PROCEDURE criar_usuario(
     IN p_nome VARCHAR(100),
     IN p_email VARCHAR(100),
     IN p_senha VARCHAR(255),
-    IN p_tipo_usuario VARCHAR(10)
+    IN p_tipo_usuario VARCHAR(10),
+    IN p_descricao TEXT
 )
 BEGIN
-    INSERT INTO usuarios (nome, email, senha, tipo_usuario, data_criacao)
-    VALUES (p_nome, p_email, p_senha, p_tipo_usuario, NOW());
+    INSERT INTO usuarios (nome, email, senha, tipo_usuario, descricao, data_criacao)
+    VALUES (p_nome, p_email, p_senha, p_tipo_usuario, p_descricao, NOW());
 END //
 DELIMITER ;
 
@@ -20,11 +21,14 @@ CREATE PROCEDURE criar_empresa(
     IN p_id_usuario INT,
     IN p_cnpj VARCHAR(18),
     IN p_razao_social VARCHAR(150),
-    IN p_site VARCHAR(200)
+    IN p_site VARCHAR(200),
+    IN p_setor VARCHAR(100),
+    IN p_local VARCHAR(100),
+    IN p_tamanho ENUM('Pequena', 'Média', 'Grande')
 )
 BEGIN
-    INSERT INTO empresas (id_empresa, cnpj, razao_social, site)
-    VALUES (p_id_usuario, p_cnpj, p_razao_social, p_site);
+    INSERT INTO empresas (id_empresa, cnpj, razao_social, site, setor, local, tamanho)
+    VALUES (p_id_usuario, p_cnpj, p_razao_social, p_site, p_setor, p_local, p_tamanho);
 END //
 DELIMITER ;
 
@@ -33,12 +37,11 @@ DELIMITER //
 CREATE PROCEDURE criar_candidato(
     IN p_id_usuario INT,
     IN p_cpf VARCHAR(14),
-    IN p_curriculo_link VARCHAR(255),
-    IN p_descricao_pessoal TEXT
+    IN p_curriculo_link VARCHAR(255)
 )
 BEGIN
-    INSERT INTO candidatos (id_candidato, cpf, curriculo_link, descricao_pessoal)
-    VALUES (p_id_usuario, p_cpf, p_curriculo_link, p_descricao_pessoal);
+    INSERT INTO candidatos (id_candidato, cpf, curriculo_link)
+    VALUES (p_id_usuario, p_cpf, p_curriculo_link);
 END //
 DELIMITER ;
 
@@ -123,7 +126,7 @@ CREATE PROCEDURE buscar_empresa_por_id(
     IN p_id INT
 )
 BEGIN
-    SELECT e.*, u.foto FROM empresas e JOIN usuarios u ON e.id_empresa = u.id_usuario WHERE id_empresa = p_id;
+    SELECT e.*, u.foto, u.descricao FROM empresas e JOIN usuarios u ON e.id_empresa = u.id_usuario WHERE id_empresa = p_id;
 END //
 DELIMITER ;
 
@@ -135,6 +138,36 @@ CREATE PROCEDURE atualizar_foto_usuario(
 )
 BEGIN
     UPDATE usuarios SET foto = p_foto_url WHERE id_usuario = p_id_usuario;
+END //
+DELIMITER ;
+
+-- Atualizar empresa
+DELIMITER //
+CREATE PROCEDURE atualizar_empresa(
+    IN p_id_empresa INT,
+    IN p_razao_social VARCHAR(150),
+    IN p_site VARCHAR(200),
+    IN p_setor VARCHAR(100),
+    IN p_local VARCHAR(100),
+    IN p_tamanho ENUM('Pequena', 'Média', 'Grande'),
+    IN p_descricao TEXT
+)
+BEGIN
+    UPDATE empresas SET razao_social = p_razao_social, site = p_site, setor = p_setor, local = p_local, tamanho = p_tamanho WHERE id_empresa = p_id_empresa;
+    UPDATE usuarios SET descricao = p_descricao WHERE id_usuario = p_id_empresa;
+END //
+DELIMITER ;
+
+-- Atualizar candidato
+DELIMITER //
+CREATE PROCEDURE atualizar_candidato(
+    IN p_id_candidato INT,
+    IN p_curriculo_link VARCHAR(255),
+    IN p_descricao TEXT
+)
+BEGIN
+    UPDATE candidatos SET curriculo_link = p_curriculo_link WHERE id_candidato = p_id_candidato;
+    UPDATE usuarios SET descricao = p_descricao WHERE id_usuario = p_id_candidato;
 END //
 DELIMITER ;
 
