@@ -182,3 +182,11 @@ BEGIN
     LIMIT 10;
 END //
 DELIMITER ;
+
+-- Buscar vagas por empresa
+DELIMITER //
+CREATE PROCEDURE buscar_vagas_por_empresa(IN p_id_empresa INT)
+BEGIN
+    SELECT * FROM vagas WHERE id_empresa = p_id_empresa;
+END //
+DELIMITER ;
