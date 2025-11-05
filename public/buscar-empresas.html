@@ -105,7 +105,7 @@
                             companyCard.classList.add('card', 'company-card');
 
                             const logo = document.createElement('img');
-                            logo.src = empresa.foto || 'https://via.placeholder.com/100/333333/FFFFFF?text=EMPRESA';
+                            logo.src = empresa.foto ? empresa.foto : 'img/fotos-perfil/empresa-sem-foto.png';
                             logo.alt = `Logo ${empresa.razao_social}`;
                             logo.classList.add('company-logo');
 
