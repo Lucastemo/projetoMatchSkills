@@ -113,7 +113,7 @@ CREATE PROCEDURE buscar_empresas_por_nome(
     IN p_nome VARCHAR(100)
 )
 BEGIN
-    SELECT * FROM empresas WHERE razao_social LIKE CONCAT('%', p_nome, '%');
+    SELECT e.*, u.foto FROM empresas e JOIN usuarios u ON e.id_empresa = u.id_usuario WHERE razao_social LIKE CONCAT('%', p_nome, '%');
 END //
 DELIMITER ;
 
@@ -123,6 +123,17 @@ CREATE PROCEDURE buscar_empresa_por_id(
     IN p_id INT
 )
 BEGIN
-    SELECT * FROM empresas WHERE id_empresa = p_id;
+    SELECT e.*, u.foto FROM empresas e JOIN usuarios u ON e.id_empresa = u.id_usuario WHERE id_empresa = p_id;
+END //
+DELIMITER ;
+
+-- Atualizar foto do usuário
+DELIMITER //
+CREATE PROCEDURE atualizar_foto_usuario(
+    IN p_id_usuario INT,
+    IN p_foto_url VARCHAR(255)
+)
+BEGIN
+    UPDATE usuarios SET foto = p_foto_url WHERE id_usuario = p_id_usuario;
 END //
 DELIMITER ;

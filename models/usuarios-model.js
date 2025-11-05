@@ -48,16 +48,27 @@ const usuarioModel = {
     },
 
     //Função para verificar o email do usuario
-   verificarEmail: async (email) => {
-    try {
-        const [usuario] = await db.query('SELECT * FROM usuarios WHERE email = ?', [email]);
-        return usuario || [];
-    } catch (error) {
-        console.error('Erro ao verificar email:', error);
-        throw error;
-    }
-}
-
-}
-
-module.exports = usuarioModel;
+       verificarEmail: async (email) => {
+       try {
+           const [usuario] = await db.query('SELECT * FROM usuarios WHERE email = ?', [email]);
+           return usuario || [];
+       } catch (error) {
+           console.error('Erro ao verificar email:', error);
+           throw error;
+       }
+   },
+   
+       atualizar_foto_usuario: async (id_usuario, foto_url) => {
+           try {
+               const sql = 'CALL atualizar_foto_usuario(?, ?)';
+               await db.execute(sql, [id_usuario, foto_url]);
+               return true;
+           } catch (error) {
+               console.log('Erro ao atualizar a foto do usuário.', error);
+               throw error;
+           }
+       }
+   
+   }
+   
+   module.exports = usuarioModel;
