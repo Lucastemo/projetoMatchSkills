@@ -1,6 +1,22 @@
 const usuarioModel = require('../models/usuarios-model.js');
+const multer = require('multer');
+const path = require('path');
+
+// Configuração do multer para upload de imagens
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/img/fotos-perfil/');
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ storage: storage });
 
 module.exports = {
+    upload, // Exportando o middleware de upload
     criar_usuario: async (req, res) => {
         const {nome, email, senha, tipo_usuario} = req.body;
         try {
@@ -171,5 +187,34 @@ module.exports = {
             res.clearCookie('connect.sid');
             res.status(200).json({ message: 'Logout realizado com sucesso.' });
         })
+    },
+
+    atualizar_foto_usuario: async (req, res) => {
+        const { id_usuario } = req.body;
+        const foto_url = req.file ? `img/fotos-perfil/${req.file.filename}` : null;
+
+        try {
+            if (!id_usuario || !foto_url) {
+                return res.status(400).json({ error: 'ID do usuário e foto são obrigatórios.' });
+            }
+
+            const atualizarFoto = await usuarioModel.atualizar_foto_usuario(id_usuario, foto_url);
+
+            if (atualizarFoto) {
+                return res.status(200).json({
+                    message: 'Foto do usuário atualizada com sucesso.',
+                    foto_url: foto_url
+                });
+            } else {
+                return res.status(500).json({
+                    error: 'Erro ao atualizar a foto do usuário.'
+                });
+            }
+        } catch (error) {
+            console.error('Erro ao atualizar a foto do usuário:', error);
+            return res.status(500).json({
+                error: 'Erro interno no servidor.'
+            });
+        }
     }
 };

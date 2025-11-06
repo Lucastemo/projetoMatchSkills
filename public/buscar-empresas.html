@@ -77,5 +77,82 @@
     </footer>
     
     <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const resultsList = document.querySelector('.results-list');
+            const searchButton = document.querySelector('.btn-primary');
+            const searchInput = document.querySelector('.form-group');
+
+            const fetchAndDisplayCompanies = async (url) => {
+                resultsList.innerHTML = ''; // Limpa a lista de resultados
+
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) {
+                        result = await response.json();
+                        if (result.message.includes("Nenhuma")) {
+                            resultsList.innerHTML = `<p>${result.message}</p>`;
+                            return;
+                        }else{
+                            throw new Error('Erro ao buscar empresas');
+                        }
+                    }
+                    const empresas = await response.json();
+
+                    if (empresas.length > 0) {
+                        empresas.forEach(empresa => {
+                            const companyCard = document.createElement('div');
+                            companyCard.classList.add('card', 'company-card');
+
+                            const logo = document.createElement('img');
+                            logo.src = empresa.foto ? empresa.foto : 'img/fotos-perfil/empresa-sem-foto.png';
+                            logo.alt = `Logo ${empresa.razao_social}`;
+                            logo.classList.add('company-logo');
+
+                            const info = document.createElement('div');
+                            info.classList.add('company-info');
+
+                            const name = document.createElement('h3');
+                            name.textContent = empresa.razao_social;
+
+                            const details = document.createElement('p');
+                            details.textContent = `${empresa.site || 'Site não informado'}`;
+
+                            info.appendChild(name);
+                            info.appendChild(details);
+
+                            companyCard.appendChild(logo);
+                            companyCard.appendChild(info);
+
+                            companyCard.addEventListener('click', () => {
+                                window.location.href = `/ver-empresa?id=${empresa.id_empresa}`;
+                            });
+
+                            resultsList.appendChild(companyCard);
+                        });
+                    } else {
+                        resultsList.innerHTML = '<p>Nenhuma empresa encontrada.</p>';
+                    }
+                } catch (error) {
+                    console.error('Erro:', error);
+                    resultsList.innerHTML = '<p>Ocorreu um erro ao buscar as empresas. Tente novamente mais tarde.</p>';
+                }
+            };
+
+            // Clear search input on page load
+            searchInput.value = "";
+
+            // Fetch and display random companies on page load
+            fetchAndDisplayCompanies('/api/empresas');
+
+            // Filter companies by name on search button click
+            searchButton.addEventListener('click', () => {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    fetchAndDisplayCompanies(`/api/empresas/buscar?nome=${searchTerm}`);
+                }
+            });
+        });
+    </script>
 </body>
 </html>

@@ -14,6 +14,7 @@ CREATE TABLE usuarios (
     email VARCHAR(100) UNIQUE NOT NULL COMMENT 'Login',
     senha VARCHAR(255) NOT NULL COMMENT 'Senha',
     tipo_usuario ENUM('empresa', 'candidato') NOT NULL COMMENT 'Tipo',
+    foto VARCHAR(255) NULL COMMENT 'URL da foto de perfil',
     data_criacao DATETIME NOT NULL COMMENT 'Registro'
 );
 
