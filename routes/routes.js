@@ -5,10 +5,12 @@ const path = require('path');
 const candidatosRoutes = require('./candidatos-routes');
 const empresasRoutes = require('./empresas-routes');
 const vagasRoutes = require('./vagas-routes');
+const habilidadesRoutes = require('./habilidades-routes');
 
 router.use(candidatosRoutes);
 router.use(empresasRoutes);
 router.use(vagasRoutes);
+router.use(habilidadesRoutes);
 
 router.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'public', 'login.html'));

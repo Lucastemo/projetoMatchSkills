@@ -5,6 +5,7 @@ const vagasController = require('../controllers/vagas-controller.js');
 
 // API
 router.get('/api/vagas/empresa/:id', vagasController.buscar_vagas_por_empresa);
+router.get('/api/vagas/:id', vagasController.buscar_vaga_por_id);
 
 // Front-end
 

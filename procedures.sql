@@ -190,3 +190,24 @@ BEGIN
     SELECT * FROM vagas WHERE id_empresa = p_id_empresa;
 END //
 DELIMITER ;
+
+-- Buscar vaga por id
+DELIMITER //
+CREATE PROCEDURE buscar_vaga_por_id(IN p_id_vaga INT)
+BEGIN
+    SELECT * FROM vagas WHERE id_vaga = p_id_vaga;
+END //
+DELIMITER ;
+
+-- Buscar habilidades por vaga
+DELIMITER //
+CREATE PROCEDURE buscar_habilidades_por_vaga(
+    IN p_id_vaga INT
+)
+BEGIN
+    SELECT h.id_habilidade, h.nome, hv.obrigatoria
+    FROM habilidades_vagas hv
+    JOIN habilidades h ON hv.id_habilidade = h.id_habilidade
+    WHERE hv.id_vaga = p_id_vaga;
+END //
+DELIMITER ;
