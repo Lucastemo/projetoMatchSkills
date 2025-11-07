@@ -104,17 +104,42 @@
     </footer>
     
     <div class="modal-backdrop" id="modalBackdrop"></div>
-    <div class="modal" id="modalVagaComum">
-        <div class="modal-header"><h3>Detalhes da Vaga</h3><button class="modal-close" data-modal-close>&times;</button></div>
-        <div class="modal-body">
-             <div class="modal-company-header">
-                <img src="https://via.placeholder.com/100/333333/FFFFFF?text=EMPRESA" alt="Logo Empresa" class="company-logo">
-                <div class="company-info"><h4>Vaga na Empresa Tech S/A</h4></div>
-            </div>
-            <h5>Descrição e Requisitos</h5>
-            <p>Detalhes da vaga aparecerão aqui...</p>
+
+    <div class="modal" id="modalVagaDetalhes">
+        <div class="modal-header">
+            <h3>Detalhes da Vaga</h3>
+            <button class="modal-close" data-modal-close>&times;</button>
         </div>
-        <div class="modal-footer"><button class="btn btn-primary">Quero me candidatar!</button></div>
+        <div class="modal-body">
+            <div class="modal-company-header">
+                <img src="img/fotos-perfil/empresa-sem-foto.png" alt="Logo Empresa" class="company-logo" id="modalLogoEmpresa">
+                <div class="company-info">
+                    <h4 id="modalTituloVaga"></h4>
+                    <p id="modalNomeEmpresa"></p>
+                </div>
+            </div>
+            
+            <h5>Informações</h5>
+            <ul>
+                <li><strong>Local:</strong> <span id="modalLocal"></span></li>
+                <li><strong>Modalidade:</strong> <span id="modalModalidade"></span></li>
+                <li><strong>Salário:</strong> <span id="modalSalario"></span></li>
+            </ul>
+
+            <h5>Descrição da Vaga</h5>
+            <p id="modalDescricao"></p>
+
+            <h5>Competências Exigidas</h5>
+            <ul id="modalHabilidadesObrigatorias">
+            </ul>
+            
+            <h5>Competências Diferenciais</h5>
+            <ul id="modalHabilidadesDiferenciais">
+            </ul>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary">Quero me candidatar!</button>
+        </div>
     </div>
 
     <script src="js/main.js"></script>
@@ -170,33 +195,94 @@
 
                     if (vagasData.length > 0) {
                         vagasTitle.textContent = `Vagas Abertas (${vagasData.length})`;
-                        vagasData.forEach(vaga => {
+                        vagasData.forEach(async vaga => {
                             const vagaCard = document.createElement('div');
                             vagaCard.classList.add('job-card');
                             vagaCard.style.gridTemplateColumns = '1fr 200px';
+
+                            const habilidadesResponse = await fetch(`/api/habilidades/vaga/${vaga.id_vaga}`);
+                            const habilidadesData = await habilidadesResponse.json();
+                            
+                            let skillsHTML = '';
+                            if (habilidadesData.data.length > 0) {
+                                skillsHTML = habilidadesData.data.map(habilidade => `<span class="skill-tag">${habilidade.nome}</span>`).join('');
+                            }
+
                             vagaCard.innerHTML = `
                                 <div class="job-info">
                                     <h3>${vaga.titulo}</h3>
                                     <p class="company-name">${vaga.localizacao}</p>
                                     <div class="job-skills">
-                                        <!-- Skills can be added here if available in the vaga object -->
+                                        ${skillsHTML}
                                     </div>
                                 </div>
                                 <div class="job-actions">
-                                    <button class="btn btn-primary" data-modal-target="#modalVagaComum">Ver detalhes</button>
+                                    <button class="btn btn-primary" onclick="openModalVaga(${vaga.id_vaga})">Ver detalhes</button>
                                 </div>
                             `;
                             vagasContainer.appendChild(vagaCard);
-                        });
-                    } else {
-                        vagasTitle.textContent = 'Nenhuma vaga aberta';
-                    }
-
-                } catch (error) {
-                    console.error('Erro ao carregar dados da empresa:', error);
+                    });
+                } else {
+                    vagasTitle.textContent = 'Nenhuma vaga aberta';
                 }
+
+            } catch (error) {
+                console.error('Erro ao carregar dados da empresa:', error);
             }
-        });
+        }
+    });
+
+    async function openModalVaga(id_vaga) {
+        try {
+            const vagaResponse = await fetch(`/api/vagas/${id_vaga}`);
+            const vagaData = await vagaResponse.json();
+            const vaga = vagaData[0];
+
+            const habilidadesResponse = await fetch(`/api/habilidades/vaga/${id_vaga}`);
+            const habilidadesData = await habilidadesResponse.json();
+
+            document.getElementById('modalTituloVaga').textContent = vaga.titulo;
+            document.getElementById('modalNomeEmpresa').textContent = document.querySelector('.header-info h1').textContent;
+            document.getElementById('modalLogoEmpresa').src = document.getElementById('logoEmpresa').src;
+            document.getElementById('modalLocal').textContent = vaga.localizacao;
+            document.getElementById('modalModalidade').textContent = vaga.modalidade;
+            document.getElementById('modalSalario').textContent = `R$ ${vaga.salario}`;
+            document.getElementById('modalDescricao').textContent = vaga.descricao;
+
+            const habilidadesObrigatorias = document.getElementById('modalHabilidadesObrigatorias');
+            const habilidadesDiferenciais = document.getElementById('modalHabilidadesDiferenciais');
+            habilidadesObrigatorias.innerHTML = '';
+            habilidadesDiferenciais.innerHTML = '';
+
+            habilidadesData.data.forEach(habilidade => {
+                const li = document.createElement('li');
+                li.textContent = habilidade.nome;
+                if (habilidade.obrigatoria) {
+                    habilidadesObrigatorias.appendChild(li);
+                } else {
+                    habilidadesDiferenciais.appendChild(li);
+                }
+            });
+            if(habilidadesObrigatorias.innerHTML === ""){
+                const li = document.createElement('li');
+                li.textContent = "Sem habilidades obrigatórias";
+                habilidadesObrigatorias.appendChild(li);
+            }
+            if(habilidadesDiferenciais.innerHTML === ""){
+                const li = document.createElement('li');
+                li.textContent = "Sem habilidades diferenciais";
+                habilidadesDiferenciais.appendChild(li);
+            }
+
+            const modal = document.getElementById('modalVagaDetalhes');
+            const backdrop = document.getElementById('modalBackdrop');
+            modal.classList.add('show');
+            backdrop.classList.add('show');
+
+        } catch (error) {
+            console.error('Erro ao carregar dados da vaga:', error);
+        }
+    }
     </script>
 </body>
 </html>
