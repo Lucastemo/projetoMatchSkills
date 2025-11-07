@@ -38,5 +38,34 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({ error: 'Erro interno no servidor.' });
         }
+    },
+
+    buscar_vagas_aleatorias: async (req, res) => {
+        try {
+            const vagas = await vagasModel.buscar_vagas_aleatorias();
+
+            if (vagas[0].length > 0) {
+                return res.status(200).json(vagas[0]);
+            } else {
+                return res.status(404).json({ message: 'Nenhuma vaga encontrada.' });
+            }
+        } catch (error) {
+            return res.status(500).json({ error: 'Erro interno no servidor.' });
+        }
+    },
+
+    buscar_vagas_por_habilidades: async (req, res) => {
+        const { habilidades } = req.query;
+        try {
+            const vagas = await vagasModel.buscar_vagas_por_habilidades(habilidades);
+
+            if (vagas[0].length > 0) {
+                return res.status(200).json(vagas[0]);
+            } else {
+                return res.status(404).json({ message: 'Nenhuma vaga encontrada para as habilidades informadas.' });
+            }
+        } catch (error) {
+            return res.status(500).json({ error: 'Erro interno no servidor.' });
+        }
     }
 };

@@ -213,3 +213,33 @@ BEGIN
     WHERE hv.id_vaga = p_id_vaga;
 END //
 DELIMITER ;
+
+-- buscar vagas aleatorias
+DELIMITER //
+CREATE PROCEDURE buscar_vagas_aleatorias()
+BEGIN
+    SELECT v.*, e.razao_social, u.foto
+    FROM vagas v
+    JOIN empresas e ON v.id_empresa = e.id_empresa
+    JOIN usuarios u ON v.id_empresa = u.id_usuario
+    ORDER BY RAND()
+    LIMIT 10;
+END //
+DELIMITER ;
+
+-- buscar vagas por habilidades
+DELIMITER //
+CREATE PROCEDURE buscar_vagas_por_habilidades(
+    IN p_habilidades VARCHAR(255)
+)
+BEGIN
+    SELECT v.*, e.razao_social, u.foto
+    FROM vagas v
+    JOIN empresas e ON v.id_empresa = e.id_empresa
+    JOIN usuarios u ON v.id_empresa = u.id_usuario
+    JOIN habilidades_vagas hv ON v.id_vaga = hv.id_vaga
+    WHERE FIND_IN_SET(hv.id_habilidade, p_habilidades)
+    GROUP BY v.id_vaga
+    HAVING COUNT(DISTINCT hv.id_habilidade) = (LENGTH(p_habilidades) - LENGTH(REPLACE(p_habilidades, ',', '')) + 1);
+END //
+DELIMITER ;
