@@ -1,6 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
+const vagasController = require('../controllers/vagas-controller.js');
+
+// API
+router.get('/api/vagas/empresa/:id', vagasController.buscar_vagas_por_empresa);
+router.get('/api/vagas/:id', vagasController.buscar_vaga_por_id);
+
+// Front-end
 
 router.get('/buscar-vagas', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'public', 'buscar-vagas.html'));

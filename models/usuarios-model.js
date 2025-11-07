@@ -1,10 +1,10 @@
 const db  = require('../config/db.js');
 
 const usuarioModel = {
-    criar_usuario: async (nome, email, senha, tipo_usuario) => {
+    criar_usuario: async (nome, email, senha, tipo_usuario, descricao) => {
         try {
-            const sql = 'CALL criar_usuario (?, ?, ?, ?)';
-            await db.execute(sql, [nome, email, senha, tipo_usuario]);
+            const sql = 'CALL criar_usuario (?, ?, ?, ?, ?)';
+            await db.execute(sql, [nome, email, senha, tipo_usuario, descricao]);
             return true;
 
         } catch (error) {

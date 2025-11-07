@@ -15,6 +15,7 @@ CREATE TABLE usuarios (
     senha VARCHAR(255) NOT NULL COMMENT 'Senha',
     tipo_usuario ENUM('empresa', 'candidato') NOT NULL COMMENT 'Tipo',
     foto VARCHAR(255) NULL COMMENT 'URL da foto de perfil',
+    descricao TEXT NULL COMMENT 'Descrição do usuário',
     data_criacao DATETIME NOT NULL COMMENT 'Registro'
 );
 
@@ -26,6 +27,9 @@ CREATE TABLE empresas (
     cnpj VARCHAR(18) UNIQUE NOT NULL COMMENT 'Cadastro Nacional PJ',
     razao_social VARCHAR(150) UNIQUE NOT NULL COMMENT 'Nome legal',
     site VARCHAR(200) NULL COMMENT 'Opcional',
+    setor VARCHAR(100) NULL COMMENT 'Setor de atuação da empresa',
+    local VARCHAR(100) NULL COMMENT 'Localização da empresa',
+    tamanho ENUM('Pequena', 'Média', 'Grande') NULL COMMENT 'Tamanho da empresa',
     FOREIGN KEY (id_empresa) REFERENCES usuarios(id_usuario)
 );
 
@@ -36,7 +40,6 @@ CREATE TABLE candidatos (
     id_candidato INT PRIMARY KEY COMMENT 'Relaciona com usuários',
     cpf VARCHAR(14) UNIQUE NOT NULL COMMENT 'Cadastro PF',
     curriculo_link VARCHAR(255) NOT NULL COMMENT 'PDF ou link',
-    descricao_pessoal TEXT COMMENT 'Resumo profissional',
     FOREIGN KEY (id_candidato) REFERENCES usuarios(id_usuario)
 );
 
@@ -49,6 +52,8 @@ CREATE TABLE vagas (
     titulo VARCHAR(150) NOT NULL COMMENT 'Nome da vaga',
     descricao TEXT COMMENT 'Detalhes',
     localizacao VARCHAR(150) NOT NULL COMMENT 'Cidade/Remoto',
+    modalidade VARCHAR(100) NOT NULL COMMENT 'Híbrido, presencial ou remoto',
+    salario VARCHAR(50) NOT NULL COMMENT 'Salário da vaga',
     data_publicacao DATETIME NOT NULL COMMENT 'Registro',
     FOREIGN KEY (id_empresa) REFERENCES empresas(id_empresa)
 );

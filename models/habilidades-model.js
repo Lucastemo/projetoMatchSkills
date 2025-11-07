@@ -63,6 +63,17 @@ const habilidadesModel = {
             console.error('Erro ao buscar habilidades no modelo:', error);
             throw error;
         }
+    },
+
+    buscar_habilidades_por_vaga: async(id_vaga)=> {
+        try {
+            const sql = 'CALL buscar_habilidades_por_vaga(?)';
+            const [rows] = await db.execute(sql, [id_vaga]);
+            return rows[0];
+        } catch (error) {
+            console.error('Erro ao buscar habilidades por vaga no modelo:', error);
+            throw error;
+        }
     }
 }
 

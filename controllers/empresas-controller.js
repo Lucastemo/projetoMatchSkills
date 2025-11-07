@@ -47,5 +47,26 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({ error: 'Erro interno no servidor.' });
         }
+    },
+
+    criar_empresa: async (req, res) => {
+        const { id_usuario, cnpj, razao_social, site, setor, local, tamanho } = req.body;
+        try {
+            await empresaModel.criar_empresa(id_usuario, cnpj, razao_social, site, setor, local, tamanho);
+            return res.status(201).json({ message: 'Empresa criada com sucesso.' });
+        } catch (error) {
+            return res.status(500).json({ error: 'Erro interno no servidor.' });
+        }
+    },
+
+    atualizar_empresa: async (req, res) => {
+        const { id } = req.params;
+        const { razao_social, site, setor, local, tamanho, descricao } = req.body;
+        try {
+            await empresaModel.atualizar_empresa(id, razao_social, site, setor, local, tamanho, descricao);
+            return res.status(200).json({ message: 'Empresa atualizada com sucesso.' });
+        } catch (error) {
+            return res.status(500).json({ error: 'Erro interno no servidor.' });
+        }
     }
 };

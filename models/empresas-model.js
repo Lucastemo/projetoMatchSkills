@@ -32,6 +32,28 @@ const empresaModel = {
             console.log('Erro ao buscar empresas aleatórias.', error);
             throw error;
         }
+    },
+
+    criar_empresa: async (id_usuario, cnpj, razao_social, site, setor, local, tamanho) => {
+        try {
+            const sql = 'CALL criar_empresa(?, ?, ?, ?, ?, ?, ?)';
+            await db.execute(sql, [id_usuario, cnpj, razao_social, site, setor, local, tamanho]);
+            return true;
+        } catch (error) {
+            console.log('Erro ao criar empresa.', error);
+            throw error;
+        }
+    },
+
+    atualizar_empresa: async (id_empresa, razao_social, site, setor, local, tamanho, descricao) => {
+        try {
+            const sql = 'CALL atualizar_empresa(?, ?, ?, ?, ?, ?, ?)';
+            await db.execute(sql, [id_empresa, razao_social, site, setor, local, tamanho, descricao]);
+            return true;
+        } catch (error) {
+            console.log('Erro ao atualizar empresa.', error);
+            throw error;
+        }
     }
 };
 
