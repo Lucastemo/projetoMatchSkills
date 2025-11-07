@@ -44,62 +44,102 @@ document.addEventListener("DOMContentLoaded", () => {
         modal.classList.remove("show");
     }
 
-    // --- Controle do Multi-Select de Habilidades (Simulação) ---
+    // --- Controle do Multi-Select de Habilidades ---
     const multiSelectContainers = document.querySelectorAll(".multi-select-container");
+    let allSkills = []; // Cache for all skills from the database
+
+    // Fetch all skills once and store them
+    async function fetchAllSkills() {
+        if (allSkills.length > 0) return; // Avoid re-fetching
+        try {
+            const response = await fetch('/api/habilidades');
+            if (response.ok) {
+                const data = await response.json();
+                allSkills = data.data || [];
+            } else {
+                console.error('Falha ao buscar habilidades');
+            }
+        } catch (error) {
+            console.error('Erro ao buscar habilidades:', error);
+        }
+    }
+
+    // Fetch skills on page load if a multi-select exists
+    if (multiSelectContainers.length > 0) {
+        fetchAllSkills();
+    }
 
     multiSelectContainers.forEach(container => {
         const input = container.querySelector(".multi-select-input");
         const suggestions = container.querySelector(".suggestions-dropdown");
         const selectedSkills = container.querySelector(".selected-skills");
 
-        // Simulação de sugestões
-        const fakeSuggestions = ["JavaScript", "React", "Node.js", "SQL", "Comunicação", "Gestão de Projetos", "Proatividade", "HTML", "CSS", "Python"];
-
         input.addEventListener("focus", () => {
-            showSuggestions();
+            showSuggestions(input.value);
         });
 
-        // Fechar dropdown se clicar fora
+        input.addEventListener("input", () => {
+            showSuggestions(input.value);
+        });
+
         document.addEventListener("click", (e) => {
             if (!container.contains(e.target)) {
                 suggestions.style.display = "none";
             }
         });
 
-        function showSuggestions() {
-            suggestions.innerHTML = ""; // Limpa sugestões antigas
-            fakeSuggestions.forEach(skill => {
+        function showSuggestions(filter) {
+            suggestions.innerHTML = "";
+
+            // Get IDs of already selected skills to exclude them from suggestions
+            const selectedSkillIds = new Set(
+                Array.from(selectedSkills.children).map(pill => pill.getAttribute('data-skill-id'))
+            );
+
+            const filteredSkills = allSkills.filter(skill => {
+                const isSelected = selectedSkillIds.has(String(skill.id_habilidade));
+                const nameMatches = skill.nome.toLowerCase().includes(filter.toLowerCase());
+                return !isSelected && nameMatches;
+            });
+
+            filteredSkills.forEach(skill => {
                 const item = document.createElement("div");
                 item.classList.add("suggestion-item");
-                item.textContent = skill;
+                item.textContent = skill.nome;
                 item.addEventListener("click", () => {
-                    addSkill(skill);
+                    addSkill(skill.nome, skill.id_habilidade);
                     input.value = "";
                     suggestions.style.display = "none";
                 });
                 suggestions.appendChild(item);
             });
-            suggestions.style.display = "block";
+            suggestions.style.display = filteredSkills.length > 0 ? "block" : "none";
         }
 
-        function addSkill(skill) {
-            // Evita duplicados (placeholder)
-            const existing = Array.from(selectedSkills.children).find(pill => pill.dataset.skill === skill);
+        function addSkill(skillName, skillId) {
+            const existing = Array.from(selectedSkills.children).find(pill => pill.getAttribute('data-skill-id') === String(skillId));
             if (existing) return;
 
             const pill = document.createElement("div");
             pill.classList.add("skill-pill");
-            pill.dataset.skill = skill;
+            pill.setAttribute('data-skill-id', skillId);
+            pill.setAttribute('data-skill-name', skillName);
             pill.innerHTML = `
-                ${skill}
+                ${skillName}
                 <span class="remove-skill" title="Remover">&times;</span>
             `;
             
             pill.querySelector(".remove-skill").addEventListener("click", () => {
                 pill.remove();
+                showSuggestions(input.value); // Refresh suggestions to show the removed skill
             });
-
             selectedSkills.appendChild(pill);
+
+            // On buscar-vagas.html, uncheck "use profile" if a skill is manually added
+            const useProfileCheckbox = document.getElementById('useProfile');
+            if (useProfileCheckbox) {
+                useProfileCheckbox.checked = false;
+            }
         }
     });
 
