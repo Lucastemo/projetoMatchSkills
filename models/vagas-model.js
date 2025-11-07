@@ -1,6 +1,16 @@
 const db = require('../config/db.js');
 
 const vagasModel = {
+    criar_vaga: async (id_empresa, titulo, descricao, localizacao, modalidade, salario) => {
+        try {
+            const sql = 'CALL criar_vaga(?, ?, ?, ?, ?, ?)';
+            const [vaga] = await db.execute(sql, [id_empresa, titulo, descricao, localizacao, modalidade, salario]);
+            return vaga;
+        } catch (error) {
+            console.log('Erro ao criar vaga.', error);
+            throw error;
+        }
+    },
     buscar_vagas_por_empresa: async (id) => {
         try {
             const sql = 'CALL buscar_vagas_por_empresa(?)';

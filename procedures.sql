@@ -89,11 +89,13 @@ CREATE PROCEDURE criar_vaga(
     IN p_id_empresa INT,
     IN p_titulo VARCHAR(150),
     IN p_descricao TEXT,
-    IN p_localizacao VARCHAR(150)
+    IN p_localizacao VARCHAR(150),
+    IN p_modalidade VARCHAR(100),
+    IN p_salario VARCHAR(50)
 )
 BEGIN
-    INSERT INTO vagas (id_empresa, titulo, descricao, localizacao, data_publicacao)
-    VALUES (p_id_empresa, p_titulo, p_descricao, p_localizacao, NOW());
+    INSERT INTO vagas (id_empresa, titulo, descricao, localizacao, modalidade, salario, data_publicacao)
+    VALUES (p_id_empresa, p_titulo, p_descricao, p_localizacao, p_modalidade, p_salario, NOW());
 END //
 DELIMITER ;
 

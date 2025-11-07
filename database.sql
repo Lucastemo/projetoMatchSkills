@@ -52,6 +52,8 @@ CREATE TABLE vagas (
     titulo VARCHAR(150) NOT NULL COMMENT 'Nome da vaga',
     descricao TEXT COMMENT 'Detalhes',
     localizacao VARCHAR(150) NOT NULL COMMENT 'Cidade/Remoto',
+    modalidade VARCHAR(100) NOT NULL COMMENT 'Híbrido, presencial ou remoto',
+    salario VARCHAR(50) NOT NULL COMMENT 'Salário da vaga',
     data_publicacao DATETIME NOT NULL COMMENT 'Registro',
     FOREIGN KEY (id_empresa) REFERENCES empresas(id_empresa)
 );

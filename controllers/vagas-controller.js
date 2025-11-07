@@ -28,5 +28,15 @@ module.exports = {
         } catch (error) {
             return res.status(500).json({ error: 'Erro interno no servidor.' });
         }
+    },
+
+    criar_vaga: async (req, res) => {
+        const { id_empresa, titulo, descricao, localizacao, modalidade, salario } = req.body;
+        try {
+            const vaga = await vagasModel.criar_vaga(id_empresa, titulo, descricao, localizacao, modalidade, salario);
+            return res.status(201).json({ message: 'Vaga criada com sucesso.', vaga });
+        } catch (error) {
+            return res.status(500).json({ error: 'Erro interno no servidor.' });
+        }
     }
 };

@@ -18,7 +18,7 @@ const upload = multer({ storage: storage });
 module.exports = {
     upload, // Exportando o middleware de upload
     criar_usuario: async (req, res) => {
-        const {nome, email, senha, tipo_usuario} = req.body;
+        const {nome, email, senha, tipo_usuario, descricao} = req.body;
         try {
             if (!nome || !email || !senha || !tipo_usuario) {
                 return res.status(400).json
@@ -26,7 +26,7 @@ module.exports = {
             }
 
             //Chama a função responsável pela criação do usuário
-            const criarUsuario = await usuarioModel.criar_usuario(nome, email, senha , tipo_usuario);
+            const criarUsuario = await usuarioModel.criar_usuario(nome, email, senha , tipo_usuario, descricao);
 
             if (criarUsuario) {
                 return res.status(201).json({
