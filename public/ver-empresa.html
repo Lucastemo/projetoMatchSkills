@@ -246,7 +246,7 @@
             document.getElementById('modalLogoEmpresa').src = document.getElementById('logoEmpresa').src;
             document.getElementById('modalLocal').textContent = vaga.localizacao;
             document.getElementById('modalModalidade').textContent = vaga.modalidade;
-            document.getElementById('modalSalario').textContent = `R$ ${vaga.salario}`;
+            document.getElementById('modalSalario').textContent = vaga.salario;
             document.getElementById('modalDescricao').textContent = vaga.descricao;
 
             const habilidadesObrigatorias = document.getElementById('modalHabilidadesObrigatorias');
