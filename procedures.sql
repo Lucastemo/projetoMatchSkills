@@ -233,13 +233,32 @@ CREATE PROCEDURE buscar_vagas_por_habilidades(
     IN p_habilidades VARCHAR(255)
 )
 BEGIN
-    SELECT v.*, e.razao_social, u.foto
+    SELECT
+        v.*,
+        e.razao_social,
+        u.foto,
+        COUNT(DISTINCT hv.id_habilidade) AS matching_skills,
+        (SELECT COUNT(*) FROM habilidades_vagas WHERE id_vaga = v.id_vaga) AS total_skills
     FROM vagas v
     JOIN empresas e ON v.id_empresa = e.id_empresa
     JOIN usuarios u ON v.id_empresa = u.id_usuario
     JOIN habilidades_vagas hv ON v.id_vaga = hv.id_vaga
     WHERE FIND_IN_SET(hv.id_habilidade, p_habilidades)
     GROUP BY v.id_vaga
-    HAVING COUNT(DISTINCT hv.id_habilidade) = (LENGTH(p_habilidades) - LENGTH(REPLACE(p_habilidades, ',', '')) + 1);
+    ORDER BY
+        (matching_skills / total_skills) DESC,
+        matching_skills DESC;
+END //
+DELIMITER ;
+
+-- buscar id_habilidades por candidato
+DELIMITER //
+CREATE PROCEDURE buscar_id_habilidades_por_candidato(
+    IN p_id_candidato INT
+)
+BEGIN
+    SELECT id_habilidade
+    FROM habilidades_candidatos
+    WHERE id_candidato = p_id_candidato;
 END //
 DELIMITER ;

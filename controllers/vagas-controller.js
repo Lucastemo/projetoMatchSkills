@@ -1,4 +1,20 @@
 const vagasModel = require('../models/vagas-model.js');
+const CandidatosController = require('../controllers/candidatos-controller.js');
+
+const processVagas = (vagas) => {
+    if (vagas.length > 0) {
+        const fullMatches = vagas.filter(vaga => vaga.matching_skills === vaga.total_skills);
+        const partialMatches = vagas.filter(vaga => vaga.matching_skills !== vaga.total_skills);
+
+        if (fullMatches.length >= 10) {
+            return fullMatches;
+        } else {
+            const needed = 10 - fullMatches.length;
+            return [...fullMatches, ...partialMatches.slice(0, needed)];
+        }
+    }
+    return [];
+}
 
 module.exports = {
     buscar_vagas_por_empresa: async (req, res) => {
@@ -58,14 +74,38 @@ module.exports = {
         const { habilidades } = req.query;
         try {
             const vagas = await vagasModel.buscar_vagas_por_habilidades(habilidades);
+            const processedVagas = processVagas(vagas[0]);
 
-            if (vagas[0].length > 0) {
-                return res.status(200).json(vagas[0]);
+            if (processedVagas.length > 0) {
+                return res.status(200).json(processedVagas);
             } else {
                 return res.status(404).json({ message: 'Nenhuma vaga encontrada para as habilidades informadas.' });
             }
         } catch (error) {
             return res.status(500).json({ error: 'Erro interno no servidor.' });
+        }
+    },
+
+    buscar_vagas_por_habilidades_do_candidato: async (req, res) => {
+        const { id } = req.params;
+        try {
+            const habilidadesString = await CandidatosController.getHabilidadesStringByCandidatoId(id);
+
+            if (habilidadesString) {
+                const vagas = await vagasModel.buscar_vagas_por_habilidades(habilidadesString);
+                const processedVagas = processVagas(vagas[0]);
+
+                if (processedVagas.length > 0) {
+                    return res.status(200).json(processedVagas);
+                } else {
+                    return res.status(404).json({ message: 'Nenhuma vaga encontrada para as habilidades do candidato.' });
+                }
+            } else {
+                return res.status(404).json({ message: 'Habilidades não encontradas para o candidato.' });
+            }
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ error: 'Erro ao buscar vagas por habilidades do candidato.' });
         }
     }
 };
