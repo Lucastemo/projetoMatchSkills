@@ -139,17 +139,28 @@
                 }
             };
 
-            // Clear search input on page load
-            searchInput.value = "";
+            // Clear input on page load
+            searchInput.value = '';
 
-            // Fetch and display random companies on page load
-            fetchAndDisplayCompanies('/api/empresas');
+
+            // Check for search term in URL on page load
+            const urlParams = new URLSearchParams(window.location.search);
+            const nomeParam = urlParams.get('nome');
+
+            if (nomeParam) {
+                searchInput.value = nomeParam;
+                fetchAndDisplayCompanies(`/api/empresas/buscar?nome=${encodeURIComponent(nomeParam)}`);
+            } else {
+                fetchAndDisplayCompanies('/api/empresas'); // Load all companies if no search term
+            }
 
             // Filter companies by name on search button click
             searchButton.addEventListener('click', () => {
                 const searchTerm = searchInput.value.trim();
                 if (searchTerm) {
                     fetchAndDisplayCompanies(`/api/empresas/buscar?nome=${searchTerm}`);
+                } else {
+                    fetchAndDisplayCompanies('/api/empresas');
                 }
             });
         });
