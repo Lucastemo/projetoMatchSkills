@@ -164,12 +164,14 @@ DELIMITER ;
 DELIMITER //
 CREATE PROCEDURE atualizar_candidato(
     IN p_id_candidato INT,
-    IN p_curriculo_link VARCHAR(255),
-    IN p_descricao TEXT
+    IN p_nome VARCHAR(100),
+    IN p_email VARCHAR(100),
+    IN p_cpf VARCHAR(14),
+    IN p_descricao_pessoal TEXT
 )
 BEGIN
-    UPDATE candidatos SET curriculo_link = p_curriculo_link WHERE id_candidato = p_id_candidato;
-    UPDATE usuarios SET descricao = p_descricao WHERE id_usuario = p_id_candidato;
+    UPDATE usuarios SET nome = p_nome, email = p_email, descricao = p_descricao_pessoal WHERE id_usuario = p_id_candidato;
+    UPDATE candidatos SET cpf = p_cpf WHERE id_candidato = p_id_candidato;
 END //
 DELIMITER ;
 
@@ -260,5 +262,16 @@ BEGIN
     SELECT id_habilidade
     FROM habilidades_candidatos
     WHERE id_candidato = p_id_candidato;
+END //
+DELIMITER ;
+
+-- Atualizar currículo do candidato
+DELIMITER //
+CREATE PROCEDURE atualizar_curriculo_candidato(
+    IN p_id_candidato INT,
+    IN p_curriculo_link VARCHAR(255)
+)
+BEGIN
+    UPDATE candidatos SET curriculo_link = p_curriculo_link WHERE id_candidato = p_id_candidato;
 END //
 DELIMITER ;

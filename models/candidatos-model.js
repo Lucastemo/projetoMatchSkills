@@ -10,6 +10,26 @@ class Candidato {
             throw error;
         }
     }
+
+    static async atualizar_candidato(id, nome, email, cpf, descricao_pessoal) {
+        try {
+            const [results] = await db.query('CALL atualizar_candidato(?, ?, ?, ?, ?)', [id, nome, email, cpf, descricao_pessoal]);
+            return results;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
+
+    static async atualizar_curriculo_candidato(id, curriculo_link) {
+        try {
+            const [results] = await db.query('CALL atualizar_curriculo_candidato(?, ?)', [id, curriculo_link]);
+            return results;
+        } catch (error) {
+            console.error(error);
+            throw error;
+        }
+    }
 }
 
 module.exports = Candidato;
