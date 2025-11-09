@@ -129,7 +129,7 @@ const habilidadesController = {
     // parte do controller de buscar as habilidades feita pelo o Angelo
     listar_habilidade: async(req, res)=> {
         try {
-            const habilidades = await habilidadesModel.listar_habilidades();
+            const habilidades = await habilidadesModel.listar_habilidade();
             return res.status(200).json({ data: habilidades });
         } catch (error) {
             console.error("Erro ao listar habilidades:", error);

@@ -35,8 +35,8 @@
             <section class="hero-section">
                 <h2>Já tem uma empresa em mente?</h2>
                 <div class="hero-search">
-                    <input type="text" class="form-group" placeholder="Digite o nome da empresa...">
-                    <a href="/buscar-empresas" class="btn btn-primary">Pesquisar</a>
+                    <input type="text" id="empresaSearchInput" class="form-group" placeholder="Digite o nome da empresa...">
+                    <a href="/buscar-empresas" id="empresaSearchButton" class="btn btn-primary">Pesquisar</a>
                 </div>
             </section>
         </div>
@@ -55,5 +55,18 @@
     </footer>
     
     <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('empresaSearchInput');
+            const searchButton = document.getElementById('empresaSearchButton');
+
+            searchButton.addEventListener('click', (e) => {
+                e.preventDefault(); // Prevent the default link navigation
+                const searchTerm = searchInput.value.trim();
+                // Redirect to the search page with the query parameter
+                window.location.href = searchTerm ? `/buscar-empresas?nome=${encodeURIComponent(searchTerm)}` : '/buscar-empresas';
+            });
+        });
+    </script>
 </body>
 </html>
