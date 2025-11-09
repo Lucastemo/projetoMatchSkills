@@ -157,6 +157,42 @@
     grid-template-columns: 280px 1fr;
     gap: 40px;
 }
+.profile-pic-container {
+    position: relative;
+    display: inline-block; /* Para que o container tenha o tamanho da imagem */
+    border-radius: 50%;
+    overflow: hidden; /* Garante que o overlay fique dentro do círculo */
+    margin-bottom: 20px;
+    border: 5px solid var(--card-bg-color);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.profile-pic-container .main-profile-pic {
+    display: block; /* Remove espaço extra abaixo da imagem */
+    transition: filter 0.3s ease;
+}
+.profile-pic-container .edit-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.profile-pic-container:hover {
+    cursor: pointer;
+}
+.profile-pic-container:hover .main-profile-pic {
+    filter: brightness(0.7);
+}
+.profile-pic-container:hover .edit-overlay {
+    opacity: 1;
+}
 .profile-sidebar {
     text-align: center;
 }
@@ -164,9 +200,6 @@
     width: 200px;
     height: 200px;
     border-radius: 50%;
-    border: 5px solid var(--card-bg-color);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
 }
 .profile-sidebar h2 {
     font-size: 1.8rem;
