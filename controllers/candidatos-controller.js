@@ -1,4 +1,28 @@
 const Candidato = require('../models/candidatos-model');
+const multer = require('multer');
+const path = require('path');
+
+// Configuração do multer para upload de currículos
+const storageCurriculo = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/curriculos-candidatos/');
+    },
+    filename: function (req, file, cb) {
+        const { id_candidato } = req.body;
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, `curriculo-${uniqueSuffix}${path.extname(file.originalname)}`);
+    }
+});
+
+const uploadCurriculo = multer({
+    storage: storageCurriculo,
+    fileFilter: function (req, file, cb) {
+        if (path.extname(file.originalname).toLowerCase() !== '.pdf') {
+            return cb(new Error('Somente arquivos PDF são permitidos!'));
+        }
+        cb(null, true);
+    }
+});
 
 class CandidatosController {
     static async getHabilidadesStringByCandidatoId(id) {
@@ -28,20 +52,25 @@ class CandidatosController {
         }
     }
 
+    static uploadCurriculo = uploadCurriculo.single('curriculo');
+
     static async atualizar_curriculo_candidato(req, res) {
-        const { id_candidato, curriculo_link } = req.body;
+        const { id_candidato } = req.body;
+        const curriculo_link = req.file ? `curriculos-candidatos/${req.file.filename}` : null;
+
         if (!id_candidato || !curriculo_link) {
-            return res.status(400).json({ error: 'ID do candidato e link do currículo são obrigatórios.' });
+            return res.status(400).json({ error: 'ID do candidato e arquivo do currículo são obrigatórios.' });
         }
 
         try {
             await Candidato.atualizar_curriculo_candidato(id_candidato, curriculo_link);
-            res.status(200).json({ message: 'Currículo do candidato atualizado com sucesso.' });
+            res.status(200).json({ message: 'Currículo do candidato atualizado com sucesso.', curriculo_link });
         } catch (error) {
             console.error('Erro ao atualizar currículo do candidato:', error);
             res.status(500).json({ error: 'Erro interno no servidor ao atualizar o currículo do candidato.' });
         }
     }
+
 }
 
 module.exports = CandidatosController;

@@ -6,7 +6,7 @@ const candidatosController = require('../controllers/candidatos-controller');
 // API
 
 router.post('/api/candidatos/atualizar-candidato', candidatosController.atualizar_candidato);
-router.post('/api/candidatos/atualizar-curriculo', candidatosController.atualizar_curriculo_candidato);
+router.post('/api/candidatos/atualizar-curriculo', candidatosController.uploadCurriculo, candidatosController.atualizar_curriculo_candidato);
 
 // Front-end
 
