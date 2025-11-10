@@ -163,6 +163,21 @@ const habilidadesController = {
             console.error("Erro ao buscar habilidades por vaga:", error);
             return res.status(500).json({ error: "Erro interno no servidor ao buscar habilidades por vaga." });
         }
+    },
+
+    buscar_habilidades_por_candidato: async(req, res)=> {
+        const { id } = req.params;
+        try {
+            if (!id) {
+                return res.status(400).json({ error: "O ID do candidato é obrigatório." });
+            }
+            const habilidades = await habilidadesModel.buscar_habilidades_por_candidato(id);
+            // The frontend expects an object with a 'data' property
+            return res.status(200).json({ data: habilidades });
+        } catch (error) {
+            console.error("Erro ao buscar habilidades por candidato:", error);
+            return res.status(500).json({ error: "Erro interno no servidor ao buscar habilidades por candidato." });
+        }
     }
 }
 

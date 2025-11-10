@@ -25,6 +25,22 @@ const uploadCurriculo = multer({
 });
 
 class CandidatosController {
+    static async buscar_candidato_por_id(req, res) {
+        const { id } = req.params;
+        try {
+            const candidato = await Candidato.buscar_por_id(id);
+
+            if (candidato && candidato.length > 0) {
+                res.status(200).json(candidato);
+            } else {
+                res.status(404).json({ message: 'Candidato não encontrado.' });
+            }
+        } catch (error) {
+            console.error('Erro ao buscar candidato:', error);
+            res.status(500).json({ error: 'Erro interno no servidor ao buscar o candidato.' });
+        }
+    }
+
     static async getHabilidadesStringByCandidatoId(id) {
         const habilidades = await Candidato.buscar_id_habilidades_por_candidato(id);
         if (habilidades.length > 0) {
@@ -49,6 +65,22 @@ class CandidatosController {
         } catch (error) {
             console.error('Erro ao atualizar perfil do candidato:', error);
             res.status(500).json({ error: 'Erro interno no servidor ao atualizar o perfil do candidato.' });
+        }
+    }
+
+    static async atualizar_habilidades_candidato(req, res) {
+        const { id_candidato, habilidades } = req.body; // habilidades should be an array of IDs
+
+        if (!id_candidato || !Array.isArray(habilidades)) {
+            return res.status(400).json({ error: 'ID do candidato e um array de habilidades são obrigatórios.' });
+        }
+
+        try {
+            await Candidato.atualizar_habilidades_candidato(id_candidato, habilidades);
+            res.status(200).json({ message: 'Habilidades do candidato atualizadas com sucesso.' });
+        } catch (error) {
+            console.error('Erro ao atualizar habilidades do candidato:', error);
+            res.status(500).json({ error: 'Erro interno no servidor ao atualizar as habilidades.' });
         }
     }
 

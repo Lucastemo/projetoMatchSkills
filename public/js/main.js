@@ -141,7 +141,30 @@ document.addEventListener("DOMContentLoaded", () => {
                 useProfileCheckbox.checked = false;
             }
         }
+
+        // Make addSkill available to other scripts
+        container.addSkill = addSkill;
     });
+
+    // --- Function to populate skills on page load (e.g., on profile page) ---
+    // This function can be called from other scripts.
+    window.populateSelectedSkills = (container, skills, isEditMode = false) => {
+        const selectedSkillsContainer = container.querySelector('.selected-skills');
+        if (!selectedSkillsContainer) return;
+
+        selectedSkillsContainer.innerHTML = ''; // Clear existing skills
+        skills.forEach(skill => {
+            const pill = document.createElement("div");
+            pill.classList.add("skill-pill");
+            // Assumes skill object has 'id_habilidade' and 'nome' properties
+            pill.setAttribute('data-skill-id', skill.id_habilidade);
+            pill.setAttribute('data-skill-name', skill.nome);
+            
+            const removeSpanDisplay = isEditMode ? 'inline' : 'none';
+            pill.innerHTML = `${skill.nome} <span class="remove-skill" title="Remover" style="display: ${removeSpanDisplay};">&times;</span>`;
+            selectedSkillsContainer.appendChild(pill);
+        });
+    };
 
     // --- Formatação de CPF e CNPJ ---
     const cpfInput = document.getElementById("cpf");

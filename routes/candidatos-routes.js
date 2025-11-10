@@ -5,8 +5,10 @@ const candidatosController = require('../controllers/candidatos-controller');
 
 // API
 
-router.post('/api/candidatos/atualizar-candidato', candidatosController.atualizar_candidato);
-router.post('/api/candidatos/atualizar-curriculo', candidatosController.uploadCurriculo, candidatosController.atualizar_curriculo_candidato);
+router.get('/api/candidatos/:id', candidatosController.buscar_candidato_por_id);
+router.put('/api/candidatos/atualizar-candidato', candidatosController.atualizar_candidato);
+router.put('/api/candidatos/atualizar-habilidades', candidatosController.atualizar_habilidades_candidato);
+router.patch('/api/candidatos/atualizar-curriculo', candidatosController.uploadCurriculo, candidatosController.atualizar_curriculo_candidato);
 
 // Front-end
 

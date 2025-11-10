@@ -132,6 +132,19 @@ BEGIN
 END //
 DELIMITER ;
 
+-- Buscar candidato por id
+DELIMITER //
+CREATE PROCEDURE buscar_candidato_por_id(
+    IN p_id_candidato INT
+)
+BEGIN
+    SELECT u.id_usuario, u.nome, u.email, c.cpf, u.descricao, u.foto, u.data_criacao as data_cadastro
+    FROM usuarios u
+    JOIN candidatos c ON u.id_usuario = c.id_candidato
+    WHERE u.id_usuario = p_id_candidato;
+END //
+DELIMITER ;
+
 -- Atualizar foto do usuário
 DELIMITER //
 CREATE PROCEDURE atualizar_foto_usuario(
@@ -273,5 +286,44 @@ CREATE PROCEDURE atualizar_curriculo_candidato(
 )
 BEGIN
     UPDATE candidatos SET curriculo_link = p_curriculo_link WHERE id_candidato = p_id_candidato;
+END //
+DELIMITER ;
+
+-- Buscar habilidades por candidato
+DELIMITER //
+CREATE PROCEDURE buscar_habilidades_por_candidato(
+    IN p_id_candidato INT
+)
+BEGIN
+    SELECT h.id_habilidade, h.nome
+    FROM habilidades_candidatos hc
+    JOIN habilidades h ON hc.id_habilidade = h.id_habilidade
+    WHERE hc.id_candidato = p_id_candidato;
+END //
+DELIMITER ;
+
+-- Atualizar habilidades do candidato
+DELIMITER //
+CREATE PROCEDURE atualizar_habilidades_candidato(
+    IN p_id_candidato INT,
+    IN p_habilidades_ids TEXT -- Comma-separated list of skill IDs
+)
+BEGIN
+    DECLARE current_id_str VARCHAR(10);
+    DECLARE remaining_ids TEXT;
+
+    -- 1. Remove todas as habilidades existentes para este candidato
+    DELETE FROM habilidades_candidatos WHERE id_candidato = p_id_candidato;
+
+    -- 2. Insere as novas habilidades se a lista não for vazia
+    SET remaining_ids = p_habilidades_ids;
+    WHILE LENGTH(remaining_ids) > 0 DO
+        SET current_id_str = SUBSTRING_INDEX(remaining_ids, ',', 1);
+        
+        INSERT INTO habilidades_candidatos (id_candidato, id_habilidade, nivel)
+        VALUES (p_id_candidato, CAST(current_id_str AS UNSIGNED), 'Intermediário');
+
+        SET remaining_ids = SUBSTRING(remaining_ids, LENGTH(current_id_str) + 2);
+    END WHILE;
 END //
 DELIMITER ;
