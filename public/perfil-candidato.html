@@ -32,7 +32,7 @@
             <div class="profile-layout">
                 <aside class="profile-sidebar">
                     <div class="profile-pic-container">
-                        <img src="https://via.placeholder.com/200/CCCCCC/FFFFFF?text=USER" alt="Foto de Perfil" class="main-profile-pic" id="profilePic">
+                        <img src="/img/fotos-perfil/candidato-sem-foto.png" alt="Foto de Perfil" class="main-profile-pic" id="profilePic">
                         <div class="edit-overlay">
                             <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
                         </div>
@@ -138,7 +138,7 @@
                     document.querySelector('.profile-sidebar h2').textContent = candidate.nome;
                     const joinDate = new Date(candidate.data_cadastro).toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
                     document.querySelector('.join-date').textContent = `Membro desde ${joinDate}`;
-                    profilePicImg.src = candidate.foto || 'https://via.placeholder.com/200/CCCCCC/FFFFFF?text=USER';
+                    profilePicImg.src = candidate.foto || '/img/fotos-perfil/candidato-sem-foto.png';
 
                     document.getElementById('nome').value = candidate.nome;
                     document.getElementById('cpf').value = candidate.cpf;
