@@ -16,6 +16,7 @@ app.use(express.urlencoded({extended: true}));
 app.use('/css', express.static(path.join(__dirname, 'public', 'css')));
 app.use('/js', express.static(path.join(__dirname, 'public', 'js')));
 app.use('/img', express.static(path.join(__dirname, 'public', 'img')));
+app.use('/curriculos-candidatos', express.static(path.join(__dirname, 'public', 'curriculos-candidatos')));
 app.use(session(sessionConfig));
 
 app.use('/', routes);

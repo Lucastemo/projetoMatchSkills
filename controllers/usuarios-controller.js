@@ -1,6 +1,7 @@
 const usuarioModel = require('../models/usuarios-model.js');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
 // Configuração do multer para upload de imagens
 const storage = multer.diskStorage({
@@ -198,6 +199,18 @@ module.exports = {
                 return res.status(400).json({ error: 'ID do usuário e foto são obrigatórios.' });
             }
 
+            // Buscar a foto antiga para deletar
+            const fotoAntiga = await usuarioModel.buscar_foto_por_usuario(id_usuario);
+
+            if (fotoAntiga) {
+                const caminhoFotoAntiga = path.join(__dirname, '..', 'public', fotoAntiga);
+                fs.unlink(caminhoFotoAntiga, (err) => {
+                    if (err) {
+                        // Log do erro, mas não impede a atualização da nova foto
+                        console.error('Erro ao deletar a foto antiga:', err);
+                    }
+                });
+            }
             const atualizarFoto = await usuarioModel.atualizar_foto_usuario(id_usuario, foto_url);
 
             if (atualizarFoto) {

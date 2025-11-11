@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div id="notification-container"></div>
     <a id="topo"></a>
     <nav class="navbar">
         <div class="container">
@@ -30,7 +31,14 @@
         <div class="container">
             <div class="profile-layout">
                 <aside class="profile-sidebar">
-                    <img src="https://via.placeholder.com/200/CCCCCC/FFFFFF?text=USER" alt="Foto de Perfil" class="main-profile-pic">
+                    <div class="profile-pic-container">
+                        <img src="/img/fotos-perfil/candidato-sem-foto.png" alt="Foto de Perfil" class="main-profile-pic" id="profilePic">
+                        <div class="edit-overlay">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                        </div>
+                        <input type="file" id="profilePicInput" accept="image/*" style="display: none;">
+
+                    </div>
                     <h2>Wendel Bonfim</h2>
                     <p class="join-date">Membro desde 20 de Outubro, 2025</p>
                     <a href="#" class="btn btn-primary">Modificar Dados</a>
@@ -39,7 +47,7 @@
                 <section class="profile-content">
                     <div class="card no-translateY">
                         <h3>Minhas Informações</h3>
-                        <form>
+                        <form id="profileForm">
                             <div class="profile-grid-two">
                                 <div class="form-group">
                                     <label for="nome">Nome Completo</label>
@@ -56,11 +64,14 @@
                             </div>
                             <div class="form-group">
                                 <label for="curriculo">Currículo (PDF)</label>
-                                <input type="file" id="curriculo">
+                                <div id="curriculoDisplay">
+                                    <a href="#" id="curriculoLink" target="_blank" class="link-styled">Ver currículo atual</a>
+                                    <input type="file" id="curriculo" accept=".pdf" style="display: none;">
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label for="descricao">Descrição Pessoal</label>
-                                <textarea id="descricao" readonly>Desenvolvedor focado em back-end com paixão por resolver problemas complexos e criar soluções eficientes...</textarea>
+                                <textarea id="descricao" readonly rows="4">Desenvolvedor focado em back-end com paixão por resolver problemas complexos e criar soluções eficientes...</textarea>
                             </div>
 
                             <div class="form-group">
@@ -70,9 +81,6 @@
                                     <div class="suggestions-dropdown">
                                         </div>
                                     <div class="selected-skills">
-                                        <div class="skill-pill" data-skill="Node.js">Node.js <span class="remove-skill">×</span></div>
-                                        <div class="skill-pill" data-skill="React">React <span class="remove-skill">×</span></div>
-                                        <div class="skill-pill" data-skill="SQL">SQL <span class="remove-skill">×</span></div>
                                     </div>
                                 </div>
                             </div>
@@ -96,5 +104,220 @@
     </footer>
     
     <script src="js/main.js"></script>
+    <script>
+        // This should be replaced by actual session/auth logic
+        const usuario = {
+            id: 3
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('profileForm');
+            const fields = form.querySelectorAll('input:not([type="file"]), textarea');
+            const fileInput = document.getElementById('curriculo');
+            const skillsInput = document.querySelector('#skills.multi-select-input');
+            const curriculoLink = document.getElementById('curriculoLink');
+            const curriculoDisplay = document.getElementById('curriculoDisplay');
+            const editButton = document.querySelector('.profile-sidebar .btn-primary');
+            const profilePicContainer = document.querySelector('.profile-pic-container');
+            const profilePicInput = document.getElementById('profilePicInput');
+            const profilePicImg = document.getElementById('profilePic');
+            const selectedSkillsContainer = document.querySelector('.selected-skills');
+
+            let isEditMode = false;
+
+            // --- Load initial data ---
+            async function loadProfileData() {
+                try {
+                    // Fetch candidate data
+                    const candidateRes = await fetch(`/api/candidatos/${usuario.id}`);
+                    if (!candidateRes.ok) throw new Error('Candidato não encontrado.');
+                    const candidateData = await candidateRes.json();
+                    const candidate = candidateData[0];
+
+                    // Populate fields
+                    document.querySelector('.profile-sidebar h2').textContent = candidate.nome;
+                    const joinDate = new Date(candidate.data_cadastro).toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
+                    document.querySelector('.join-date').textContent = `Membro desde ${joinDate}`;
+                    profilePicImg.src = candidate.foto || '/img/fotos-perfil/candidato-sem-foto.png';
+
+                    document.getElementById('nome').value = candidate.nome;
+                    document.getElementById('cpf').value = candidate.cpf;
+                    document.getElementById('email').value = candidate.email;
+                    document.getElementById('descricao').textContent = candidate.descricao || '';
+
+                    if (candidate.curriculo_link) {
+                        curriculoLink.href = `/${candidate.curriculo_link}`;
+                        curriculoLink.style.display = 'block';
+                        curriculoLink.textContent = 'Ver currículo atual';
+                    } else {
+                        curriculoLink.textContent = 'Nenhum currículo enviado.';
+                        curriculoLink.removeAttribute('href');
+                    }
+
+                    // Fetch and populate skills
+                    const skillsRes = await fetch(`/api/habilidades/candidato/${usuario.id}`);
+                    if (skillsRes.ok) {
+                        const skillsData = await skillsRes.json();
+                        if (skillsData.data) {
+                            // Use the global function from main.js
+                            const multiSelectContainer = document.querySelector('.multi-select-container');
+                            window.populateSelectedSkills(multiSelectContainer, skillsData.data, isEditMode);
+                        }
+                    }
+
+                } catch (error) {
+                    console.error('Erro ao carregar perfil:', error);
+                    window.showNotification('Não foi possível carregar os dados do perfil.', 'error');
+                }
+            }
+
+            // --- Toggle Edit Mode ---
+            editButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                isEditMode = !isEditMode;
+                toggleEditState();
+
+                if (!isEditMode) {
+                    // If switching from edit to view mode, it means "Salvar" was clicked
+                    submitForm();
+                }
+            });
+
+            function toggleEditState() {
+                fields.forEach(field => field.readOnly = !isEditMode);
+                curriculoLink.style.display = isEditMode ? 'none' : 'block';
+                fileInput.style.display = isEditMode ? 'block' : 'none';
+                skillsInput.disabled = !isEditMode;
+                
+                // The remove buttons on skill pills need to be re-evaluated every time edit mode changes.
+                const removeSkillButtons = selectedSkillsContainer.querySelectorAll('.remove-skill');
+
+                if (isEditMode) {
+                    editButton.textContent = 'Salvar Alterações';
+                    editButton.classList.remove('btn-primary');
+                    editButton.classList.add('btn-secondary');
+                    removeSkillButtons.forEach(btn => {
+                        btn.style.display = 'inline';
+                        // Ensure click event is added only once
+                        if (!btn.hasAttribute('data-listener-added')) {
+                            btn.addEventListener('click', () => {
+                                btn.parentElement.remove();
+                            });
+                            btn.setAttribute('data-listener-added', 'true');
+                        }
+                    });
+                } else {
+                    editButton.textContent = 'Modificar Dados';
+                    editButton.classList.add('btn-primary');
+                    editButton.classList.remove('btn-secondary');
+                    removeSkillButtons.forEach(btn => btn.style.display = 'none');
+                }
+            }
+
+            // --- Profile Picture Upload ---
+            profilePicContainer.addEventListener('click', () => profilePicInput.click());
+            profilePicInput.addEventListener('change', async () => {
+                const file = profilePicInput.files[0];
+                if (!file) return;
+
+                const formData = new FormData();
+                formData.append('id_usuario', usuario.id);
+                formData.append('foto', file);
+
+                try {
+                    const res = await fetch(`/usuarios/atualizar-foto`, {
+                        method: 'PATCH',
+                        body: formData
+                    });
+
+                    const result = await res.json();
+                    if (res.ok) {
+                        profilePicImg.src = result.filePath; // Assuming server returns the new path
+                        window.showNotification('Foto de perfil atualizada com sucesso!');
+                        loadProfileData(); // Reload data to show the new picture
+                    } else {
+                        throw new Error(result.message || 'Falha ao atualizar a foto.');
+                    }
+                } catch (error) {
+                    console.error('Erro no upload da foto:', error);
+                    window.showNotification(`Falha ao salvar foto: ${error.message}`, 'error');
+                }
+            });
+
+            // --- Form Submission ---
+            async function submitForm() {
+                const id_candidato = usuario.id;
+                const promises = [];
+
+                // 1. Update Textual Data (nome, email, descricao)
+                const textData = {
+                    id_candidato: id_candidato,
+                    nome: document.getElementById('nome').value,
+                    email: document.getElementById('email').value,
+                    cpf: document.getElementById('cpf').value, // CPF is readonly, but good to send
+                    descricao_pessoal: document.getElementById('descricao').value
+                };
+
+                promises.push(fetch('/api/candidatos/atualizar-candidato', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(textData)
+                }));
+
+                // 2. Update Skills
+                const skillIds = Array.from(selectedSkillsContainer.children)
+                                     .map(pill => pill.getAttribute('data-skill-id'));
+                
+                const skillsData = {
+                    id_candidato: id_candidato,
+                    habilidades: skillIds
+                };
+
+                promises.push(fetch('/api/candidatos/atualizar-habilidades', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(skillsData)
+                }));
+
+                // 3. Update Curriculum (if a new one was selected)
+                const curriculoFile = fileInput.files[0];
+                if (curriculoFile) {
+                    const curriculoFormData = new FormData();
+                    curriculoFormData.append('id_candidato', id_candidato);
+                    curriculoFormData.append('curriculo', curriculoFile);
+
+                    promises.push(fetch('/api/candidatos/atualizar-curriculo', {
+                        method: 'PATCH',
+                        body: curriculoFormData
+                        // No 'Content-Type' header for FormData, browser sets it with boundary
+                    }));
+                }
+
+                try {
+                    const results = await Promise.all(promises);
+
+                    // Check if any of the requests failed
+                    const failedRequest = results.find(res => !res.ok);
+                    if (failedRequest) {
+                        const errorData = await failedRequest.json();
+                        throw new Error(errorData.error || 'Uma das atualizações falhou.');
+                    }
+
+                    window.showNotification('Dados atualizados com sucesso!');
+                    loadProfileData(); // Reload data to show all changes
+                } catch (error) {
+                    console.error('Erro ao salvar alterações:', error);
+                    window.showNotification(`Falha ao salvar: ${error.message}`, 'error');
+                    // Revert button to edit state if save fails
+                    isEditMode = true; 
+                    toggleEditState();
+                }
+            }
+
+            // Initial Load
+            loadProfileData();
+            toggleEditState(); // Set initial readonly state and hide remove buttons
+        });
+    </script>
 </body>
 </html>

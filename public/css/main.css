@@ -157,6 +157,42 @@
     grid-template-columns: 280px 1fr;
     gap: 40px;
 }
+.profile-pic-container {
+    position: relative;
+    display: inline-block; /* Para que o container tenha o tamanho da imagem */
+    border-radius: 50%;
+    overflow: hidden; /* Garante que o overlay fique dentro do círculo */
+    margin-bottom: 20px;
+    border: 5px solid var(--card-bg-color);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.profile-pic-container .main-profile-pic {
+    display: block; /* Remove espaço extra abaixo da imagem */
+    transition: filter 0.3s ease;
+}
+.profile-pic-container .edit-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.profile-pic-container:hover {
+    cursor: pointer;
+}
+.profile-pic-container:hover .main-profile-pic {
+    filter: brightness(0.7);
+}
+.profile-pic-container:hover .edit-overlay {
+    opacity: 1;
+}
 .profile-sidebar {
     text-align: center;
 }
@@ -164,9 +200,6 @@
     width: 200px;
     height: 200px;
     border-radius: 50%;
-    border: 5px solid var(--card-bg-color);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    margin-bottom: 20px;
 }
 .profile-sidebar h2 {
     font-size: 1.8rem;
@@ -595,6 +628,68 @@
     font-size: 1.2rem;
     color: var(--secondary-color);
     margin-bottom: 10px;
+}
+
+/* --- Notificações --- */
+#notification-container {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.notification {
+    min-width: 400px;
+    max-width: 100vw;
+    background-color: var(--card-bg-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border-left: 5px solid var(--primary-color);
+    animation: slideIn 0.3s ease-out;
+    position: relative;
+}
+
+.notification.fade-out {
+    animation: slideOut 0.4s ease-in forwards;
+}
+
+.notification.success {
+    border-left-color: #28a745; /* Verde para sucesso */
+}
+
+.notification.error {
+    border-left-color: #dc3545; /* Vermelho para erro */
+    background-color: #dc3545;
+    color: #fff;
+}
+
+.notification-close {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--text-light);
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@keyframes slideOut {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(-20px); }
 }
 
 /* Responsividade de Layouts de Página */

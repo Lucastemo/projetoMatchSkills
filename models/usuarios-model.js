@@ -57,6 +57,20 @@ const usuarioModel = {
            throw error;
        }
    },
+
+   buscar_foto_por_usuario: async (id_usuario) => {
+       try {
+           const sql = 'CALL buscar_foto_por_usuario(?)';
+           const [rows] = await db.execute(sql, [id_usuario]);
+           if (rows[0] && rows[0].length > 0) {
+               return rows[0][0].foto;
+           }
+           return null;
+       } catch (error) {
+           console.log('Erro ao buscar a foto do usuário.', error);
+           throw error;
+       }
+   },
    
        atualizar_foto_usuario: async (id_usuario, foto_url) => {
            try {

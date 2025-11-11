@@ -13,6 +13,6 @@ router.get("/menu", verificarSessao, (req, res) => {
 });
 router.post("/logout", usuarioController.logout);
 
-router.post("/atualizar-foto", usuarioController.upload.single('foto'), usuarioController.atualizar_foto_usuario);
+router.patch("/atualizar-foto", usuarioController.upload.single('foto'), usuarioController.atualizar_foto_usuario);
 
 module.exports = router;
