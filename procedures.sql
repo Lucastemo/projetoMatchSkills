@@ -145,6 +145,16 @@ BEGIN
 END //
 DELIMITER ;
 
+-- Buscar foto por usuário
+DELIMITER //
+CREATE PROCEDURE buscar_foto_por_usuario(
+    IN p_id_usuario INT
+)
+BEGIN
+    SELECT foto FROM usuarios WHERE id_usuario = p_id_usuario;
+END //
+DELIMITER ;
+
 -- Atualizar foto do usuário
 DELIMITER //
 CREATE PROCEDURE atualizar_foto_usuario(
