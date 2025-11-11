@@ -64,7 +64,10 @@
                             </div>
                             <div class="form-group">
                                 <label for="curriculo">Currículo (PDF)</label>
-                                <input type="file" id="curriculo" accept=".pdf" disabled>
+                                <div id="curriculoDisplay">
+                                    <a href="#" id="curriculoLink" target="_blank" class="link-styled">Ver currículo atual</a>
+                                    <input type="file" id="curriculo" accept=".pdf" style="display: none;">
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label for="descricao">Descrição Pessoal</label>
@@ -112,6 +115,8 @@
             const fields = form.querySelectorAll('input:not([type="file"]), textarea');
             const fileInput = document.getElementById('curriculo');
             const skillsInput = document.querySelector('#skills.multi-select-input');
+            const curriculoLink = document.getElementById('curriculoLink');
+            const curriculoDisplay = document.getElementById('curriculoDisplay');
             const editButton = document.querySelector('.profile-sidebar .btn-primary');
             const profilePicContainer = document.querySelector('.profile-pic-container');
             const profilePicInput = document.getElementById('profilePicInput');
@@ -139,6 +144,14 @@
                     document.getElementById('cpf').value = candidate.cpf;
                     document.getElementById('email').value = candidate.email;
                     document.getElementById('descricao').textContent = candidate.descricao || '';
+
+                    if (candidate.curriculo_link) {
+                        curriculoLink.href = `/${candidate.curriculo_link}`;
+                        curriculoLink.style.display = 'block';
+                    } else {
+                        curriculoLink.textContent = 'Nenhum currículo enviado.';
+                        curriculoLink.removeAttribute('href');
+                    }
 
                     // Fetch and populate skills
                     const skillsRes = await fetch(`/api/habilidades/candidato/${usuario.id}`);
@@ -171,7 +184,8 @@
 
             function toggleEditState() {
                 fields.forEach(field => field.readOnly = !isEditMode);
-                fileInput.disabled = !isEditMode;
+                curriculoLink.style.display = isEditMode ? 'none' : 'block';
+                fileInput.style.display = isEditMode ? 'block' : 'none';
                 skillsInput.disabled = !isEditMode;
                 
                 // The remove buttons on skill pills need to be re-evaluated every time edit mode changes.

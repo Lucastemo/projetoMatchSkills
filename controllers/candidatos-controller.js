@@ -1,6 +1,7 @@
 const Candidato = require('../models/candidatos-model');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
 // Configuração do multer para upload de currículos
 const storageCurriculo = multer.diskStorage({
@@ -95,6 +96,19 @@ class CandidatosController {
         }
 
         try {
+            // Buscar o currículo antigo para deletar
+            const curriculoAntigo = await Candidato.buscar_curriculo_por_candidato(id_candidato);
+
+            if (curriculoAntigo) {
+                const caminhoCurriculoAntigo = path.join(__dirname, '..', 'public', curriculoAntigo);
+                fs.unlink(caminhoCurriculoAntigo, (err) => {
+                    if (err) {
+                        // Log do erro, mas não impede a atualização do novo currículo
+                        console.error('Erro ao deletar o currículo antigo:', err);
+                    }
+                });
+            }
+
             await Candidato.atualizar_curriculo_candidato(id_candidato, curriculo_link);
             res.status(200).json({ message: 'Currículo do candidato atualizado com sucesso.', curriculo_link });
         } catch (error) {

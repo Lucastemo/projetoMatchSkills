@@ -138,7 +138,7 @@ CREATE PROCEDURE buscar_candidato_por_id(
     IN p_id_candidato INT
 )
 BEGIN
-    SELECT u.id_usuario, u.nome, u.email, c.cpf, u.descricao, u.foto, u.data_criacao as data_cadastro
+    SELECT u.id_usuario, u.nome, u.email, c.cpf, u.descricao, u.foto, u.data_criacao as data_cadastro, c.curriculo_link
     FROM usuarios u
     JOIN candidatos c ON u.id_usuario = c.id_candidato
     WHERE u.id_usuario = p_id_candidato;
@@ -285,6 +285,16 @@ BEGIN
     SELECT id_habilidade
     FROM habilidades_candidatos
     WHERE id_candidato = p_id_candidato;
+END //
+DELIMITER ;
+
+-- Buscar currículo por candidato
+DELIMITER //
+CREATE PROCEDURE buscar_curriculo_por_candidato(
+    IN p_id_candidato INT
+)
+BEGIN
+    SELECT curriculo_link FROM candidatos WHERE id_candidato = p_id_candidato;
 END //
 DELIMITER ;
 

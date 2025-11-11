@@ -208,8 +208,6 @@ module.exports = {
                     if (err) {
                         // Log do erro, mas não impede a atualização da nova foto
                         console.error('Erro ao deletar a foto antiga:', err);
-                    } else {
-                        console.log('Foto antiga deletada com sucesso:', caminhoFotoAntiga);
                     }
                 });
             }

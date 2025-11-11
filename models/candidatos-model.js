@@ -31,6 +31,19 @@ class Candidato {
         }
     }
 
+    static async buscar_curriculo_por_candidato(id) {
+        try {
+            const [results] = await db.query('CALL buscar_curriculo_por_candidato(?)', [id]);
+            if (results[0] && results[0].length > 0) {
+                return results[0][0].curriculo_link;
+            }
+            return null;
+        } catch (error) {
+            console.error('Erro ao buscar currículo do candidato:', error);
+            throw error;
+        }
+    }
+
     static async atualizar_curriculo_candidato(id, curriculo_link) {
         try {
             const [results] = await db.query('CALL atualizar_curriculo_candidato(?, ?)', [id, curriculo_link]);
