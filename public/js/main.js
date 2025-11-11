@@ -198,4 +198,40 @@ document.addEventListener("DOMContentLoaded", () => {
             e.target.value = value;
         });
     }
+
+     // --- Controle de Notificações ---
+    const notificationContainer = document.getElementById('notification-container');
+
+    window.showNotification = (message, type = 'success') => {
+        if (!notificationContainer) return;
+
+        // Cria o elemento da notificação
+        const notification = document.createElement('div');
+        notification.classList.add('notification', type);
+        notification.innerHTML = `
+            <p>${message}</p>
+            <button class="notification-close">&times;</button>
+        `;
+
+        // Adiciona ao container
+        notificationContainer.appendChild(notification);
+
+        // Função para remover a notificação
+        const removeNotification = () => {
+            notification.classList.add('fade-out');
+            // Espera a animação de fade-out terminar para remover o elemento
+            notification.addEventListener('animationend', () => {
+                notification.remove();
+            });
+        };
+
+        // Remove após 5 segundos
+        const timer = setTimeout(removeNotification, 5000);
+
+        // Adiciona evento de clique no botão de fechar
+        notification.querySelector('.notification-close').addEventListener('click', () => {
+            clearTimeout(timer); // Cancela o timer se fechar manualmente
+            removeNotification();
+        });
+    }
 });

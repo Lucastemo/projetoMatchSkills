@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div id="notification-container"></div>
     <a id="topo"></a>
     <nav class="navbar">
         <div class="container">
@@ -152,7 +153,7 @@
 
                 } catch (error) {
                     console.error('Erro ao carregar perfil:', error);
-                    alert('Não foi possível carregar os dados do perfil.');
+                    window.showNotification('Não foi possível carregar os dados do perfil.', 'error');
                 }
             }
 
@@ -217,14 +218,14 @@
                     const result = await res.json();
                     if (res.ok) {
                         profilePicImg.src = result.filePath; // Assuming server returns the new path
-                        alert('Foto de perfil atualizada com sucesso!');
+                        window.showNotification('Foto de perfil atualizada com sucesso!');
                         loadProfileData(); // Reload data to show the new picture
                     } else {
                         throw new Error(result.message || 'Falha ao atualizar a foto.');
                     }
                 } catch (error) {
                     console.error('Erro no upload da foto:', error);
-                    alert(error.message);
+                    window.showNotification(`Falha ao salvar foto: ${error.message}`, 'error');
                 }
             });
 
@@ -287,11 +288,11 @@
                         throw new Error(errorData.error || 'Uma das atualizações falhou.');
                     }
 
-                    alert('Dados atualizados com sucesso!');
+                    window.showNotification('Dados atualizados com sucesso!');
                     loadProfileData(); // Reload data to show all changes
                 } catch (error) {
                     console.error('Erro ao salvar alterações:', error);
-                    alert(`Falha ao salvar: ${error.message}`);
+                    window.showNotification(`Falha ao salvar: ${error.message}`, 'error');
                     // Revert button to edit state if save fails
                     isEditMode = true; 
                     toggleEditState();
