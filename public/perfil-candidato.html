@@ -148,6 +148,7 @@
                     if (candidate.curriculo_link) {
                         curriculoLink.href = `/${candidate.curriculo_link}`;
                         curriculoLink.style.display = 'block';
+                        curriculoLink.textContent = 'Ver currículo atual';
                     } else {
                         curriculoLink.textContent = 'Nenhum currículo enviado.';
                         curriculoLink.removeAttribute('href');
