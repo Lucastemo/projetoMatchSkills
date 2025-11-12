@@ -22,4 +22,8 @@ router.get('/minhas-vagas', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'public', 'minhas-vagas.html'));
 });
 
+router.get('/candidaturas/:id', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'public', 'candidaturas.html'));
+});
+
 module.exports = router;

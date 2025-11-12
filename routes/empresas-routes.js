@@ -29,8 +29,4 @@ router.get('/ver-empresa', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'public', 'ver-empresa.html'));
 });
 
-router.get('/candidaturas', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'public', 'candidaturas.html'));
-});
-
 module.exports = router;

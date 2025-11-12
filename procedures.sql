@@ -393,6 +393,18 @@ BEGIN
         u.id_usuario AS id_candidato,
         u.nome,
         u.foto,
+        -- Contagem de habilidades exigidas que o candidato possui
+        (SELECT COUNT(*)
+         FROM habilidades_candidatos hc
+         JOIN habilidades_vagas hv ON hc.id_habilidade = hv.id_habilidade
+         WHERE hc.id_candidato = u.id_usuario AND hv.id_vaga = p_id_vaga AND hv.obrigatoria = TRUE) AS num_habilidades_exigidas,
+
+        -- Contagem de habilidades diferenciais que o candidato possui
+        (SELECT COUNT(*)
+         FROM habilidades_candidatos hc
+         JOIN habilidades_vagas hv ON hc.id_habilidade = hv.id_habilidade
+         WHERE hc.id_candidato = u.id_usuario AND hv.id_vaga = p_id_vaga AND hv.obrigatoria = FALSE) AS num_habilidades_diferenciais,
+
         -- Habilidades Exigidas: O candidato tem e a vaga exige como obrigatória.
         (SELECT GROUP_CONCAT(h.nome SEPARATOR ', ')
          FROM habilidades h
@@ -421,6 +433,7 @@ BEGIN
 
     FROM candidaturas c
     JOIN usuarios u ON c.id_candidato = u.id_usuario
-    WHERE c.id_vaga = p_id_vaga;
+    WHERE c.id_vaga = p_id_vaga
+    ORDER BY num_habilidades_exigidas DESC, num_habilidades_diferenciais DESC;
 END //
 DELIMITER ;
