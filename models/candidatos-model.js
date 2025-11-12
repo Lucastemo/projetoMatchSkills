@@ -65,6 +65,16 @@ class Candidato {
             throw error;
         }
     }
+
+    static async buscar_informacoes_do_candidato(id) {
+        try {
+            const [results] = await db.query('CALL buscar_informacoes_do_candidato(?)', [id]);
+            return results[0];
+        } catch (error) {
+            console.error('Erro ao buscar informações do candidato:', error);
+            throw error;
+        }
+    }
 }
 
 module.exports = Candidato;

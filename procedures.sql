@@ -437,3 +437,35 @@ BEGIN
     ORDER BY num_habilidades_exigidas DESC, num_habilidades_diferenciais DESC;
 END //
 DELIMITER ;
+
+-- Buscar todas as informações de habilidades por candidato
+DELIMITER //
+CREATE PROCEDURE buscar_todas_informacoes_habilidades_por_candidato(
+    IN p_id_candidato INT
+)
+BEGIN
+    SELECT h.*, hc.nivel
+    FROM habilidades h
+    JOIN habilidades_candidatos hc ON h.id_habilidade = hc.id_habilidade
+    WHERE hc.id_candidato = p_id_candidato;
+END //
+DELIMITER ;
+
+-- Buscar informações do candidato
+DELIMITER //
+CREATE PROCEDURE buscar_informacoes_do_candidato(
+    IN p_id_candidato INT
+)
+BEGIN
+    SELECT 
+        u.foto, 
+        u.nome, 
+        u.email, 
+        u.descricao, 
+        u.data_criacao, 
+        c.curriculo_link
+    FROM usuarios u
+    JOIN candidatos c ON u.id_usuario = c.id_candidato
+    WHERE u.id_usuario = p_id_candidato;
+END //
+DELIMITER ;

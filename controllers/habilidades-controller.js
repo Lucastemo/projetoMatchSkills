@@ -178,6 +178,23 @@ const habilidadesController = {
             console.error("Erro ao buscar habilidades por candidato:", error);
             return res.status(500).json({ error: "Erro interno no servidor ao buscar habilidades por candidato." });
         }
+    },
+
+    buscar_todas_informacoes_habilidades_por_candidato: async(req, res) => {
+        const { id } = req.params;
+        try {
+            if (!id) {
+                return res.status(400).json({ error: "O ID do candidato é obrigatório." });
+            }
+            const habilidades = await habilidadesModel.buscar_todas_informacoes_habilidades_por_candidato(id);
+            if (habilidades) {
+                return res.status(200).json({ data: habilidades });
+            }
+            return res.status(404).json({ message: "Nenhuma habilidade encontrada para este candidato." });
+        } catch (error) {
+            console.error("Erro ao buscar todas as informações de habilidades por candidato:", error);
+            return res.status(500).json({ error: "Erro interno no servidor." });
+        }
     }
 }
 

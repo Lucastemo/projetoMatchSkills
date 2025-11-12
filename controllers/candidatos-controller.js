@@ -117,6 +117,22 @@ class CandidatosController {
         }
     }
 
+    static async buscar_informacoes_do_candidato(req, res) {
+        const { id } = req.params;
+        try {
+            const candidatoInfo = await Candidato.buscar_informacoes_do_candidato(id);
+
+            if (candidatoInfo && candidatoInfo.length > 0) {
+                res.status(200).json(candidatoInfo[0]);
+            } else {
+                res.status(404).json({ message: 'Informações do candidato não encontradas.' });
+            }
+        } catch (error) {
+            console.error('Erro ao buscar informações do candidato:', error);
+            res.status(500).json({ error: 'Erro interno no servidor ao buscar as informações do candidato.' });
+        }
+    }
+
 }
 
 module.exports = CandidatosController;
