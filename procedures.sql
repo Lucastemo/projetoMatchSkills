@@ -367,3 +367,60 @@ BEGIN
     END WHILE;
 END //
 DELIMITER ;
+
+-- Deletar vaga por id
+DELIMITER //
+CREATE PROCEDURE deletar_vaga_por_id(
+    IN p_id_vaga INT
+)
+BEGIN
+    -- Deleta as candidaturas associadas à vaga
+    DELETE FROM candidaturas WHERE id_vaga = p_id_vaga;
+    -- Deleta as habilidades associadas à vaga
+    DELETE FROM habilidades_vagas WHERE id_vaga = p_id_vaga;
+    -- Deleta a vaga
+    DELETE FROM vagas WHERE id_vaga = p_id_vaga;
+END //
+DELIMITER ;
+
+-- Buscar candidatos por vaga com detalhes de habilidades
+DELIMITER //
+CREATE PROCEDURE buscar_candidatos_por_vaga(
+    IN p_id_vaga INT
+)
+BEGIN
+    SELECT 
+        u.id_usuario AS id_candidato,
+        u.nome,
+        u.foto,
+        -- Habilidades Exigidas: O candidato tem e a vaga exige como obrigatória.
+        (SELECT GROUP_CONCAT(h.nome SEPARATOR ', ')
+         FROM habilidades h
+         JOIN habilidades_candidatos hc ON h.id_habilidade = hc.id_habilidade
+         JOIN habilidades_vagas hv ON h.id_habilidade = hv.id_habilidade
+         WHERE hc.id_candidato = u.id_usuario AND hv.id_vaga = p_id_vaga AND hv.obrigatoria = TRUE) AS HabilidadesExigidas,
+
+        -- Habilidades Diferenciais: O candidato tem e a vaga lista como diferencial.
+        (SELECT GROUP_CONCAT(h.nome SEPARATOR ', ')
+         FROM habilidades h
+         JOIN habilidades_candidatos hc ON h.id_habilidade = hc.id_habilidade
+         JOIN habilidades_vagas hv ON h.id_habilidade = hv.id_habilidade
+         WHERE hc.id_candidato = u.id_usuario AND hv.id_vaga = p_id_vaga AND hv.obrigatoria = FALSE) AS HabilidadesDiferenciais,
+
+        -- Habilidades Extra: O candidato tem, mas a vaga não lista.
+        (SELECT GROUP_CONCAT(h.nome SEPARATOR ', ')
+         FROM habilidades h
+         JOIN habilidades_candidatos hc ON h.id_habilidade = hc.id_habilidade
+         WHERE hc.id_candidato = u.id_usuario AND h.id_habilidade NOT IN (SELECT id_habilidade FROM habilidades_vagas WHERE id_vaga = p_id_vaga)) AS HabilidadesExtra,
+
+        -- Habilidades Faltantes: A vaga exige como obrigatória, mas o candidato não tem.
+        (SELECT GROUP_CONCAT(h.nome SEPARATOR ', ')
+         FROM habilidades h
+         JOIN habilidades_vagas hv ON h.id_habilidade = hv.id_habilidade
+         WHERE hv.id_vaga = p_id_vaga AND hv.obrigatoria = TRUE AND h.id_habilidade NOT IN (SELECT id_habilidade FROM habilidades_candidatos WHERE id_candidato = u.id_usuario)) AS HabilidadesFaltantes
+
+    FROM candidaturas c
+    JOIN usuarios u ON c.id_candidato = u.id_usuario
+    WHERE c.id_vaga = p_id_vaga;
+END //
+DELIMITER ;

@@ -107,5 +107,36 @@ module.exports = {
             console.error(error);
             return res.status(500).json({ error: 'Erro ao buscar vagas por habilidades do candidato.' });
         }
+    },
+
+    deletar_vaga_por_id: async (req, res) => {
+        const { id } = req.params;
+        try {
+            const vaga = await vagasModel.buscar_vaga_por_id(id);
+            if (vaga[0].length === 0) {
+                return res.status(404).json({ message: 'Vaga não encontrada.' });
+            }
+
+            await vagasModel.deletar_vaga_por_id(id);
+
+            return res.status(200).json({ message: 'Vaga deletada com sucesso.' });
+        } catch (error) {
+            return res.status(500).json({ error: 'Erro interno no servidor ao deletar vaga.' });
+        }
+    },
+
+    buscar_candidatos_por_vaga: async (req, res) => {
+        const { id } = req.params; // id da vaga
+        try {
+            const candidatos = await vagasModel.buscar_candidatos_por_vaga(id);
+
+            if (candidatos[0] && candidatos[0].length > 0) {
+                return res.status(200).json(candidatos[0]);
+            } else {
+                return res.status(404).json({ message: 'Nenhum candidato encontrado para esta vaga.' });
+            }
+        } catch (error) {
+            return res.status(500).json({ error: 'Erro interno no servidor.' });
+        }
     }
 };
