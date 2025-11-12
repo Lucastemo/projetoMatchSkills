@@ -72,6 +72,15 @@ input[type="text"] + .btn-primary:hover{
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+select {
+    background-color: var(--card-bg-color);
+    color: var(--text-color);
+}
+
+select:disabled {
+    background-color: var(--bg-color);
+}
+
 .main-content {
     flex-grow: 1; /* Empurra o footer para baixo */
     padding-top: 40px;
