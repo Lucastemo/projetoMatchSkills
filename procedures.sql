@@ -133,6 +133,21 @@ BEGIN
 END //
 DELIMITER ;
 
+-- Buscar empresa completa por id
+DELIMITER //
+CREATE PROCEDURE buscar_empresa_completa_por_id(
+    IN p_id_empresa INT
+)
+BEGIN
+    SELECT 
+        e.cnpj, e.razao_social, e.site, e.setor, e.local, e.tamanho,
+        u.email, u.foto, u.descricao, u.data_criacao
+    FROM empresas e
+    JOIN usuarios u ON e.id_empresa = u.id_usuario
+    WHERE e.id_empresa = p_id_empresa;
+END //
+DELIMITER ;
+
 -- Buscar candidato por id
 DELIMITER //
 CREATE PROCEDURE buscar_candidato_por_id(
@@ -171,16 +186,20 @@ DELIMITER ;
 DELIMITER //
 CREATE PROCEDURE atualizar_empresa(
     IN p_id_empresa INT,
+    IN p_cnpj VARCHAR(18),
     IN p_razao_social VARCHAR(150),
     IN p_site VARCHAR(200),
     IN p_setor VARCHAR(100),
     IN p_local VARCHAR(100),
     IN p_tamanho ENUM('Pequena', 'Média', 'Grande'),
+    IN p_email VARCHAR(100),
     IN p_descricao TEXT
 )
 BEGIN
-    UPDATE empresas SET razao_social = p_razao_social, site = p_site, setor = p_setor, local = p_local, tamanho = p_tamanho WHERE id_empresa = p_id_empresa;
-    UPDATE usuarios SET descricao = p_descricao WHERE id_usuario = p_id_empresa;
+    UPDATE empresas 
+    SET cnpj = p_cnpj, razao_social = p_razao_social, site = p_site, setor = p_setor, local = p_local, tamanho = p_tamanho 
+    WHERE id_empresa = p_id_empresa;
+    UPDATE usuarios SET email = p_email, descricao = p_descricao WHERE id_usuario = p_id_empresa;
 END //
 DELIMITER ;
 
