@@ -12,6 +12,7 @@ CREATE PROCEDURE criar_usuario(
 BEGIN
     INSERT INTO usuarios (nome, email, senha, tipo_usuario, descricao, data_criacao)
     VALUES (p_nome, p_email, p_senha, p_tipo_usuario, p_descricao, NOW());
+    SELECT LAST_INSERT_ID() AS id_usuario, p_tipo_usuario AS tipo_usuario;
 END //
 DELIMITER ;
 

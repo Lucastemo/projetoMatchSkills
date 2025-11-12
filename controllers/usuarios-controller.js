@@ -19,20 +19,65 @@ const upload = multer({ storage: storage });
 module.exports = {
     upload, // Exportando o middleware de upload
     criar_usuario: async (req, res) => {
-        const {nome, email, senha, tipo_usuario, descricao} = req.body;
+        const {
+            nome, email, senha, tipo_usuario, descricao = null, // Dados comuns
+            cpf, curriculo_link = null, // Dados do candidato
+            cnpj, razao_social, site = null, setor = null, local = null, tamanho = null} = req.body; // Dados da empresa 
+
         try {
+             // Verifica se os campos obrigatórios foram informados
             if (!nome || !email || !senha || !tipo_usuario) {
                 return res.status(400).json
                 ({error: 'Nome, email, senha e o tipo do usuário são obrigatórios. '})
             }
 
-            //Chama a função responsável pela criação do usuário
-            const criarUsuario = await usuarioModel.criar_usuario(nome, email, senha , tipo_usuario, descricao);
+            // Cria o usuário base (na tabela "usuarios")
+            const usuarioCriado = await usuarioModel.criar_usuario(nome, email, senha , tipo_usuario, descricao);
+            const id_usuario = usuarioCriado.id_usuario
 
-            if (criarUsuario) {
-                return res.status(201).json({
-                    message: 'Usuário criado com sucesso.',
-                });
+            // Se o usuário cadastrado for do tipo candidato
+            if (usuarioCriado.tipo_usuario === 'candidato') {
+                try {
+                    if (!id_usuario || !cpf) {
+                        return res.status(400).json({ error: 'id_usuario e cpf são obrigatórios.' });
+                    }
+                    // Chama a função responsável pela criação do candidato
+                    const criarCandidato = await usuarioModel.criar_candidato(id_usuario, cpf, curriculo_link);
+                           if (criarCandidato) {
+                                return res.status(201).json({
+                                message: 'Candidato(a) criado(a) com sucesso.'});
+                            } else {
+                                return res.status(500).json({
+                                    error: 'Erro ao cadastrar candidato(a).'
+                                });
+                            }
+                } catch (error) {
+                    return res.status(500).json({
+                    error: 'Erro ao criar candidato(a).'});
+                }
+
+            // Se o usuário cadastrado for do tipo empresa
+            } else if(usuarioCriado.tipo_usuario === 'empresa'){
+                const id_empresa = id_usuario;
+                try {
+                    if(!id_usuario || !razao_social || !cnpj){
+                        return res.status(400).json({error: 'id_usuario, razao_social e cnpj são obrigatórios.'});
+                    }
+                     // Chama a função responsável pela criação da empresa
+                    const criarEmpresa = await usuarioModel.criar_empresa(id_empresa, cnpj, razao_social, site, setor, local, tamanho) ;
+                           if (criarEmpresa) {
+                                return res.status(201).json({
+                                message: 'Empresa criada com sucesso.'});
+                            } else {
+                                return res.status(500).json({
+                                    error: 'Erro ao cadastrar empresa.'
+                                });
+                            }
+                } catch (error) {
+                    return res.status(500).json({
+                    error: 'Erro ao criar empresa.'});
+                }
+                
             } else {
                 return res.status(500).json({
                     error: 'Erro ao criar usuário.'
@@ -55,103 +100,17 @@ module.exports = {
         }
     },
 
-    criar_empresa: async (req, res) => {
-        const {id_usuario, cnpj, razao_social, site} = req.body;
-        try {
-            if(!id_usuario || !cnpj || !razao_social){
-                return res.status(400).json({
-                    error: 'Informe os dados necessários.'
-                });
-            }
-
-            const criarEmpresa = await usuarioModel.criar_empresa(id_usuario, cnpj, razao_social, site);
-
-             if (criarEmpresa) {
-                return res.status(201).json({
-                    message: 'Empresa cadastrada com sucesso.',
-                });
-            } else {
-                return res.status(500).json({
-                    error: 'Erro ao cadastrar empresa.'
-                });
-            }
-
-        } catch (error) {
-
-            //Tratamento dos erros vindos do banco
-            switch(error.code){
-                case 'ER_DUP_ENTRY':
-                   return res.status(409).json({
-                        Error: 'Já existe uma empresa com esse ID.'
-                    });
-
-                case 'ER_NO_REFERENCED_ROW_2':
-                   return res.status(409).json({
-                        Error: 'Erro de integridade: chave estrangeira inválida ou inexistente.'
-                    });
-                
-                case 'INTERNAL ERROR':
-                    default:
-                       return res.status(500).json({
-                            Error: 'Erro interno no servidor.'
-                        });
-            }
-        }
-    },
-
-    criar_candidato: async(req, res) => {
-        const {id_usuario, cpf, curriculo_link, descricao_pessoal} = req.body;
-        try {
-            if(!id_usuario || !cpf || !curriculo_link || !descricao_pessoal){
-                return res.status(400).json({
-                    error: 'ID, CPF, currrículo e descrição profissional são obrigatórios.'
-                });
-            }
-
-            const criarCandidato = usuarioModel.criar_candidato(id_usuario, cpf, curriculo_link, descricao_pessoal);
-            
-            if(criarCandidato){
-                res.status(201).json({
-                    message: 'Candidato cadastrado com sucesso.'
-                })
-            } else {
-                return res.status(500).json({
-                    error: 'Erro ao cadastrar o candidato.'
-                })
-            }
-        } catch (error) {
-
-            //Tratamento dos erros vindos do banco
-            switch(error.code){
-                case 'ER_DUP_ENTRY':
-                   return res.status(409).json({
-                        Error: 'Já existe um usuário com esse identificador.'
-                    });
-
-                case 'ER_NO_REFERENCED_ROW_2':
-                   return res.status(409).json({
-                        Error: 'Erro de integridade: chave estrangeira inválida ou inexistente.'
-                    });
-                
-                case 'INTERNAL ERROR':
-                    default:
-                       return res.status(500).json({
-                            Error: 'Erro interno no servidor.'
-                        });
-            }
-            
-        }
-    },
-
     verificarLogin: async(req, res) => {
-        const {email, senha} = req.body;
+        const {email, senha, tipoCandidato} = req.body;
 
         try {
-            if(!email || !senha){
+            // Verifica se os campos obrigatórios foram informados
+            if(!email || !senha || !tipoCandidato){
                 return res.status(400).json
-                ({error: 'Email e senha e são obrigatórios. '});
+                ({error: 'Email, senha e tipo de login são obrigatórios.'});
             }
 
+            // Busca o usuário pelo email
             const usuario = await usuarioModel.verificarEmail(email);
 
              if (!usuario || usuario.length === 0) {
@@ -159,22 +118,32 @@ module.exports = {
             }
             const usuarioEncontrado = usuario[0];
 
+            // Verifica se o tipo de login bate com o tipo do usuário no banco
+            if (usuarioEncontrado.tipo_usuario !== tipoCandidato) {
+                return res.status(403).json({
+                message: `Acesso negado: esta conta é do tipo "${usuarioEncontrado.tipo_usuario}".`
+                });
+            }
+
              if(senha !== usuarioEncontrado.senha){
                 return res.status(401).json({message: 'Email ou senha incorretos.'})
             }
 
+            // Cria sessão
             req.session.user = {
-                id: usuarioEncontrado.id_usuario,
-                email: usuarioEncontrado.email,
-                tipo: usuarioEncontrado.tipo_usuario
-            }
+            id: usuarioEncontrado.id_usuario,
+            email: usuarioEncontrado.email,
+            tipo: usuarioEncontrado.tipo_usuario,
+            nome: usuarioEncontrado.nome
+            };
 
+            // Retorna sucesso
             return res.status(200).json({
-                auth: true,
-                nome: usuarioEncontrado.nome,
-                tipo: usuarioEncontrado.tipo_usuario
+            auth: true,
+            nome: usuarioEncontrado.nome,
+            tipo: usuarioEncontrado.tipo_usuario
             });
-
+            
         } catch (error) {
         console.error('Erro durante o login:', error);
         return res.status(500).json({ error: 'Ocorreu um erro ao processar a solicitação.' });

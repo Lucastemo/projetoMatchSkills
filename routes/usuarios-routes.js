@@ -9,7 +9,11 @@ router.post("/criar-candidato", usuarioController.criar_candidato);
 
 router.post("/login", usuarioController.verificarLogin);
 router.get("/menu", verificarSessao, (req, res) => {
-  res.sendFile("menuUser.html", { root: "public" });
+  if(req.session.user.tipo === 'candidato'){
+    res.sendFile("index.html", { root: "public" });
+  }else{
+    res.sendFile("empresa-home.html", { root: "public"});
+  }
 });
 router.post("/logout", usuarioController.logout);
 
