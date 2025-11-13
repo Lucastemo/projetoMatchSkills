@@ -97,6 +97,7 @@ CREATE PROCEDURE criar_vaga(
 BEGIN
     INSERT INTO vagas (id_empresa, titulo, descricao, localizacao, modalidade, salario, data_publicacao)
     VALUES (p_id_empresa, p_titulo, p_descricao, p_localizacao, p_modalidade, p_salario, NOW());
+    SELECT LAST_INSERT_ID() AS id_vaga;
 END //
 DELIMITER ;
 

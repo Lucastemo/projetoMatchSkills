@@ -497,6 +497,10 @@
     grid-template-columns: 1fr 250px;
     gap: 20px;
     align-items: center;
+    margin: 20px 0 0 !important;
+}
+.no-gap{
+    gap: 0;
 }
 .job-card-management .job-info h3 {
     font-size: 1.4rem;

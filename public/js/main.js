@@ -91,13 +91,24 @@ document.addEventListener("DOMContentLoaded", () => {
         function showSuggestions(filter) {
             suggestions.innerHTML = "";
 
-            // Get IDs of already selected skills to exclude them from suggestions
-            const selectedSkillIds = new Set(
+            // Get IDs of skills selected in the CURRENT container
+            const ownSelectedSkillIds = new Set(
                 Array.from(selectedSkills.children).map(pill => pill.getAttribute('data-skill-id'))
             );
 
+            // Get IDs of skills selected in OTHER containers on the same page
+            const otherSelectedSkillIds = new Set();
+            multiSelectContainers.forEach(otherContainer => {
+                if (otherContainer !== container) {
+                    const otherSelected = otherContainer.querySelector('.selected-skills');
+                    Array.from(otherSelected.children).forEach(pill => {
+                        otherSelectedSkillIds.add(pill.getAttribute('data-skill-id'));
+                    });
+                }
+            });
+
             const filteredSkills = allSkills.filter(skill => {
-                const isSelected = selectedSkillIds.has(String(skill.id_habilidade));
+                const isSelected = ownSelectedSkillIds.has(String(skill.id_habilidade)) || otherSelectedSkillIds.has(String(skill.id_habilidade));
                 const nameMatches = skill.nome.toLowerCase().includes(filter.toLowerCase());
                 return !isSelected && nameMatches;
             });
