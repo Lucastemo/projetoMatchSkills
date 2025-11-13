@@ -109,8 +109,12 @@ CREATE PROCEDURE criar_candidatura(
     IN p_status ENUM('Enviado', 'Em Análise', 'Rejeitado', 'Aprovado')
 )
 BEGIN
-    INSERT INTO candidaturas (id_vaga, id_candidato, data_candidatura, status)
-    VALUES (p_id_vaga, p_id_candidato, NOW(), p_status);
+    -- Check if the candidate has already applied for this vacancy
+    IF NOT EXISTS (SELECT 1 FROM candidaturas WHERE id_vaga = p_id_vaga AND id_candidato = p_id_candidato) THEN
+        -- If not, insert the new application
+        INSERT INTO candidaturas (id_vaga, id_candidato, data_candidatura, status)
+        VALUES (p_id_vaga, p_id_candidato, NOW(), p_status);
+    END IF;
 END //
 DELIMITER ;
 

@@ -297,8 +297,9 @@
                     const result = await response.json();
                     if (!response.ok) {
                         window.showNotification(result.message || 'Erro ao enviar candidatura.', 'error');
+                        return;
                     }
-                    window.showNotification('Candidatura feita com sucesso!');
+                    window.showNotification(result.message || 'Candidatura feita com sucesso!');
                     closeModal();
                 } catch (error) {
                     window.showNotification('Ocorreu um erro ao enviar sua candidatura.', 'error');

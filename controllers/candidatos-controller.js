@@ -141,11 +141,15 @@ class CandidatosController {
         }
 
         try {
-            await Candidato.criar_candidatura(id_vaga, id_candidato);
-            res.status(201).json({ message: 'Candidatura criada com sucesso.' });
+            const result = await Candidato.criar_candidatura(id_vaga, id_candidato);
+            // The result from a procedure call includes metadata. affectedRows is what we need.
+            if (result && result.affectedRows > 0) {
+                res.status(201).json({ message: 'Candidatura feita com sucesso.' });
+            } else {
+                res.status(409).json({ message: 'Você já se candidatou para esta vaga.' });
+            }
         } catch (error) {
-            console.error('Erro ao criar candidatura:', error);
-            res.status(500).json({ error: 'Erro interno no servidor ao criar a candidatura.' });
+            res.status(500).json({ message: 'Erro interno no servidor ao criar a candidatura.' });
         }
     }
 
