@@ -48,6 +48,11 @@ module.exports = {
 
     criar_vaga: async (req, res) => {
         const { id_empresa, titulo, descricao, localizacao, modalidade, salario } = req.body;
+
+        if (!id_empresa || !titulo || !descricao || !localizacao || !modalidade || !salario) {
+            return res.status(400).json({ error: 'Todos os campos são obrigatórios: id_empresa, titulo, descricao, localizacao, modalidade, salario.' });
+        }
+
         try {
             const vaga = await vagasModel.criar_vaga(id_empresa, titulo, descricao, localizacao, modalidade, salario);
             return res.status(201).json({ message: 'Vaga criada com sucesso.', vaga });
@@ -122,6 +127,28 @@ module.exports = {
             return res.status(200).json({ message: 'Vaga deletada com sucesso.' });
         } catch (error) {
             return res.status(500).json({ error: 'Erro interno no servidor ao deletar vaga.' });
+        }
+    },
+
+    atualizar_vaga_por_id: async (req, res) => {
+        const { id } = req.params;
+        const { titulo, descricao, localizacao, modalidade, salario } = req.body;
+
+        if (!titulo || !descricao || !localizacao || !modalidade || !salario) {
+            return res.status(400).json({ error: 'Todos os campos são obrigatórios: titulo, descricao, localizacao, modalidade, salario.' });
+        }
+
+        try {
+            const vaga = await vagasModel.buscar_vaga_por_id(id);
+            if (vaga[0].length === 0) {
+                return res.status(404).json({ message: 'Vaga não encontrada.' });
+            }
+
+            await vagasModel.atualizar_vaga_por_id(id, titulo, descricao, localizacao, modalidade, salario);
+            await vagasModel.deletar_todas_candidaturas_para_vaga(id);
+            return res.status(200).json({ message: 'Vaga atualizada com sucesso.' });
+        } catch (error) {
+            return res.status(500).json({ error: 'Erro interno no servidor ao atualizar a vaga.' });
         }
     },
 

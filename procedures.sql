@@ -469,3 +469,82 @@ BEGIN
     WHERE u.id_usuario = p_id_candidato;
 END //
 DELIMITER ;
+
+-- Atualizar vaga por id
+DELIMITER //
+CREATE PROCEDURE atualizar_vaga_por_id(
+    IN p_id_vaga INT,
+    IN p_titulo VARCHAR(150),
+    IN p_descricao TEXT,
+    IN p_localizacao VARCHAR(150),
+    IN p_modalidade VARCHAR(100),
+    IN p_salario VARCHAR(50)
+)
+BEGIN
+    UPDATE vagas 
+    SET 
+        titulo = p_titulo, descricao = p_descricao, localizacao = p_localizacao, 
+        modalidade = p_modalidade, salario = p_salario
+    WHERE id_vaga = p_id_vaga;
+END //
+DELIMITER ;
+
+-- Atualizar habilidades da vaga
+DELIMITER //
+CREATE PROCEDURE atualizar_habilidades_vaga(
+    IN p_id_vaga INT,
+    IN p_habilidades_obrigatorias TEXT, -- Comma-separated list of required skill IDs
+    IN p_habilidades_diferenciais TEXT -- Comma-separated list of differential skill IDs
+)
+BEGIN
+    DECLARE current_id_str VARCHAR(10);
+    DECLARE remaining_ids TEXT;
+
+    -- 1. Remove all existing skills for this vacancy
+    DELETE FROM habilidades_vagas WHERE id_vaga = p_id_vaga;
+
+    -- 2. Insert the new required skills if the list is not empty
+    IF p_habilidades_obrigatorias IS NOT NULL AND LENGTH(p_habilidades_obrigatorias) > 0 THEN
+        SET remaining_ids = p_habilidades_obrigatorias;
+        WHILE LENGTH(remaining_ids) > 0 DO
+            SET current_id_str = SUBSTRING_INDEX(remaining_ids, ',', 1);
+            
+            INSERT INTO habilidades_vagas (id_vaga, id_habilidade, obrigatoria)
+            VALUES (p_id_vaga, CAST(current_id_str AS UNSIGNED), TRUE);
+
+            IF LOCATE(',', remaining_ids) > 0 THEN
+                SET remaining_ids = SUBSTRING(remaining_ids, LENGTH(current_id_str) + 2);
+            ELSE
+                SET remaining_ids = '';
+            END IF;
+        END WHILE;
+    END IF;
+
+    -- 3. Insert the new differential skills if the list is not empty
+    IF p_habilidades_diferenciais IS NOT NULL AND LENGTH(p_habilidades_diferenciais) > 0 THEN
+        SET remaining_ids = p_habilidades_diferenciais;
+        WHILE LENGTH(remaining_ids) > 0 DO
+            SET current_id_str = SUBSTRING_INDEX(remaining_ids, ',', 1);
+            
+            INSERT INTO habilidades_vagas (id_vaga, id_habilidade, obrigatoria)
+            VALUES (p_id_vaga, CAST(current_id_str AS UNSIGNED), FALSE);
+
+            IF LOCATE(',', remaining_ids) > 0 THEN
+                SET remaining_ids = SUBSTRING(remaining_ids, LENGTH(current_id_str) + 2);
+            ELSE
+                SET remaining_ids = '';
+            END IF;
+        END WHILE;
+    END IF;
+END //
+DELIMITER ;
+
+-- Deletar todas as candidaturas para uma vaga
+DELIMITER //
+CREATE PROCEDURE deletar_todas_candidaturas_para_vaga(
+    IN p_id_vaga INT
+)
+BEGIN
+    DELETE FROM candidaturas WHERE id_vaga = p_id_vaga;
+END //
+DELIMITER ;

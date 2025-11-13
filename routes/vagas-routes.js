@@ -10,6 +10,8 @@ router.get('/api/vagas/habilidades', vagasController.buscar_vagas_por_habilidade
 router.get('/api/vagas/empresa/:id', vagasController.buscar_vagas_por_empresa);
 router.get('/api/vagas/:id', vagasController.buscar_vaga_por_id);
 router.get('/api/vagas/:id/candidatos', vagasController.buscar_candidatos_por_vaga);
+router.put('/api/vagas/:id', vagasController.atualizar_vaga_por_id);
+router.post('/api/vagas', vagasController.criar_vaga);
 router.delete('/api/vagas/:id', vagasController.deletar_vaga_por_id);
 
 // Front-end
