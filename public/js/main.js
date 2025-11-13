@@ -245,4 +245,42 @@ document.addEventListener("DOMContentLoaded", () => {
             removeNotification();
         });
     }
+
+    // --- Controle do Diálogo de Confirmação ---
+    const confirmationDialog = document.getElementById('confirmationDialog');
+    const confirmationBackdrop = document.getElementById('confirmationBackdrop');
+
+    window.showConfirmationDialog = (message) => {
+        // Retorna uma Promise que resolve para true (confirmar) ou false (cancelar)
+        return new Promise((resolve) => {
+            if (!confirmationDialog || !confirmationBackdrop) {
+                resolve(false); // Se os elementos não existirem, cancela a ação.
+                return;
+            }
+
+            // Elementos do diálogo
+            const messageElement = confirmationDialog.querySelector('.confirmation-message');
+            const confirmBtn = confirmationDialog.querySelector('.btn-confirm');
+            const cancelBtn = confirmationDialog.querySelector('.btn-cancel');
+
+            // Define a mensagem
+            messageElement.textContent = message;
+
+            // Mostra o diálogo e o backdrop
+            confirmationBackdrop.classList.add('show');
+            confirmationDialog.classList.add('show');
+
+            // Função para fechar e resolver a promise
+            const close = (result) => {
+                confirmationBackdrop.classList.remove('show');
+                confirmationDialog.classList.remove('show');
+                resolve(result);
+            };
+
+            // Adiciona listeners que só rodam uma vez
+            confirmBtn.addEventListener('click', () => close(true), { once: true });
+            cancelBtn.addEventListener('click', () => close(false), { once: true });
+            confirmationBackdrop.addEventListener('click', () => close(false), { once: true });
+        });
+    }
 });

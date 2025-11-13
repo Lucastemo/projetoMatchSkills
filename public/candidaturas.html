@@ -56,6 +56,16 @@
         </div>
     </footer>
     
+    <div id="notification-container"></div>
+    <div class="confirmation-backdrop" id="confirmationBackdrop"></div>
+    <div class="confirmation-dialog" id="confirmationDialog">
+        <p class="confirmation-message">Você tem certeza?</p>
+        <div class="confirmation-buttons">
+            <button class="btn btn-secondary btn-cancel">Cancelar</button>
+            <button class="btn btn-danger btn-confirm">Confirmar</button>
+        </div>
+    </div>
+
     <script src="/js/main.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
@@ -181,7 +191,7 @@
 
             // --- Delete Vaga ---
             excluirVagaBtn.addEventListener('click', async () => {
-                if (confirm('Tem certeza que deseja excluir esta vaga? Esta ação não pode ser desfeita.')) {
+                if (await window.showConfirmationDialog('Tem certeza que deseja excluir esta vaga? Esta ação não pode ser desfeita.')) {
                     try {
                         const res = await fetch(`/api/vagas/${id_vaga}`, {
                             method: 'DELETE'
@@ -190,14 +200,16 @@
                         const result = await res.json();
 
                         if (res.ok) {
-                            alert(result.message);
+                            window.showNotification(result.message);
                             window.location.href = '/minhas-vagas';
                         } else {
                             throw new Error(result.message || 'Falha ao excluir a vaga.');
                         }
                     } catch (error) {
-                        alert(`Erro: ${error.message}`);
+                        window.showNotification(`Erro: ${error.message}`);
                     }
+                }else{
+                    window.showNotification('Ação cancelada.', 'error');
                 }
             });
 

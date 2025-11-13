@@ -117,6 +117,16 @@
         </div>
     </div>
     
+    <div id="notification-container"></div>
+    <div class="confirmation-backdrop" id="confirmationBackdrop"></div>
+    <div class="confirmation-dialog" id="confirmationDialog">
+        <p class="confirmation-message">Você tem certeza?</p>
+        <div class="confirmation-buttons">
+            <button class="btn btn-secondary btn-cancel">Cancelar</button>
+            <button class="btn btn-danger btn-confirm">Confirmar</button>
+        </div>
+    </div>
+
     <script src="js/main.js"></script>
     <script>
         // Temporary user for testing purposes
@@ -252,8 +262,9 @@
 
             // Adiciona confirmação se for uma atualização
             if (currentVagaId) {
-                const confirmed = confirm('Atenção: Salvar as edições desta vaga irá remover todas as candidaturas existentes. Deseja continuar?');
+                const confirmed = await window.showConfirmationDialog('Atenção: Salvar as edições desta vaga irá remover todas as candidaturas existentes. Deseja continuar?');
                 if (!confirmed) {
+                    window.showNotification('Ação cancelada.', 'error');
                     return; // Interrompe a função se o usuário cancelar
                 }
             }
@@ -305,7 +316,11 @@
         }
 
         async function handleDeleteVaga() {
-            if (!currentVagaId || !confirm('Tem certeza que deseja excluir esta vaga? Esta ação não pode ser desfeita.')) {
+            if(!currentVagaId){
+                return;
+            }
+            if (!await window.showConfirmationDialog('Tem certeza que deseja excluir esta vaga? Esta ação não pode ser desfeita.')) {
+                window.showNotification('Ação cancelada.', 'error');
                 return;
             }
 
