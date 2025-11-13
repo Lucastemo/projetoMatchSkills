@@ -10,6 +10,7 @@ router.get('/api/candidatos/:id/informacoes', candidatosController.buscar_inform
 router.put('/api/candidatos/atualizar-candidato', candidatosController.atualizar_candidato);
 router.put('/api/candidatos/atualizar-habilidades', candidatosController.atualizar_habilidades_candidato);
 router.patch('/api/candidatos/atualizar-curriculo', candidatosController.uploadCurriculo, candidatosController.atualizar_curriculo_candidato);
+router.post('/api/candidatos/candidatura', candidatosController.criar_candidatura);
 
 // Front-end
 

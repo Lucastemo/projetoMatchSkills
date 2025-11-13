@@ -139,6 +139,12 @@
     margin-bottom: 0;
 }
 
+/* Remove o estilo de bloco para labels dentro do checkbox-group para alinhamento correto */
+.checkbox-group label {
+    display: inline-flex;
+    margin-bottom: 0;
+}
+
 .form-group textarea {
     min-height: 120px;
     resize: vertical;

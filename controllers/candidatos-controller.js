@@ -133,6 +133,22 @@ class CandidatosController {
         }
     }
 
+    static async criar_candidatura(req, res) {
+        const { id_vaga, id_candidato } = req.body;
+
+        if (!id_vaga || !id_candidato) {
+            return res.status(400).json({ error: 'ID da vaga e ID do candidato são obrigatórios.' });
+        }
+
+        try {
+            await Candidato.criar_candidatura(id_vaga, id_candidato);
+            res.status(201).json({ message: 'Candidatura criada com sucesso.' });
+        } catch (error) {
+            console.error('Erro ao criar candidatura:', error);
+            res.status(500).json({ error: 'Erro interno no servidor ao criar a candidatura.' });
+        }
+    }
+
 }
 
 module.exports = CandidatosController;
