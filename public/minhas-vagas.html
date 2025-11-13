@@ -86,7 +86,7 @@
                 </div>
             </div>
 
-            <div class="profile-grid-two">
+            <div class="profile-grid-two one-to-two-thirds-separation">
                 <div class="form-group">
                     <label for="modalidade">Modalidade</label>
                     <select id="modalidade" required>
@@ -97,7 +97,13 @@
                 </div>
                 <div class="form-group">
                     <label for="salario">Salário</label>
-                    <input type="text" id="salario" placeholder="Ex: R$ 5.000,00 ou A combinar" required>
+                    <div class="input-with-checkbox">
+                        <input type="text" id="salario" placeholder="Ex: R$ 5.000,00" required>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="salario-combinar">
+                            <label for="salario-combinar">A Combinar</label>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -142,6 +148,11 @@
             document.getElementById('criar-vaga-btn').addEventListener('click', () => openModalParaCriar());
             document.getElementById('salvar-vaga-btn').addEventListener('click', handleSaveVaga);
             document.getElementById('excluir-vaga-btn').addEventListener('click', handleDeleteVaga);
+
+            // Salario input logic
+            document.getElementById('salario').addEventListener('input', formatarSalario);
+            document.getElementById('salario-combinar').addEventListener('change', toggleSalarioInput);
+            document.getElementById('modalidade').addEventListener('change', handleModalidadeChange);
         });
 
         async function loadVagas() {
@@ -202,6 +213,9 @@
             document.querySelector('#habilidades-obrigatorias-container .selected-skills').innerHTML = '';
             document.querySelector('#habilidades-diferenciais-container .selected-skills').innerHTML = '';
             currentVagaId = null;
+            document.getElementById('salario-combinar').checked = false;
+            previousLocalizacaoValue = '';
+            handleModalidadeChange(); // Reset localizacao field state
         }
 
         function openModalParaCriar() {
@@ -237,7 +251,14 @@
                 document.getElementById('descricao').value = vaga.descricao;
                 document.getElementById('localizacao').value = vaga.localizacao;
                 document.getElementById('modalidade').value = vaga.modalidade;
-                document.getElementById('salario').value = vaga.salario;
+
+                if (vaga.salario === 'A Combinar') {
+                    document.getElementById('salario-combinar').checked = true;
+                    document.getElementById('salario').disabled = true;
+                    document.getElementById('salario').value = '';
+                } else {
+                    document.getElementById('salario').value = vaga.salario;
+                }
 
                 const obrigatoriasContainer = document.querySelector('#habilidades-obrigatorias-container');
                 const diferenciaisContainer = document.querySelector('#habilidades-diferenciais-container');
@@ -251,6 +272,7 @@
                 });
 
                 const modal = document.getElementById('modalEditarVaga');
+                handleModalidadeChange(); // Reset localizacao field state
                 openModal(modal);
             } catch (error) {
                 window.showNotification(error.message, 'error');
@@ -268,12 +290,17 @@
                     return; // Interrompe a função se o usuário cancelar
                 }
             }
+
+            const salarioInput = document.getElementById('salario');
+            const salarioCombinarCheckbox = document.getElementById('salario-combinar');
+            const salarioValue = salarioCombinarCheckbox.checked ? 'A Combinar' : salarioInput.value;
+
             const vagaData = {
                 titulo: document.getElementById('titulo').value,
                 descricao: document.getElementById('descricao').value,
                 localizacao: document.getElementById('localizacao').value,
                 modalidade: document.getElementById('modalidade').value,
-                salario: document.getElementById('salario').value,
+                salario: salarioValue,
                 id_empresa: usuario.id
             };
 
@@ -333,6 +360,60 @@
                 await loadVagas();
             } catch (error) {
                 window.showNotification(error.message, 'error');
+            }
+        }
+
+        let previousLocalizacaoValue = '';
+
+        function handleModalidadeChange() {
+            const modalidadeSelect = document.getElementById('modalidade');
+            const localizacaoInput = document.getElementById('localizacao');
+
+            if (modalidadeSelect.value === 'Remoto') {
+                // Only store the previous value if the field is currently enabled
+                if (!localizacaoInput.disabled) {
+                    previousLocalizacaoValue = localizacaoInput.value;
+                }
+                localizacaoInput.value = 'Remoto';
+                localizacaoInput.disabled = true;
+            } else {
+                // Only restore if the field was disabled
+                if (localizacaoInput.disabled) {
+                    localizacaoInput.value = previousLocalizacaoValue;
+                }
+                localizacaoInput.disabled = false;
+            }
+        }
+
+        function toggleSalarioInput() {
+            const salarioInput = document.getElementById('salario');
+            const isChecked = document.getElementById('salario-combinar').checked;
+
+            salarioInput.disabled = isChecked;
+            if (isChecked) {
+                salarioInput.value = '';
+                salarioInput.required = false;
+            } else {
+                salarioInput.required = true;
+            }
+        }
+
+        function formatarSalario(e) {
+            let valor = e.target.value.replace(/\D/g, '');
+            if (!valor) {
+                e.target.value = '';
+                return;
+            }
+
+            valor = (parseInt(valor, 10) / 100).toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
+            if (valor === 'NaN') {
+                e.target.value = 'R$ ';
+            } else {
+                e.target.value = 'R$ ' + valor;
             }
         }
     </script>

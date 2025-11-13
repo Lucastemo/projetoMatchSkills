@@ -133,6 +133,16 @@
     font-size: 1rem;
 }
 
+.input-with-checkbox{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.input-with-checkbox input, .input-with-checkbox div {
+    width: 100%;
+}
+
 /* Remove o estilo de bloco para labels dentro do radio-group para alinhamento correto */
 .radio-group label {
     display: inline-flex;
@@ -235,6 +245,9 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 20px;
+}
+.one-to-two-thirds-separation{
+    grid-template-columns: 1fr 2fr;
 }
 
 /* --- Componente Multi-Select (Skills) --- */
