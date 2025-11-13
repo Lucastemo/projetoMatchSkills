@@ -266,13 +266,16 @@ DELIMITER ;
 
 -- buscar vagas aleatorias
 DELIMITER //
-CREATE PROCEDURE buscar_vagas_aleatorias()
+CREATE PROCEDURE buscar_vagas_aleatorias(
+    IN p_id_candidato INT
+)
 BEGIN
     SELECT v.*, e.razao_social, u.foto
     FROM vagas v
     JOIN empresas e ON v.id_empresa = e.id_empresa
     JOIN usuarios u ON v.id_empresa = u.id_usuario
-    ORDER BY RAND()
+    WHERE v.id_vaga NOT IN (SELECT id_vaga FROM candidaturas WHERE id_candidato = p_id_candidato)
+    ORDER BY RAND() 
     LIMIT 10;
 END //
 DELIMITER ;
@@ -280,7 +283,8 @@ DELIMITER ;
 -- buscar vagas por habilidades
 DELIMITER //
 CREATE PROCEDURE buscar_vagas_por_habilidades(
-    IN p_habilidades VARCHAR(255)
+    IN p_habilidades VARCHAR(255),
+    IN p_id_candidato INT
 )
 BEGIN
     SELECT
@@ -293,7 +297,8 @@ BEGIN
     JOIN empresas e ON v.id_empresa = e.id_empresa
     JOIN usuarios u ON v.id_empresa = u.id_usuario
     JOIN habilidades_vagas hv ON v.id_vaga = hv.id_vaga
-    WHERE FIND_IN_SET(hv.id_habilidade, p_habilidades)
+    WHERE FIND_IN_SET(hv.id_habilidade, p_habilidades) 
+      AND v.id_vaga NOT IN (SELECT id_vaga FROM candidaturas WHERE id_candidato = p_id_candidato)
     GROUP BY v.id_vaga
     ORDER BY
         (matching_skills / total_skills) DESC,

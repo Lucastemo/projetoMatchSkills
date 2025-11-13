@@ -62,8 +62,9 @@ module.exports = {
     },
 
     buscar_vagas_aleatorias: async (req, res) => {
+        const { id_candidato } = req.query;
         try {
-            const vagas = await vagasModel.buscar_vagas_aleatorias();
+            const vagas = await vagasModel.buscar_vagas_aleatorias(id_candidato);
 
             if (vagas[0].length > 0) {
                 return res.status(200).json(vagas[0]);
@@ -76,9 +77,9 @@ module.exports = {
     },
 
     buscar_vagas_por_habilidades: async (req, res) => {
-        const { habilidades } = req.query;
+        const { habilidades, id_candidato } = req.query;
         try {
-            const vagas = await vagasModel.buscar_vagas_por_habilidades(habilidades);
+            const vagas = await vagasModel.buscar_vagas_por_habilidades(habilidades, id_candidato);
             const processedVagas = processVagas(vagas[0]);
 
             if (processedVagas.length > 0) {
@@ -97,7 +98,7 @@ module.exports = {
             const habilidadesString = await CandidatosController.getHabilidadesStringByCandidatoId(id);
 
             if (habilidadesString) {
-                const vagas = await vagasModel.buscar_vagas_por_habilidades(habilidadesString);
+                const vagas = await vagasModel.buscar_vagas_por_habilidades(habilidadesString, id);
                 const processedVagas = processVagas(vagas[0]);
 
                 if (processedVagas.length > 0) {

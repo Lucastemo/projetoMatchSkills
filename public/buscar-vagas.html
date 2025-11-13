@@ -244,9 +244,9 @@
                 } else {
                     if (selectedSkills.length > 0) {
                         const habilidadesQuery = selectedSkills.join(',');
-                        fetchVagas(`/api/vagas/habilidades?habilidades=${habilidadesQuery}`);
+                        fetchVagas(`/api/vagas/habilidades?habilidades=${habilidadesQuery}&id_candidato=${usuario.id}`);
                     } else {
-                        fetchVagas('/api/vagas/aleatorias');
+                        fetchVagas(`/api/vagas/aleatorias?id_candidato=${usuario.id}`);
                     }
                 }
             }
@@ -301,6 +301,7 @@
                     }
                     window.showNotification(result.message || 'Candidatura feita com sucesso!');
                     closeModal();
+                    await performSearch();
                 } catch (error) {
                     window.showNotification('Ocorreu um erro ao enviar sua candidatura.', 'error');
                 }

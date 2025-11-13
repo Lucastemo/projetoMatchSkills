@@ -31,20 +31,20 @@ const vagasModel = {
             throw error;
         }
     },
-    buscar_vagas_aleatorias: async () => {
+    buscar_vagas_aleatorias: async (id_candidato) => {
         try {
-            const sql = 'CALL buscar_vagas_aleatorias()';
-            const [vagas] = await db.execute(sql);
+            const sql = 'CALL buscar_vagas_aleatorias(?)';
+            const [vagas] = await db.execute(sql, [id_candidato]);
             return vagas;
         } catch (error) {
             console.log('Erro ao buscar vagas aleatórias.', error);
             throw error;
         }
     },
-    buscar_vagas_por_habilidades: async (habilidades) => {
+    buscar_vagas_por_habilidades: async (habilidades, id_candidato) => {
         try {
-            const sql = 'CALL buscar_vagas_por_habilidades(?)';
-            const [vagas] = await db.execute(sql, [habilidades]);
+            const sql = 'CALL buscar_vagas_por_habilidades(?, ?)';
+            const [vagas] = await db.execute(sql, [habilidades, id_candidato]);
             return vagas;
         } catch (error) {
             console.log('Erro ao buscar vagas por habilidades.', error);
