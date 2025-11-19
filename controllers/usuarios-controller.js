@@ -198,5 +198,22 @@ module.exports = {
                 error: 'Erro interno no servidor.'
             });
         }
+    },
+
+    verificar_usuario_premium_por_id: async (req, res) => {
+        const { id } = req.params;
+        console.log("coisa")
+        try {
+            const premiumStatus = await usuarioModel.verificar_usuario_premium_por_id(id);
+
+            if (premiumStatus[0] && premiumStatus[0].length > 0) {
+                return res.status(200).json(premiumStatus[0][0]);
+            } else {
+                return res.status(404).json({ message: 'Usuário não encontrado.' });
+            }
+        } catch (error) {
+            console.error('Erro ao verificar status premium do usuário:', error);
+            return res.status(500).json({ error: 'Erro interno no servidor.' });
+        }
     }
 };

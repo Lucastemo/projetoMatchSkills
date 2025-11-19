@@ -84,8 +84,19 @@ const usuarioModel = {
                console.log('Erro ao atualizar a foto do usuário.', error);
                throw error;
            }
-       }
-   
+       },
+
+    verificar_usuario_premium_por_id: async (id_usuario) => {
+        try {
+            const sql = 'CALL verificar_usuario_premium_por_id(?)';
+            const [result] = await db.execute(sql, [id_usuario]);
+            return result;
+        } catch (error) {
+            console.log('Erro ao verificar status premium do usuário.', error);
+            throw error;
+        }
+    }
+
    }
    
    module.exports = usuarioModel;

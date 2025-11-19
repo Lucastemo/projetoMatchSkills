@@ -90,6 +90,16 @@ const vagasModel = {
             console.log('Erro ao deletar candidaturas para a vaga.', error);
             throw error;
         }
+    },
+    verificar_premium_por_vaga: async (id_vaga) => {
+        try {
+            const sql = 'CALL verificar_premium_por_vaga(?)';
+            const [result] = await db.execute(sql, [id_vaga]);
+            return result;
+        } catch (error) {
+            console.log('Erro ao verificar status premium pela vaga.', error);
+            throw error;
+        }
     }
 };
 

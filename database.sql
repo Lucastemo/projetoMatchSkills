@@ -16,7 +16,8 @@ CREATE TABLE usuarios (
     tipo_usuario ENUM('empresa', 'candidato') NOT NULL COMMENT 'Tipo',
     foto VARCHAR(255) NULL COMMENT 'URL da foto de perfil',
     descricao TEXT NULL COMMENT 'Descrição do usuário',
-    data_criacao DATETIME NOT NULL COMMENT 'Registro'
+    data_criacao DATETIME NOT NULL COMMENT 'Registro',
+    premium BOOLEAN NOT NULL DEFAULT FALSE COMMENT 'Indica se o usuário é premium'
 );
 
 -- =============================

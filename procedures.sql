@@ -558,3 +558,26 @@ BEGIN
     DELETE FROM candidaturas WHERE id_vaga = p_id_vaga;
 END //
 DELIMITER ;
+
+-- Verificar se o usuário é premium por id
+DELIMITER //
+CREATE PROCEDURE verificar_usuario_premium_por_id(
+    IN p_id_usuario INT
+)
+BEGIN
+    SELECT premium FROM usuarios WHERE id_usuario = p_id_usuario;
+END //
+DELIMITER ;
+
+-- Verificar se o usuário da empresa que criou a vaga é premium
+DELIMITER //
+CREATE PROCEDURE verificar_premium_por_vaga(
+    IN p_id_vaga INT
+)
+BEGIN
+    SELECT u.premium 
+    FROM vagas v
+    JOIN usuarios u ON v.id_empresa = u.id_usuario
+    WHERE v.id_vaga = p_id_vaga;
+END //
+DELIMITER ;

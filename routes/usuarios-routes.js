@@ -4,6 +4,7 @@ const usuarioController = require("../controllers/usuarios-controller.js");
 const verificarSessao = require("../middlewares/auth.js");
 
 router.post("/criar-usuario", usuarioController.criar_usuario);
+router.get("/api/usuarios/:id/premium", usuarioController.verificar_usuario_premium_por_id);
 
 router.post("/login", usuarioController.verificarLogin);
 router.get("/menu", verificarSessao, (req, res) => {
