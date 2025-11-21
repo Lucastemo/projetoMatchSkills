@@ -180,10 +180,19 @@
                 }
 
                 for (const vaga of vagas) {
-                    const isPremium = false; // Add logic if you have premium status in vaga object
+                    let isPremium = false;
+                    try {
+                        const premiumResponse = await fetch(`/api/vagas/${vaga.id_vaga}/premium`);
+                        if (premiumResponse.ok) {
+                            const premiumData = await premiumResponse.json();
+                            isPremium = premiumData.premium === 1;
+                        }
+                    } catch (error) {
+                        console.error(`Erro ao verificar status premium para a vaga ${vaga.id_vaga}:`, error);
+                    }
+
                     const card = document.createElement('div');
                     card.className = `card job-card ${isPremium ? 'premium' : ''}`;
-
                     // Fetch skills for each vaga
                     let skillsHTML = '<span class="skill-tag">Sem habilidades</span>';
                     try {
@@ -331,6 +340,17 @@
                 const companyName = jobCard.querySelector('.company-name').textContent;
                 const companyLogo = jobCard.querySelector('.company-logo').src;
 
+                const modal = document.getElementById('modalVagaDetalhes');
+                const backdrop = document.getElementById('modalBackdrop');
+
+                // Check for premium status and style modal accordingly
+                if (jobCard.classList.contains('premium')) {
+                    modal.classList.add('premium');
+                } else {
+                    modal.classList.remove('premium');
+                }
+
+
                 const habilidadesResponse = await fetch(`/api/habilidades/vaga/${id_vaga}`);
                 const habilidadesData = await habilidadesResponse.json();
 
@@ -366,8 +386,6 @@
                     habilidadesDiferenciais.innerHTML = '<li>Sem habilidades diferenciais</li>';
                 }
 
-                const modal = document.getElementById('modalVagaDetalhes');
-                const backdrop = document.getElementById('modalBackdrop');
                 modal.classList.add('show');
                 backdrop.classList.add('show');
 

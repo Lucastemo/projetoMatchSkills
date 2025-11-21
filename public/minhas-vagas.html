@@ -33,8 +33,8 @@
                     <h1 class="page-title">Gerenciador de Vagas</h1>
                     <p class="page-subtitle">Visualize, edite e acompanhe os candidatos de suas vagas publicadas.</p>
                 </div>
-                <button class="btn btn-primary" id="criar-vaga-btn">Criar Vaga</button>
             </div>
+            <button class="btn btn-primary" id="criar-vaga-btn">Criar Vaga</button>
 
             <section class="results-list no-gap" id="vagas-list">
                 <!-- Vagas serão inseridas aqui dinamicamente -->
@@ -143,6 +143,7 @@
         let currentVagaId = null;
 
         document.addEventListener('DOMContentLoaded', async () => {
+            await checkPremiumStatus();
             await loadVagas();
 
             document.getElementById('criar-vaga-btn').addEventListener('click', () => openModalParaCriar());
@@ -154,6 +155,26 @@
             document.getElementById('salario-combinar').addEventListener('change', toggleSalarioInput);
             document.getElementById('modalidade').addEventListener('change', handleModalidadeChange);
         });
+
+        async function checkPremiumStatus() {
+            try {
+                const response = await fetch(`usuarios/api/usuarios/${usuario.id}/premium`);
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.premium === 1) {
+                        const premiumBanner = document.createElement('div');
+                        premiumBanner.className = 'premium-banner';
+                        premiumBanner.innerHTML = '🌟 Você é um assinante Premium! Suas vagas recebem destaque nas buscas.';
+                        
+                        const container = document.querySelector('.main-content .container');
+                        const criarVagaBtn = document.getElementById('criar-vaga-btn');
+                        container.insertBefore(premiumBanner, criarVagaBtn);
+                    }
+                }
+            } catch (error) {
+                console.error('Erro ao verificar status premium:', error);
+            }
+        }
 
         async function loadVagas() {
             const vagasList = document.getElementById('vagas-list');
