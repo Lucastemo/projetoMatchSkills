@@ -100,9 +100,17 @@
                     const empresas = await response.json();
 
                     if (empresas.length > 0) {
-                        empresas.forEach(empresa => {
+                        for (const empresa of empresas) {
                             const companyCard = document.createElement('div');
                             companyCard.classList.add('card', 'company-card');
+
+                            // Check for premium status
+                            const premiumRes = await fetch(`usuarios/api/usuarios/${empresa.id_empresa}/premium`);
+                            const premiumData = await premiumRes.json();
+                            if (premiumData.premium === 1) {
+                                companyCard.classList.add('premium');
+                            }
+
 
                             const logo = document.createElement('img');
                             logo.src = empresa.foto ? empresa.foto : 'img/fotos-perfil/empresa-sem-foto.png';
@@ -129,7 +137,7 @@
                             });
 
                             resultsList.appendChild(companyCard);
-                        });
+                        }
                     } else {
                         resultsList.innerHTML = '<p>Nenhuma empresa encontrada.</p>';
                     }

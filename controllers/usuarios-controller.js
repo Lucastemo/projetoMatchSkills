@@ -202,7 +202,6 @@ module.exports = {
 
     verificar_usuario_premium_por_id: async (req, res) => {
         const { id } = req.params;
-        console.log("coisa")
         try {
             const premiumStatus = await usuarioModel.verificar_usuario_premium_por_id(id);
 
