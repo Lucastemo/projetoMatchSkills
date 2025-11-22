@@ -42,6 +42,7 @@
                     <h2>Wendel Bonfim</h2>
                     <p class="join-date">Membro desde 20 de Outubro, 2025</p>
                     <a href="#" class="btn btn-primary">Modificar Dados</a>
+                    <a href="#" class="btn btn-premium btn-secondary" data-modal-target="#premiumModalCandidato">Tornar-se Premium</a>
                 </aside>
 
                 <section class="profile-content">
@@ -103,6 +104,44 @@
         </div>
     </footer>
     
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+
+    <!-- Modal Premium Candidato -->
+    <div class="modal" id="premiumModalCandidato">
+        <div class="modal-header">
+            <h3>✨ Torne-se Premium</h3>
+            <button class="modal-close" data-modal-close>&times;</button>
+        </div>
+        <div class="modal-body">
+            <p class="page-subtitle" style="text-align: center; margin-bottom: 30px;">Ganhe mais visibilidade e destaque-se para os recrutadores!</p>
+            
+            <div class="premium-plans-container">
+                <!-- Plano Mensal -->
+                <div class="plan-card">
+                    <h4>Plano Mensal</h4>
+                    <p class="plan-price">R$ 30<span>/mês</span></p>
+                    <ul class="plan-benefits">
+                        <li><span class="check-icon">✔</span> Maior visibilidade nas candidaturas</li>
+                        <li><span class="check-icon">✔</span> Destaque para recrutadores</li>
+                    </ul>
+                    <button class="btn btn-secondary select-plan-btn" data-plan="mensal">Selecionar Plano</button>
+                </div>
+
+                <!-- Plano Anual (Recomendado) -->
+                <div class="plan-card recommended">
+                    <div class="recommended-badge">Economize 50%</div>
+                    <h4>Plano Anual</h4>
+                    <p class="plan-price">R$ 180<span>/ano</span></p>
+                    <ul class="plan-benefits">
+                        <li><span class="check-icon">✔</span> Maior visibilidade nas candidaturas</li>
+                        <li><span class="check-icon">✔</span> Destaque para recrutadores</li>
+                    </ul>
+                    <button class="btn btn-primary select-plan-btn" data-plan="anual">Selecionar Plano</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="js/main.js"></script>
     <script>
         // This should be replaced by actual session/auth logic

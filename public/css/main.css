@@ -41,6 +41,17 @@
     background-color: #c82333;
 }
 
+.btn-premium{
+    border-color: var(--premium-color);
+    color: var(--premium-color);
+    background-color: var(--premium-bg);
+}
+
+.btn-premium:hover{
+    background-color: var(--premium-color);
+    color: var(--premium-bg);
+}
+
 .card {
     background-color: var(--card-bg-color);
     border-radius: 12px;
@@ -746,6 +757,89 @@
 .confirmation-dialog.show {
     display: block;
     opacity: 1;
+}
+
+/* --- Modal Premium --- */
+
+.premium-plans-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.plan-card {
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    background-color: var(--bg-color);
+}
+
+.plan-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.plan-card h4 {
+    font-size: 1.4rem;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.plan-card .plan-price {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+    margin-bottom: 25px;
+}
+
+.plan-card .plan-price span {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-light);
+}
+
+.plan-card .plan-benefits {
+    list-style: none;
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.plan-card .plan-benefits li {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.plan-card .plan-benefits .check-icon {
+    color: var(--primary-color);
+    margin-right: 10px;
+    font-weight: 700;
+}
+
+.plan-card.recommended {
+    border-color: var(--premium-color);
+    background-color: var(--premium-bg);
+    border-width: 3px;
+}
+
+.plan-card .recommended-badge {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--premium-color);
+    color: var(--text-color);
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.plan-card .select-plan-btn {
+    width: 100%;
 }
 
 @keyframes slideIn {

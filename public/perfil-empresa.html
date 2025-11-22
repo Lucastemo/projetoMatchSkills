@@ -43,6 +43,7 @@
                     <p class="join-date" id="joinDate">Membro desde...</p>
                     <a href="#" class="btn btn-primary" id="editButton">Modificar Dados</a>
                     <a href="/minhas-vagas" class="btn btn-secondary">Ver Minhas Vagas</a>
+                    <a href="#" class="btn btn-premium btn-secondary" data-modal-target="#premiumModal">Tornar-se Premium</a>
                 </aside>
 
                 <section class="profile-content">
@@ -109,6 +110,45 @@
         </div>
     </footer>
     
+    <div class="modal-backdrop" id="modalBackdrop"></div>
+
+    <!-- Modal Premium -->
+    <div class="modal" id="premiumModal">
+        <div class="modal-header">
+            <h3>✨ Torne-se Premium</h3>
+            <button class="modal-close" data-modal-close>&times;</button>
+        </div>
+        <div class="modal-body">
+            <p class="page-subtitle" style="text-align: center; margin-bottom: 30px;">Aumente a visibilidade da sua empresa e atraia os melhores talentos!</p>
+            
+            <div class="premium-plans-container">
+                <!-- Plano Mensal -->
+                <div class="plan-card">
+                    <h4>Plano Mensal</h4>
+                    <p class="plan-price">R$ 30<span>/mês</span></p>
+                    <ul class="plan-benefits">
+                        <li><span class="check-icon">✔</span> Maior visibilidade nas buscas</li>
+                        <li><span class="check-icon">✔</span> Destaque nas listagens de vagas</li>
+                    </ul>
+                    <button class="btn btn-secondary select-plan-btn" data-plan="mensal">Selecionar Plano</button>
+                </div>
+
+                <!-- Plano Anual (Recomendado) -->
+                <div class="plan-card recommended">
+                    <div class="recommended-badge">Recomendado</div>
+                    <h4>Plano Anual</h4>
+                    <p class="plan-price">R$ 300<span>/ano</span></p>
+                    <ul class="plan-benefits">
+                        <li><span class="check-icon">✔</span> Maior visibilidade nas buscas</li>
+                        <li><span class="check-icon">✔</span> Destaque nas listagens de vagas</li>
+                        <li><span class="check-icon">✔</span> <strong>2 meses grátis!</strong></li>
+                    </ul>
+                    <button class="btn btn-primary select-plan-btn" data-plan="anual">Selecionar Plano</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="js/main.js"></script>
     <script>
         // Temporary user for testing purposes
