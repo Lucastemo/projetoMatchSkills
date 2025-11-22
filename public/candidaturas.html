@@ -138,18 +138,19 @@
                         return;
                     }
 
+                    // Sort candidates to show premium ones first
+                    candidatos.sort((a, b) => (b.premium || 0) - (a.premium || 0));
+
                     for (const candidato of candidatos) {
                         const card = document.createElement('a');
                         card.href = `/ver-candidato/${candidato.id_candidato}`; // Assuming a future page
                         card.className = 'card candidate-card';
 
-                        // Check for premium status
-                        const premiumRes = await fetch(`/usuarios/api/usuarios/${candidato.id_candidato}/premium`);
-                        const premiumData = await premiumRes.json();
-                        if (premiumData.premium === 1) {
+                        // Add premium class if the candidate is premium
+                        if (candidato.premium === 1) {
                             card.classList.add('premium');
                         }
-
+                        
                         const habilidadesExigidasHTML = candidato.HabilidadesExigidas 
                             ? candidato.HabilidadesExigidas.split(', ').map(h => `<span style="background: #28a745; color: #fff;">${h}</span>`).join('')
                             : '';

@@ -403,6 +403,7 @@ BEGIN
         u.id_usuario AS id_candidato,
         u.nome,
         u.foto,
+        u.premium,
         -- Contagem de habilidades exigidas que o candidato possui
         (SELECT COUNT(*)
          FROM habilidades_candidatos hc
@@ -444,7 +445,7 @@ BEGIN
     FROM candidaturas c
     JOIN usuarios u ON c.id_candidato = u.id_usuario
     WHERE c.id_vaga = p_id_vaga
-    ORDER BY num_habilidades_exigidas DESC, num_habilidades_diferenciais DESC;
+    ORDER BY u.premium DESC, num_habilidades_exigidas DESC, num_habilidades_diferenciais DESC;
 END //
 DELIMITER ;
 
