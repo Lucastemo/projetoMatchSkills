@@ -95,6 +95,28 @@ const usuarioModel = {
             console.log('Erro ao verificar status premium do usuário.', error);
             throw error;
         }
+    },
+
+    tornar_usuario_premium_por_id: async (id_usuario) => {
+        try {
+            const sql = 'CALL tornar_usuario_premium_por_id(?)';
+            const [result] = await db.execute(sql, [id_usuario]);
+            return result.affectedRows > 0;
+        } catch (error) {
+            console.log('Erro ao tornar o usuário premium.', error);
+            throw error;
+        }
+    },
+
+    remover_premium_usuario_por_id: async (id_usuario) => {
+        try {
+            const sql = 'CALL remover_premium_usuario_por_id(?)';
+            const [result] = await db.execute(sql, [id_usuario]);
+            return result.affectedRows > 0;
+        } catch (error) {
+            console.log('Erro ao remover premium do usuário.', error);
+            throw error;
+        }
     }
 
    }

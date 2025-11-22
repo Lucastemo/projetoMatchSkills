@@ -214,5 +214,37 @@ module.exports = {
             console.error('Erro ao verificar status premium do usuário:', error);
             return res.status(500).json({ error: 'Erro interno no servidor.' });
         }
+    },
+
+    tornar_usuario_premium_por_id: async (req, res) => {
+        const { id } = req.params;
+        try {
+            const success = await usuarioModel.tornar_usuario_premium_por_id(id);
+
+            if (success) {
+                return res.status(200).json({ message: 'Usuário agora é premium.' });
+            } else {
+                return res.status(404).json({ message: 'Usuário não encontrado ou já é premium.' });
+            }
+        } catch (error) {
+            console.error('Erro ao tornar usuário premium:', error);
+            return res.status(500).json({ error: 'Erro interno no servidor.' });
+        }
+    },
+
+    remover_premium_usuario_por_id: async (req, res) => {
+        const { id } = req.params;
+        try {
+            const success = await usuarioModel.remover_premium_usuario_por_id(id);
+
+            if (success) {
+                return res.status(200).json({ message: 'Premium do usuário removido.' });
+            } else {
+                return res.status(404).json({ message: 'Usuário não encontrado ou não era premium.' });
+            }
+        } catch (error) {
+            console.error('Erro ao remover premium do usuário:', error);
+            return res.status(500).json({ error: 'Erro interno no servidor.' });
+        }
     }
 };

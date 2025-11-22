@@ -586,3 +586,23 @@ BEGIN
     WHERE v.id_vaga = p_id_vaga;
 END //
 DELIMITER ;
+
+-- Tornar usuário premium por id
+DELIMITER //
+CREATE PROCEDURE tornar_usuario_premium_por_id(
+    IN p_id_usuario INT
+)
+BEGIN
+    UPDATE usuarios SET premium = TRUE WHERE id_usuario = p_id_usuario;
+END //
+DELIMITER ;
+
+-- Remover premium do usuário por id
+DELIMITER //
+CREATE PROCEDURE remover_premium_usuario_por_id(
+    IN p_id_usuario INT
+)
+BEGIN
+    UPDATE usuarios SET premium = FALSE WHERE id_usuario = p_id_usuario;
+END //
+DELIMITER ;

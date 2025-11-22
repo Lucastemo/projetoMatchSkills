@@ -18,4 +18,7 @@ router.post("/logout", usuarioController.logout);
 
 router.patch("/atualizar-foto", usuarioController.upload.single('foto'), usuarioController.atualizar_foto_usuario);
 
+router.patch("/api/usuarios/:id/tornar-premium", usuarioController.tornar_usuario_premium_por_id);
+router.patch("/api/usuarios/:id/remover-premium", usuarioController.remover_premium_usuario_por_id);
+
 module.exports = router;
