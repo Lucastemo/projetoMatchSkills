@@ -104,10 +104,8 @@
                             const companyCard = document.createElement('div');
                             companyCard.classList.add('card', 'company-card');
 
-                            // Check for premium status
-                            const premiumRes = await fetch(`usuarios/api/usuarios/${empresa.id_empresa}/premium`);
-                            const premiumData = await premiumRes.json();
-                            if (premiumData.premium === 1) {
+                            // Check for premium status from the fetched company data
+                            if (empresa.premium === 1) {
                                 companyCard.classList.add('premium');
                             }
 

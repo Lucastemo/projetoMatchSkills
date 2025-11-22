@@ -124,7 +124,11 @@ CREATE PROCEDURE buscar_empresas_por_nome(
     IN p_nome VARCHAR(100)
 )
 BEGIN
-    SELECT e.*, u.foto FROM empresas e JOIN usuarios u ON e.id_empresa = u.id_usuario WHERE razao_social LIKE CONCAT('%', p_nome, '%');
+    SELECT e.*, u.foto, u.premium 
+    FROM empresas e 
+    JOIN usuarios u ON e.id_empresa = u.id_usuario 
+    WHERE e.razao_social LIKE CONCAT('%', p_nome, '%')
+    ORDER BY u.premium DESC;
 END //
 DELIMITER ;
 
@@ -227,10 +231,10 @@ DELIMITER ;
 DELIMITER //
 CREATE PROCEDURE buscar_empresas_aleatorias()
 BEGIN
-    SELECT e.*, u.foto 
+    SELECT e.*, u.foto, u.premium
     FROM empresas e
     JOIN usuarios u ON e.id_empresa = u.id_usuario
-    ORDER BY RAND()
+    ORDER BY u.premium DESC, RAND()
     LIMIT 10;
 END //
 DELIMITER ;
