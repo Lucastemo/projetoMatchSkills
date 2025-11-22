@@ -274,12 +274,12 @@ CREATE PROCEDURE buscar_vagas_aleatorias(
     IN p_id_candidato INT
 )
 BEGIN
-    SELECT v.*, e.razao_social, u.foto
+    SELECT v.*, e.razao_social, u.foto, u.premium
     FROM vagas v
     JOIN empresas e ON v.id_empresa = e.id_empresa
     JOIN usuarios u ON v.id_empresa = u.id_usuario
     WHERE v.id_vaga NOT IN (SELECT id_vaga FROM candidaturas WHERE id_candidato = p_id_candidato)
-    ORDER BY RAND() 
+    ORDER BY u.premium DESC, RAND() 
     LIMIT 10;
 END //
 DELIMITER ;
