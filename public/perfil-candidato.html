@@ -40,9 +40,10 @@
 
                     </div>
                     <h2>Wendel Bonfim</h2>
-                    <p class="join-date">Membro desde 20 de Outubro, 2025</p>
-                    <a href="#" class="btn btn-primary">Modificar Dados</a>
-                    <a href="#" class="btn btn-premium btn-secondary" data-modal-target="#premiumModalCandidato">Tornar-se Premium</a>
+                    <p class="join-date" id="joinDate">Membro desde...</p>
+                    <a href="#" class="btn btn-primary" id="editButton">Modificar Dados</a>
+                    <a href="#" class="btn btn-premium btn-secondary" id="becomePremiumBtn" data-modal-target="#premiumModalCandidato" style="display: none;">Tornar-se Premium</a>
+                    <a href="#" class="btn btn-danger" id="cancelPremiumBtn" style="display: none;">Deixar de Ser Premium</a>
                 </aside>
 
                 <section class="profile-content">
@@ -106,6 +107,15 @@
     
     <div class="modal-backdrop" id="modalBackdrop"></div>
 
+    <div class="confirmation-backdrop" id="confirmationBackdrop"></div>
+    <div class="confirmation-dialog" id="confirmationDialog">
+        <p class="confirmation-message">Você tem certeza?</p>
+        <div class="confirmation-buttons">
+            <button class="btn btn-secondary btn-cancel">Cancelar</button>
+            <button class="btn btn-danger btn-confirm">Confirmar</button>
+        </div>
+    </div>
+
     <!-- Modal Premium Candidato -->
     <div class="modal" id="premiumModalCandidato">
         <div class="modal-header">
@@ -156,11 +166,14 @@
             const skillsInput = document.querySelector('#skills.multi-select-input');
             const curriculoLink = document.getElementById('curriculoLink');
             const curriculoDisplay = document.getElementById('curriculoDisplay');
-            const editButton = document.querySelector('.profile-sidebar .btn-primary');
+            const editButton = document.getElementById('editButton');
             const profilePicContainer = document.querySelector('.profile-pic-container');
             const profilePicInput = document.getElementById('profilePicInput');
             const profilePicImg = document.getElementById('profilePic');
             const selectedSkillsContainer = document.querySelector('.selected-skills');
+            const becomePremiumBtn = document.getElementById('becomePremiumBtn');
+            const cancelPremiumBtn = document.getElementById('cancelPremiumBtn');
+            const selectPlanBtns = document.querySelectorAll('.select-plan-btn');
 
             let isEditMode = false;
 
@@ -175,8 +188,8 @@
 
                     // Populate fields
                     document.querySelector('.profile-sidebar h2').textContent = candidate.nome;
-                    const joinDate = new Date(candidate.data_cadastro).toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
-                    document.querySelector('.join-date').textContent = `Membro desde ${joinDate}`;
+                    const joinDate = new Date(candidate.data_cadastro).toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });                    
+                    document.getElementById('joinDate').textContent = `Membro desde ${joinDate}`;
                     profilePicImg.src = candidate.foto || '/img/fotos-perfil/candidato-sem-foto.png';
 
                     document.getElementById('nome').value = candidate.nome;
@@ -204,10 +217,33 @@
                         }
                     }
 
+                    await checkPremiumStatus();
+
                 } catch (error) {
                     console.error('Erro ao carregar perfil:', error);
                     window.showNotification('Não foi possível carregar os dados do perfil.', 'error');
                 }
+            }
+
+            // --- Check Premium Status and Update Buttons ---
+            async function checkPremiumStatus() {
+                try {
+                    const res = await fetch(`usuarios/api/usuarios/${usuario.id}/premium`);
+                    const data = await res.json();
+
+                    if (data.premium) {
+                        becomePremiumBtn.style.display = 'none';
+                        cancelPremiumBtn.style.display = 'block';
+                    } else {
+                        becomePremiumBtn.style.display = 'block';
+                        cancelPremiumBtn.style.display = 'none';
+                    }
+                } catch (error) {
+                    console.error('Erro ao verificar status premium:', error);
+                    window.showNotification('Não foi possível verificar o status da sua assinatura.', 'error');
+                }
+
+                
             }
 
             // --- Toggle Edit Mode ---
@@ -353,9 +389,68 @@
                 }
             }
 
+            // --- Premium Functionality ---
+            async function becomePremium() {
+                try {
+                    const res = await fetch(`usuarios/api/usuarios/${usuario.id}/tornar-premium`, {
+                        method: 'PATCH'
+                    });
+
+                    if (!res.ok) {
+                        const errorData = await res.json();
+                        throw new Error(errorData.error || 'Falha ao ativar o plano Premium.');
+                    }
+
+                    // Close modal
+                    const premiumModal = document.getElementById('premiumModalCandidato');
+                    closeModal(premiumModal);
+
+                    window.showNotification('Parabéns! Agora você é um usuário Premium', 'success');
+                    await checkPremiumStatus(); // Refresh buttons
+
+                } catch (error) {
+                    console.error('Erro ao tornar-se premium:', error);
+                    window.showNotification(`Falha ao ativar plano: ${error.message}`, 'error');
+                }
+            }
+
+            async function cancelPremium() {
+                const confirmed = await window.showConfirmationDialog('Tem certeza que deseja cancelar sua assinatura Premium? Sua visibilidade para recrutadores será reduzida.');
+
+                if (confirmed) {
+                    try {
+                        const res = await fetch(`usuarios/api/usuarios/${usuario.id}/remover-premium`, {
+                            method: 'PATCH'
+                        });
+
+                        if (!res.ok) {
+                            const errorData = await res.json();
+                            throw new Error(errorData.error || 'Falha ao cancelar a assinatura.');
+                        }
+
+                        window.showNotification('Sua assinatura Premium foi cancelada', 'success');
+                        await checkPremiumStatus(); // Refresh buttons
+
+                    } catch (error) {
+                        console.error('Erro ao cancelar premium:', error);
+                        window.showNotification(`Falha ao cancelar: ${error.message}`, 'error');
+                    }
+                }
+            }
+
+            function closeModal(modal) {
+                if (modal == null) return;
+                const backdrop = document.getElementById('modalBackdrop');
+                if (backdrop) backdrop.classList.remove("show");
+                modal.classList.remove("show");
+            }
+
             // Initial Load
             loadProfileData();
             toggleEditState(); // Set initial readonly state and hide remove buttons
+
+            selectPlanBtns.forEach(btn => btn.addEventListener('click', becomePremium));
+            cancelPremiumBtn.addEventListener('click', cancelPremium);
         });
     </script>
 </body>
