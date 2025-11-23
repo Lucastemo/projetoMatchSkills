@@ -1,6 +1,64 @@
 // js/main.js
 
 document.addEventListener("DOMContentLoaded", () => {
+
+    // --- Controle de Sessão e UI Dinâmica ---
+    const loadUserSession = async () => {
+        try {
+            const response = await fetch('/usuarios/session');
+            
+            if (response.ok) {
+                const { user } = await response.json();
+                updateUIAfterLogin(user);
+            } else {
+                // Usuário não está logado, a UI padrão (com Login/Cadastro) será exibida.
+                // Nenhuma ação necessária aqui, pois o HTML é o padrão.
+            }
+        } catch (error) {
+            console.error('Erro ao verificar a sessão do usuário:', error);
+        }
+    };
+
+    const updateUIAfterLogin = (user) => {
+        // Atualiza a Navbar
+        const navUserDefault = document.getElementById('nav-user-default');
+        const navUserLogged = document.getElementById('nav-user-logged');
+        if (navUserDefault && navUserLogged) {
+            navUserDefault.style.display = 'none';
+            navUserLogged.style.display = 'flex';
+
+            const profilePic = navUserLogged.querySelector('.profile-pic');
+            const profileLink = navUserLogged.querySelector('a');
+            if (profilePic) {
+                profilePic.src = user.foto ? `/${user.foto}` : (user.tipo === 'candidato' ? '/img/fotos-perfil/candidato-sem-foto.png' : '/img/fotos-perfil/empresa-sem-foto.png)');
+            }
+            if (profileLink) {
+                profileLink.href = '/perfil'; // Link unificado para o perfil
+            }
+        }
+
+        // Atualiza o Footer
+        const footerProfileLink = document.getElementById('footer-profile-link');
+        if (footerProfileLink) {
+            footerProfileLink.href = '/perfil';
+        }
+
+        // Atualiza o Título da Página (Ex: em index.html)
+        const pageTitle = document.querySelector('.page-title');
+        if (pageTitle && pageTitle.textContent.includes('Olá,')) {
+            pageTitle.textContent = `Olá, ${user.nome}! Pronto para o próximo passo?`;
+        }
+
+        // Adiciona o script de logout dinamicamente
+        const logoutScript = document.createElement('script');
+        logoutScript.src = '/js/logout.js';
+        document.body.appendChild(logoutScript);
+    };
+
+    // Carrega os dados da sessão ao carregar a página
+    loadUserSession();
+
+
     
     // --- Controle do Modal ---
     const openModalButtons = document.querySelectorAll("[data-modal-target]");

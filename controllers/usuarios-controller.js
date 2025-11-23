@@ -91,7 +91,8 @@ module.exports = {
                 id: usuario.id_usuario,
                 email: usuario.email,
                 tipo: usuario.tipo_usuario,
-                nome: usuario.nome
+                nome: usuario.nome,
+                foto: usuario.foto
             };
 
             return res.status(200).json({ auth: true, message: 'Login bem-sucedido!' });

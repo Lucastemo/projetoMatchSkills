@@ -8,11 +8,12 @@ router.get("/api/usuarios/:id/premium", usuarioController.verificar_usuario_prem
 
 router.post("/login", usuarioController.verificarLogin);
 router.get("/menu", verificarSessao, (req, res) => {
-  if(req.session.user.tipo === 'candidato'){
-    res.redirect("/"); // Redirect to the candidate's starting page
-  }else{
-    res.redirect("/empresa-home"); // Redirect to the company's starting page
-  }
+  res.redirect("/home"); // Redireciona para a nova rota unificada
+});
+
+// Rota para obter dados da sessão do usuário logado
+router.get('/session', verificarSessao, (req, res) => {
+    res.status(200).json({ user: req.session.user });
 });
 router.post("/logout", usuarioController.logout);
 
