@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const profilePic = navUserLogged.querySelector('.profile-pic');
             const profileLink = navUserLogged.querySelector('a');
             if (profilePic) {
-                profilePic.src = user.foto ? `/${user.foto}` : (user.tipo === 'candidato' ? '/img/fotos-perfil/candidato-sem-foto.png' : '/img/fotos-perfil/empresa-sem-foto.png)');
+                profilePic.src = user.foto ? `/${user.foto}` : (user.tipo === 'candidato' ? '/img/fotos-perfil/candidato-sem-foto.png' : '/img/fotos-perfil/empresa-sem-foto.png');
             }
             if (profileLink) {
                 profileLink.href = '/perfil'; // Link unificado para o perfil
@@ -45,8 +45,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Atualiza o Título da Página (Ex: em index.html)
         const pageTitle = document.querySelector('.page-title');
-        if (pageTitle && pageTitle.textContent.includes('Olá,')) {
+        if (pageTitle && pageTitle.textContent.includes('Olá,')) { // Para candidatos
             pageTitle.textContent = `Olá, ${user.nome}! Pronto para o próximo passo?`;
+        } else if (pageTitle && pageTitle.textContent.includes('Bem-vinda,')) { // Para empresas
+            pageTitle.textContent = `Bem-vinda, ${user.nome}!`;
         }
 
         // Adiciona o script de logout dinamicamente
