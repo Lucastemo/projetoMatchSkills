@@ -13,16 +13,20 @@
     <a id="topo"></a>
     <nav class="navbar">
         <div class="container">
-            <a href="/empresa-home"><img src="img/logomatchskills1.svg" alt="Match Skills Logo" class="logo"></a>
+            <a href="/home"><img src="img/logomatchskills1.svg" alt="Match Skills Logo" class="logo"></a>
             <ul class="nav-links">
-                <li><a href="/empresa-home">Início</a></li>
-                <li><a href="/buscar-vagas">Buscar Vagas</a></li>
-                <li><a href="/buscar-empresas">Buscar Empresas</a></li>
+                <li><a href="/home">Início</a></li>
+                <li><a href="/minhas-vagas">Minhas Vagas</a></li>
                 <li><a href="/sobre-nos">Sobre Nós</a></li>
             </ul>
-            <div class="nav-user">
-                <!-- Este bloco pode ser dinâmico dependendo do login -->
-                <img src="https://via.placeholder.com/100/CCCCCC/FFFFFF?text=USER" alt="Foto de Perfil" class="profile-pic">
+            <!-- Estado Padrão: Não Logado -->
+            <div id="nav-user-default" class="nav-user bigger-column-gap" style="display: none;">
+                <a href="/login" class="btn btn-secondary">Login</a>
+                <a href="/cadastro" class="btn btn-primary">Cadastre-se</a>
+            </div>
+            <!-- Estado Logado (escondido por padrão) -->
+            <div id="nav-user-logged" class="nav-user">
+                <a href="/perfil"><img src="/img/fotos-perfil/empresa-sem-foto.png" alt="Foto de Perfil" class="profile-pic"></a>
                 <a href="#" class="logout-btn">Sair</a>
             </div>
         </div>
@@ -101,11 +105,11 @@
 
     <footer class="footer">
         <div class="container">
-            <a href="/empresa-home"><img src="img/logomatchskills1.svg" alt="Match Skills Logo" class="logo"></a>
+            <a href="/home"><img src="img/logomatchskills1.svg" alt="Match Skills Logo" class="logo"></a>
             <ul class="footer-links">
                 <li><a href="/sobre-nos">Sobre Nós</a></li>
-                <li><a href="/perfil-empresa">Meu Perfil</a></li>
-                <li><a href="/empresa-home">Início</a></li>
+                <li><a id="footer-profile-link" href="/perfil">Meu Perfil</a></li>
+                <li><a href="/home">Início</a></li>
                 <li><a href="#topo">Voltar ao Topo</a></li>
             </ul>
         </div>
@@ -161,11 +165,7 @@
 
     <script src="js/main.js"></script>
     <script>
-        // Temporary user for testing purposes
-        const usuario = {
-            id: 1
-        };
-
+        let usuario = null; // Será preenchido com os dados da sessão
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.getElementById('profileForm');
             const fields = form.querySelectorAll('input, textarea, select');
@@ -178,6 +178,24 @@
             const selectPlanBtns = document.querySelectorAll('.select-plan-btn');
 
             let isEditMode = false;
+
+            // --- Inicializa a página buscando a sessão ---
+            async function initializeProfilePage() {
+                try {
+                    const sessionRes = await fetch('/usuarios/session');
+                    if (!sessionRes.ok) {
+                        window.location.href = '/login'; // Redireciona se não estiver logado
+                        return;
+                    }
+                    const { user } = await sessionRes.json();
+                    usuario = user; // Armazena os dados do usuário globalmente na página
+                    await loadProfileData();
+                    toggleEditState(); // Set initial readonly state
+                } catch (error) {
+                    console.error('Erro ao inicializar a página de perfil:', error);
+                    window.showNotification('Erro ao carregar sua sessão. Tente fazer login novamente.', 'error');
+                }
+            }
 
             // --- Load initial data ---
             async function loadProfileData() {
@@ -282,8 +300,10 @@
 
                     const result = await res.json();
                     if (res.ok) {
-                        profilePicImg.src = result.foto_url;
+                        profilePicImg.src = `/${result.foto_url}`;
                         window.showNotification('Foto de perfil atualizada com sucesso!');
+                        // Atualiza a UI (incluindo a navbar) com os novos dados da sessão
+                        window.updateUIAfterLogin(result.user);
                     } else {
                         throw new Error(result.message || 'Falha ao atualizar a foto.');
                     }
@@ -389,8 +409,7 @@
             cancelPremiumBtn.addEventListener('click', cancelPremium);
 
             // Initial Load
-            loadProfileData();
-            toggleEditState(); // Set initial readonly state
+            initializeProfilePage();
         });
     </script>
 </body>

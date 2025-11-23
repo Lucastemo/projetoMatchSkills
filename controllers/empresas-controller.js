@@ -79,7 +79,16 @@ module.exports = {
         const { cnpj, razao_social, site, setor, local, tamanho, email, descricao } = req.body;
         try {
             await empresaModel.atualizar_empresa(id, cnpj, razao_social, site, setor, local, tamanho, email, descricao);
-            return res.status(200).json({ message: 'Empresa atualizada com sucesso.' });
+
+            // Atualiza a sessão do usuário se ele estiver logado
+            if (req.session.user && req.session.user.id == id) {
+                req.session.user.nome = razao_social;
+                req.session.user.email = email;
+                req.session.save(); // Salva as alterações na sessão
+            }
+
+            return res.status(200).json({ message: 'Empresa atualizada com sucesso.', user: req.session.user });
+
         } catch (error) {
             return res.status(500).json({ error: 'Erro interno no servidor.' });
         }

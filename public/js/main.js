@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    const updateUIAfterLogin = (user) => {
+    window.updateUIAfterLogin = (user) => {
         // Atualiza a Navbar
         const navUserDefault = document.getElementById('nav-user-default');
         const navUserLogged = document.getElementById('nav-user-logged');

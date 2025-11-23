@@ -62,7 +62,16 @@ class CandidatosController {
 
         try {
             await Candidato.atualizar_candidato(id_candidato, nome, email, cpf, descricao_pessoal);
-            res.status(200).json({ message: 'Perfil do candidato atualizado com sucesso.' });
+
+            // Atualiza a sessão do usuário se ele estiver logado
+            if (req.session.user && req.session.user.id == id_candidato) {
+                req.session.user.nome = nome;
+                req.session.user.email = email;
+                req.session.save(); // Salva as alterações na sessão
+            }
+
+            res.status(200).json({ message: 'Perfil do candidato atualizado com sucesso.', user: req.session.user });
+
         } catch (error) {
             console.error('Erro ao atualizar perfil do candidato:', error);
             res.status(500).json({ error: 'Erro interno no servidor ao atualizar o perfil do candidato.' });

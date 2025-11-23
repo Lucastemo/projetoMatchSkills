@@ -136,9 +136,15 @@ module.exports = {
             const atualizarFoto = await usuarioModel.atualizar_foto_usuario(id_usuario, foto_url);
 
             if (atualizarFoto) {
+                // Atualiza a sessão do usuário se ele estiver logado
+                if (req.session.user && req.session.user.id == id_usuario) {
+                    req.session.user.foto = foto_url;
+                    req.session.save(); // Salva as alterações na sessão
+                }
                 return res.status(200).json({
                     message: 'Foto do usuário atualizada com sucesso.',
-                    foto_url: foto_url
+                    foto_url: foto_url,
+                    user: req.session.user
                 });
             } else {
                 return res.status(500).json({
