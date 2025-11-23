@@ -13,11 +13,7 @@ router.use(vagasRoutes);
 router.use(habilidadesRoutes);
 
 router.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'public', 'login.html'));
-});
-
-router.get('/index', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, '..', 'public', 'index.html')); // Root path is now the main index page
 });
 
 router.get('/login', (req, res) => {

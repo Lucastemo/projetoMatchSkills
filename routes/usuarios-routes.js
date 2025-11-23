@@ -9,9 +9,9 @@ router.get("/api/usuarios/:id/premium", usuarioController.verificar_usuario_prem
 router.post("/login", usuarioController.verificarLogin);
 router.get("/menu", verificarSessao, (req, res) => {
   if(req.session.user.tipo === 'candidato'){
-    res.sendFile("index.html", { root: "public" });
+    res.redirect("/"); // Redirect to the candidate's starting page
   }else{
-    res.sendFile("empresa-home.html", { root: "public"});
+    res.redirect("/empresa-home"); // Redirect to the company's starting page
   }
 });
 router.post("/logout", usuarioController.logout);
