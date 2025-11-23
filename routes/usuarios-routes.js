@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const usuarioController = require("../controllers/usuarios-controller.js");
+const usuarioController = require("../controllers/usuarios-controller");
 const verificarSessao = require("../middlewares/auth.js");
 
-router.post("/criar-usuario", usuarioController.criar_usuario);
+router.post("/registrar", usuarioController.registrar_usuario);
 router.get("/api/usuarios/:id/premium", usuarioController.verificar_usuario_premium_por_id);
 
 router.post("/login", usuarioController.verificarLogin);

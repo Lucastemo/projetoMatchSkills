@@ -40,7 +40,7 @@ CREATE TABLE empresas (
 CREATE TABLE candidatos (
     id_candidato INT PRIMARY KEY COMMENT 'Relaciona com usuários',
     cpf VARCHAR(14) UNIQUE NOT NULL COMMENT 'Cadastro PF',
-    curriculo_link VARCHAR(255) NOT NULL COMMENT 'PDF ou link',
+    curriculo_link VARCHAR(255) NULL COMMENT 'PDF ou link',
     FOREIGN KEY (id_candidato) REFERENCES usuarios(id_usuario)
 );
 

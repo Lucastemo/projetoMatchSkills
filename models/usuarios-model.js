@@ -1,66 +1,41 @@
 const db  = require('../config/db.js');
 
 const usuarioModel = {
-    // Cria um novo usuário no sistema
-    criar_usuario: async (nome, email, senha, tipo_usuario, descricao) => {
+    // Registra um novo candidato usando uma transação
+    registrar_candidato: async (nome, email, senha, cpf, descricao, curriculo_link) => {
         try {
-            const sql = 'CALL criar_usuario (?, ?, ?, ?, ?)';
-            const [rows] = await db.execute(sql, [nome, email, senha, tipo_usuario, descricao]);
-            const id_usuario = rows[0]?.[0];
-            return id_usuario;
-
+            const sql = 'CALL registrar_candidato(?, ?, ?, ?, ?, ?)';
+            const [rows] = await db.execute(sql, [nome, email, senha, cpf, descricao, curriculo_link]);
+            return rows[0]?.[0]; // Retorna { id_usuario: X }
         } catch (error) {
-            console.log('Erro ao criar o usuário.', error);
+            console.error('Erro no modelo ao registrar candidato:', error);
             throw error;
         }
     },
 
-    // Cria uma nova empresa vinculada a um usuário existente
-    criar_empresa: async (id_empresa, cnpj, razao_social, site, setor, local, tamanho) => {
-
-        const [rowsUser] = await db.query('SELECT * FROM usuarios WHERE id_usuario = ?', [id_empresa]);
-        
+    // Registra uma nova empresa usando uma transação
+    registrar_empresa: async (razao_social, email, senha, cnpj, descricao, site, setor, local, tamanho) => {
         try {
-            // Verifica se o usuário com o ID informado existe no banco
-            if (rowsUser.length === 0) {
-                console.log('Usuário não encontrado ou cadastrado.');
-                return false;
-            }
-
-            const sql = 'CALL criar_empresa (?, ?, ?, ?, ?, ?, ?)';
-            await db.execute(sql, [id_empresa, cnpj, razao_social, site, setor, local, tamanho]);
-            return true;
-
+            const sql = 'CALL registrar_empresa(?, ?, ?, ?, ?, ?, ?, ?, ?)';
+            const [rows] = await db.execute(sql, [razao_social, email, senha, cnpj, descricao, site, setor, local, tamanho]);
+            return rows[0]?.[0]; // Retorna { id_usuario: X }
         } catch (error) {
-            console.log('Erro ao criar empresa.', error);
+            console.error('Erro no modelo ao registrar empresa:', error);
             throw error;
         }
     },
 
-    // Cria um novo candidato vinculado a um usuário existente
-    criar_candidato: async (id_usuario, cpf, curriculo_link) => {
+    // Busca um usuário pelo email para o processo de login
+    buscar_usuario_por_email: async (email) => {
         try {
-            const sql = 'CALL criar_candidato (?, ?, ?)';
-            await db.execute(sql, [id_usuario, cpf, curriculo_link]);
-            return true;
-
-        } catch (error) {
-            console.log('Erro ao criar candidato.', error);
-            throw error;
-        }
-    },
-
-    //Função para verificar o email do usuario
-    verificarEmail: async (email) => {
-        try {
-            const [usuario] = await db.query('SELECT * FROM usuarios WHERE email = ?', [email]);
-            return usuario || [];
+            const [rows] = await db.query('SELECT * FROM usuarios WHERE email = ?', [email]);
+            return rows[0] || null; // Retorna o usuário ou null
         } catch (error) {
             console.error('Erro ao verificar email:', error);
             throw error;
         }
     },
-
+    
    buscar_foto_por_usuario: async (id_usuario) => {
        try {
            const sql = 'CALL buscar_foto_por_usuario(?)';

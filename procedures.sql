@@ -1,51 +1,81 @@
 USE sistema_vagas;
 
--- Criar usuário
+-- =================================================================
+-- REGISTRO E LOGIN (REFEITOS)
+-- =================================================================
+
+-- Registrar Candidato (Transacional)
 DELIMITER //
-CREATE PROCEDURE criar_usuario(
+CREATE PROCEDURE registrar_candidato(
     IN p_nome VARCHAR(100),
     IN p_email VARCHAR(100),
     IN p_senha VARCHAR(255),
-    IN p_tipo_usuario VARCHAR(10),
-    IN p_descricao TEXT
+    IN p_cpf VARCHAR(14),
+    IN p_descricao TEXT,
+    IN p_curriculo_link VARCHAR(255)
 )
 BEGIN
+    DECLARE new_user_id INT;
+
+    -- Handler para reverter a transação em caso de erro
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        RESIGNAL; -- Propaga o erro para o cliente
+    END;
+
+    START TRANSACTION;
+
     INSERT INTO usuarios (nome, email, senha, tipo_usuario, descricao, data_criacao)
-    VALUES (p_nome, p_email, p_senha, p_tipo_usuario, p_descricao, NOW());
-    SELECT LAST_INSERT_ID() AS id_usuario, p_tipo_usuario AS tipo_usuario;
+    VALUES (p_nome, p_email, p_senha, 'candidato', p_descricao, NOW());
+
+    SET new_user_id = LAST_INSERT_ID();
+
+    INSERT INTO candidatos (id_candidato, cpf, curriculo_link)
+    VALUES (new_user_id, p_cpf, p_curriculo_link);
+
+    COMMIT;
+    SELECT new_user_id AS id_usuario;
 END //
 DELIMITER ;
 
--- Criar empresa
+-- Registrar Empresa (Transacional)
 DELIMITER //
-CREATE PROCEDURE criar_empresa(
-    IN p_id_usuario INT,
-    IN p_cnpj VARCHAR(18),
+CREATE PROCEDURE registrar_empresa(
     IN p_razao_social VARCHAR(150),
+    IN p_email VARCHAR(100),
+    IN p_senha VARCHAR(255),
+    IN p_cnpj VARCHAR(18),
+    IN p_descricao TEXT,
     IN p_site VARCHAR(200),
     IN p_setor VARCHAR(100),
     IN p_local VARCHAR(100),
     IN p_tamanho ENUM('Pequena', 'Média', 'Grande')
 )
 BEGIN
+    DECLARE new_user_id INT;
+
+    -- Handler para reverter a transação em caso de erro
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
+    BEGIN
+        ROLLBACK;
+        RESIGNAL; -- Propaga o erro para o cliente
+    END;
+
+    START TRANSACTION;
+
+    INSERT INTO usuarios (nome, email, senha, tipo_usuario, descricao, data_criacao)
+    VALUES (p_razao_social, p_email, p_senha, 'empresa', p_descricao, NOW());
+
+    SET new_user_id = LAST_INSERT_ID();
+
     INSERT INTO empresas (id_empresa, cnpj, razao_social, site, setor, local, tamanho)
-    VALUES (p_id_usuario, p_cnpj, p_razao_social, p_site, p_setor, p_local, p_tamanho);
+    VALUES (new_user_id, p_cnpj, p_razao_social, p_site, p_setor, p_local, p_tamanho);
+
+    COMMIT;
+    SELECT new_user_id AS id_usuario;
 END //
 DELIMITER ;
-
--- Criar candidato
-DELIMITER //
-CREATE PROCEDURE criar_candidato(
-    IN p_id_usuario INT,
-    IN p_cpf VARCHAR(14),
-    IN p_curriculo_link VARCHAR(255)
-)
-BEGIN
-    INSERT INTO candidatos (id_candidato, cpf, curriculo_link)
-    VALUES (p_id_usuario, p_cpf, p_curriculo_link);
-END //
-DELIMITER ;
-
 -- Criar habilidade
 DELIMITER //
 CREATE PROCEDURE criar_habilidade(
