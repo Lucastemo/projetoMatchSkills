@@ -180,7 +180,13 @@
             const vagasList = document.getElementById('vagas-list');
             try {
                 const response = await fetch(`/api/vagas/empresa/${usuario.id}`);
-                if (!response.ok) throw new Error('Erro ao buscar vagas.');
+                if (!response.ok) {
+                    const res = await response.json();
+                    if(res.message === 'Nenhuma vaga encontrada para a empresa informada.'){
+                        throw new Error('Nenhuma vaga publicada ainda. Clique em "Criar Vaga" para começar.');
+                    }
+                    throw new Error('Erro ao buscar vagas.');
+                }
                 
                 const vagas = await response.json();
                 vagasList.innerHTML = '';
@@ -209,8 +215,10 @@
                     `;
                     vagasList.appendChild(card);
                 }
+                vagasList.style = '';
             } catch (error) {
                 vagasList.innerHTML = `<p>${error.message}</p>`;
+                vagasList.style = 'margin-top: 20px;'
                 console.error(error);
             }
         }
