@@ -172,7 +172,6 @@ INSERT INTO habilidades (nome, categoria) VALUES
 ('Inbound Marketing', 'Marketing Digital'),
 ('Automação de Marketing (RD Station, HubSpot)', 'Marketing Digital'),
 ('CRM (Gestão de Relacionamento)', 'Marketing Digital'),
-('Google Analytics', 'Marketing Digital'),
 ('Métricas (KPIs, ROAS, CPA)', 'Marketing Digital'),
 ('Marketing de Influência', 'Marketing Digital'),
 ('Copywriting', 'Marketing Digital'),
