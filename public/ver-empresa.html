@@ -19,8 +19,14 @@
                 <li><a href="/buscar-empresas">Buscar Empresas</a></li>
                 <li><a href="/sobre-nos">Sobre Nós</a></li>
             </ul>
-            <div class="nav-user">
-                <img src="https://via.placeholder.com/100/CCCCCC/FFFFFF?text=USER" alt="Foto de Perfil" class="profile-pic">
+            <!-- Estado Padrão: Não Logado -->
+            <div id="nav-user-default" class="nav-user bigger-column-gap" style="display: flex;">
+                <a href="/login" class="btn btn-secondary">Login</a>
+                <a href="/cadastro" class="btn btn-primary">Cadastre-se</a>
+            </div>
+            <!-- Estado Logado (escondido por padrão) -->
+            <div id="nav-user-logged" class="nav-user" style="display: none;">
+                <a href="/perfil"><img src="/img/fotos-perfil/candidato-sem-foto.png" alt="Foto de Perfil" class="profile-pic"></a>
                 <a href="#" class="logout-btn">Sair</a>
             </div>
         </div>
@@ -96,7 +102,7 @@
             <a href="/index"><img src="img/logomatchskills1.svg" alt="Match Skills Logo" class="logo"></a>
             <ul class="footer-links">
                 <li><a href="/sobre-nos">Sobre Nós</a></li>
-                <li><a href="/perfil-candidato">Meu Perfil</a></li>
+                <li><a id="footer-profile-link" href="/login">Meu Perfil</a></li>
                 <li><a href="/index">Início</a></li>
                 <li><a href="#topo">Voltar ao Topo</a></li>
             </ul>
@@ -154,97 +160,110 @@
     
     <script src="js/main.js"></script>
     <script>
-        // This should be replaced by actual session/auth logic
-        const usuario = {
-            id: 3
-        };
+        let usuario = null; // Will be populated by the session
+        let currentVagaId = null;
 
-        document.addEventListener('DOMContentLoaded', async () => {
+        async function initializePage() {
+            try {
+                const sessionRes = await fetch('/usuarios/session');
+                if (sessionRes.ok) {
+                    const { user } = await sessionRes.json();
+                    usuario = user;
+                }
+                // Always load company data, regardless of login status
+                await loadCompanyData();
+            } catch (error) {
+                console.error('Erro ao buscar sessão:', error);
+                await loadCompanyData(); // Still try to load public data on error
+            }
+        }
+
+        async function loadCompanyData() {
             const urlParams = new URLSearchParams(window.location.search);
             const id = urlParams.get('id');
 
-            if (id) {
-                try {
-                    // Fetch company data
-                    const empresaResponse = await fetch(`/api/empresas/${id}`);
+            if (!id) {
+                document.querySelector('.public-profile-body').innerHTML = '<h1>Empresa não especificada.</h1>';
+                return;
+            }
 
-                    if (empresaResponse.status == 404){
-                        alert("Empresa não encontrada");
-                        window.location.href = "/buscar-empresas";
-                        return;
-                    }
-
-                    const empresaData = await empresaResponse.json();
-                    const empresa = empresaData[0];
-
-                    switch (empresa.tamanho){
-                        case "Pequena":
-                            empresa.tamanho = "Até 49 funcionários"
-                            break;
-                        case "Média":
-                            empresa.tamanho = "50-499 funcionários"
-                            break;
-                        case "Grande":
-                            empresa.tamanho = "Mais de 500 funcionários"
-                            break;
-                    }
-                    // Fetch vacancies data
-                    const vagasResponse = await fetch(`/api/vagas/empresa/${id}`);
-                    const vagasData = await vagasResponse.json();
-
-                    // Populate company info
-                    document.getElementById('logoEmpresa').src = empresa.foto || 'img/fotos-perfil/empresa-sem-foto.png';
-                    document.querySelector('.header-info h1').textContent = empresa.razao_social;
-                    document.querySelector('.header-info p').innerHTML = `${empresa.setor || 'Não informado'} | <a href="${empresa.site}" style="color: #fff;">${empresa.site || 'Não informado'}</a>`;
-                    document.querySelector('.card:nth-child(1) p').textContent = empresa.descricao || 'Não informado';
-                    document.querySelector('aside .card ul').innerHTML = `
-                        <li><strong>Setor:</strong> ${empresa.setor || 'Não informado'}</li>
-                        <li><strong>Local:</strong> ${empresa.local || 'Não informado'}</li>
-                        <li><strong>Tamanho:</strong> ${empresa.tamanho || 'Não informado'}</li>
-                    `;
-
-                    // Populate vacancies
-                    const vagasContainer = document.querySelector('.results-list');
-                    const vagasTitle = document.querySelector('.card:nth-child(2) h2');
-                    vagasContainer.innerHTML = ''; // Clear existing vacancies
-
-                    if (vagasData.length > 0) {
-                        vagasTitle.textContent = `Vagas Abertas (${vagasData.length})`;
-                        vagasData.forEach(async vaga => {
-                            const vagaCard = document.createElement('div');
-                            vagaCard.classList.add('job-card');
-                            vagaCard.style.gridTemplateColumns = '1fr 200px';
-
-                            const habilidadesResponse = await fetch(`/api/habilidades/vaga/${vaga.id_vaga}`);
-                            const habilidadesData = await habilidadesResponse.json();
-                            
-                            let skillsHTML = '';
-                            if (habilidadesData.data.length > 0) {
-                                skillsHTML = habilidadesData.data.map(habilidade => `<span class="skill-tag">${habilidade.nome}</span>`).join('');
-                            }
-
-                            vagaCard.innerHTML = `
-                                <div class="job-info">
-                                    <h3>${vaga.titulo}</h3>
-                                    <p class="company-name">${vaga.localizacao}</p>
-                                    <div class="job-skills">
-                                        ${skillsHTML}
-                                    </div>
-                                </div>
-                                <div class="job-actions">
-                                    <button class="btn btn-primary" onclick="openModalVaga(${vaga.id_vaga})">Ver detalhes</button>
-                                </div>
-                            `;
-                            vagasContainer.appendChild(vagaCard);
-                    });
-                } else {
-                    vagasTitle.textContent = 'Nenhuma vaga aberta';
+            try {
+                // Fetch company data
+                const empresaResponse = await fetch(`/api/empresas/${id}`);
+                if (empresaResponse.status === 404) {
+                    alert("Empresa não encontrada");
+                    window.location.href = "/buscar-empresas";
+                    return;
                 }
+                const empresaData = await empresaResponse.json();
+                const empresa = empresaData[0];
+
+                switch (empresa.tamanho) {
+                    case "Pequena": empresa.tamanho = "Até 49 funcionários"; break;
+                    case "Média": empresa.tamanho = "50-499 funcionários"; break;
+                    case "Grande": empresa.tamanho = "Mais de 500 funcionários"; break;
+                }
+
+                // Fetch vacancies data
+                const vagasResponse = await fetch(`/api/vagas/empresa/${id}`);
+                const vagasData = await vagasResponse.json();
+
+                // Populate company info
+                document.getElementById('logoEmpresa').src = empresa.foto || 'img/fotos-perfil/empresa-sem-foto.png';
+                document.querySelector('.header-info h1').textContent = empresa.razao_social;
+                document.querySelector('.header-info p').innerHTML = `${empresa.setor || 'Não informado'} | <a href="${empresa.site}" style="color: #fff;">${empresa.site || 'Não informado'}</a>`;
+                document.querySelector('.card:nth-child(1) p').textContent = empresa.descricao || 'Não informado';
+                document.querySelector('aside .card ul').innerHTML = `
+                    <li><strong>Setor:</strong> ${empresa.setor || 'Não informado'}</li>
+                    <li><strong>Local:</strong> ${empresa.local || 'Não informado'}</li>
+                    <li><strong>Tamanho:</strong> ${empresa.tamanho || 'Não informado'}</li>
+                `;
+
+                // Populate vacancies
+                const vagasContainer = document.querySelector('.results-list');
+                const vagasTitle = document.querySelector('.card:nth-child(2) h2');
+                vagasContainer.innerHTML = ''; // Clear existing vacancies
+
+                if (vagasData.length > 0) {
+                    vagasTitle.textContent = `Vagas Abertas (${vagasData.length})`;
+                    vagasData.forEach(async vaga => {
+                        const vagaCard = document.createElement('div');
+                        vagaCard.classList.add('job-card');
+                        vagaCard.style.gridTemplateColumns = '1fr 200px';
+
+                         const habilidadesResponse = await fetch(`/api/habilidades/vaga/${vaga.id_vaga}`);
+                         const habilidadesData = await habilidadesResponse.json();
+
+                         let skillsHTML = '';
+                         if (habilidadesData.data.length > 0) {
+                             skillsHTML = habilidadesData.data.map(habilidade => `<span class="skill-tag">${habilidade.nome}</span>`).join('');
+                         }
+
+                         vagaCard.innerHTML = `
+                             <div class="job-info">
+                                 <h3>${vaga.titulo}</h3>
+                                 <p class="company-name">${vaga.localizacao}</p>
+                                 <div class="job-skills">
+                                     ${skillsHTML}
+                                 </div>
+                             </div>
+                             <div class="job-actions">
+                                 <button class="btn btn-primary" onclick="openModalVaga(${vaga.id_vaga})">Ver detalhes</button>
+                             </div>
+                         `;
+                         vagasContainer.appendChild(vagaCard);
+                     });
+                 } else {
+                     vagasTitle.textContent = 'Nenhuma vaga aberta';
+                 }
 
             } catch (error) {
                 console.error('Erro ao carregar dados da empresa:', error);
+                document.querySelector('.public-profile-body').innerHTML = '<h1>Erro ao carregar dados da empresa.</h1>';
             }
         }
+
+        document.addEventListener('DOMContentLoaded', initializePage);
 
         // Function to close modal
         function closeModal() {
@@ -253,21 +272,13 @@
             modal.classList.remove('show');
             backdrop.classList.remove('show');
         }
-        
+
         // Applying Logic
         const applyButton = document.getElementById('apply-button');
-        let currentVagaId;
-
-        // Store the vaga ID when the modal is opened
-        const originalOpenModalVaga = window.openModalVaga;
-        window.openModalVaga = (id_vaga) => {
-            currentVagaId = id_vaga;
-            originalOpenModalVaga(id_vaga);
-        };
 
         applyButton.addEventListener('click', async () => {
-            if (!currentVagaId || !usuario || !usuario.id) {
-                window.showNotification('Não foi possível identificar a vaga ou o usuário.', 'error');
+            if (!currentVagaId || !usuario || usuario.tipo !== 'candidato') {
+                window.showNotification('Você precisa estar logado como candidato para se candidatar.', 'error');
                 return;
             }
 
@@ -294,9 +305,9 @@
                 window.showNotification('Ocorreu um erro ao enviar sua candidatura.', 'error');
             }
         });
-    });
 
     async function openModalVaga(id_vaga) {
+        currentVagaId = id_vaga; // Set the current vaga ID
         try {
             const vagaResponse = await fetch(`/api/vagas/${id_vaga}`);
             const vagaData = await vagaResponse.json();

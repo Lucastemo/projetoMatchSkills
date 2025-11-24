@@ -19,8 +19,14 @@
                 <li><a href="/buscar-empresas">Buscar Empresas</a></li>
                 <li><a href="/sobre-nos">Sobre Nós</a></li>
             </ul>
-            <div class="nav-user">
-                <img src="https://via.placeholder.com/100/CCCCCC/FFFFFF?text=USER" alt="Foto de Perfil" class="profile-pic">
+            <!-- Estado Padrão: Não Logado -->
+            <div id="nav-user-default" class="nav-user bigger-column-gap">
+                <a href="/login" class="btn btn-secondary">Login</a>
+                <a href="/cadastro" class="btn btn-primary">Cadastre-se</a>
+            </div>
+            <!-- Estado Logado (escondido por padrão) -->
+            <div id="nav-user-logged" class="nav-user" style="display: none;">
+                <a href="/perfil"><img src="/img/fotos-perfil/candidato-sem-foto.png" alt="Foto de Perfil" class="profile-pic"></a>
                 <a href="#" class="logout-btn">Sair</a>
             </div>
         </div>
@@ -92,7 +98,7 @@
             <a href="/index"><img src="img/logomatchskills1.svg" alt="Match Skills Logo" class="logo"></a>
             <ul class="footer-links">
                 <li><a href="/sobre-nos">Sobre Nós</a></li>
-                <li><a href="/perfil-candidato">Meu Perfil</a></li>
+                <li><a id="footer-profile-link" href="/login">Meu Perfil</a></li>
                 <li><a href="/index">Início</a></li>
                 <li><a href="#topo">Voltar ao Topo</a></li>
             </ul>
@@ -150,17 +156,28 @@
 
     <script src="js/main.js"></script>
     <script>
-        // Temporary "usuario" variable for testing purposes
-        usuario = {
-            nome: "Wendel Bonfim",
-            id: "3"
-        };
+        let usuario = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             const useProfileCheckbox = document.getElementById('useProfile');
             const searchButton = document.querySelector('.card .btn-primary');
             const resultsList = document.querySelector('.results-list');
             const selectedSkillsContainer = document.querySelector('.selected-skills');
+
+            async function initializePage() {
+                try {
+                    const sessionRes = await fetch('/usuarios/session');
+                    if (!sessionRes.ok) {
+                        window.location.href = '/login'; // Redirect if not logged in
+                        return;
+                    }
+                    const { user } = await sessionRes.json();
+                    usuario = user;
+                    performSearch(); // Initial load
+                } catch (error) {
+                    console.error('Erro ao inicializar a página:', error);
+                }
+            }
 
             // Function to close modal
             function closeModal() {
@@ -317,7 +334,7 @@
             });
 
             // Initial load
-            performSearch();
+            initializePage();
 
         });
 

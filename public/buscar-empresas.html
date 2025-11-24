@@ -19,8 +19,14 @@
                 <li><a href="/buscar-empresas">Buscar Empresas</a></li>
                 <li><a href="/sobre-nos">Sobre Nós</a></li>
             </ul>
-            <div class="nav-user">
-                <img src="https://via.placeholder.com/100/CCCCCC/FFFFFF?text=USER" alt="Foto de Perfil" class="profile-pic">
+            <!-- Estado Padrão: Não Logado -->
+            <div id="nav-user-default" class="nav-user bigger-column-gap">
+                <a href="/login" class="btn btn-secondary">Login</a>
+                <a href="/cadastro" class="btn btn-primary">Cadastre-se</a>
+            </div>
+            <!-- Estado Logado (escondido por padrão) -->
+            <div id="nav-user-logged" class="nav-user" style="display: none;">
+                <a href="/perfil"><img src="/img/fotos-perfil/candidato-sem-foto.png" alt="Foto de Perfil" class="profile-pic"></a>
                 <a href="#" class="logout-btn">Sair</a>
             </div>
         </div>
@@ -32,7 +38,7 @@
             <p class="page-subtitle">Pesquise por empresas que combinam com seu perfil e cultura.</p>
 
             <div class="search-bar">
-                <input type="text" class="form-group" placeholder="Digite o nome da empresa, ex: 'Empresa Tech'">
+                <input type="text" id="searchInput" class="form-group" placeholder="Digite o nome da empresa, ex: 'Empresa Tech'">
                 <button class="btn btn-primary">Buscar</button>
             </div>
 
@@ -69,7 +75,7 @@
             <a href="/index"><img src="img/logomatchskills1.svg" alt="Match Skills Logo" class="logo"></a>
             <ul class="footer-links">
                 <li><a href="/sobre-nos">Sobre Nós</a></li>
-                <li><a href="/perfil-candidato">Meu Perfil</a></li>
+                <li><a id="footer-profile-link" href="/login">Meu Perfil</a></li>
                 <li><a href="/index">Início</a></li>
                 <li><a href="#topo">Voltar ao Topo</a></li>
             </ul>
@@ -80,8 +86,8 @@
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             const resultsList = document.querySelector('.results-list');
-            const searchButton = document.querySelector('.btn-primary');
-            const searchInput = document.querySelector('.form-group');
+            const searchButton = document.querySelector('.search-bar .btn-primary');
+            const searchInput = document.getElementById('searchInput');
 
             const fetchAndDisplayCompanies = async (url) => {
                 resultsList.innerHTML = ''; // Limpa a lista de resultados
