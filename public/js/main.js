@@ -35,6 +35,18 @@ document.addEventListener("DOMContentLoaded", () => {
             if (profileLink) {
                 profileLink.href = '/perfil'; // Link unificado para o perfil
             }
+
+            // Atualiza os links de navegação principal
+            const navLinksDefault = document.getElementById('nav-links-default');
+            const navLinksEmpresa = document.getElementById('nav-links-empresa');
+
+            if (navLinksDefault && navLinksEmpresa) {
+                if (user.tipo === 'empresa') {
+                    navLinksDefault.style.display = 'none';
+                    navLinksEmpresa.style.display = 'flex';
+                }
+                // Se for candidato, o padrão já está visível, então não faz nada.
+            }
         }
 
         // Atualiza o Footer
