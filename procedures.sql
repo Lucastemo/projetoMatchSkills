@@ -636,3 +636,18 @@ BEGIN
     UPDATE usuarios SET premium = FALSE WHERE id_usuario = p_id_usuario;
 END //
 DELIMITER ;
+
+-- =================================================================
+-- PROCEDURES DE AUTORIZAÇÃO
+-- =================================================================
+
+-- Verifica se uma empresa pode ver o perfil de um candidato (se o candidato aplicou para uma vaga da empresa)
+DELIMITER //
+CREATE PROCEDURE verificar_acesso_candidato(IN p_id_empresa INT, IN p_id_candidato INT)
+BEGIN
+    SELECT 1
+    FROM candidaturas c JOIN vagas v ON c.id_vaga = v.id_vaga
+    WHERE v.id_empresa = p_id_empresa AND c.id_candidato = p_id_candidato
+    LIMIT 1;
+END //
+DELIMITER ;
