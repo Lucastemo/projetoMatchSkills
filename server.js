@@ -19,6 +19,24 @@ app.use('/img', express.static(path.join(__dirname, 'public', 'img')));
 app.use('/curriculos-candidatos', express.static(path.join(__dirname, 'public', 'curriculos-candidatos')));
 app.use(session(sessionConfig));
 
+// Middleware global para verificar autenticação
+app.use((req, res, next) => {
+    const publicPaths = ['/login', '/cadastro', '/usuarios/login', '/usuarios/registrar'];
+    const isPublicPath = publicPaths.includes(req.path);
+
+    // Se o usuário não estiver logado e a rota não for pública, redireciona para /login
+    if (!req.session.user && !isPublicPath) {
+        return res.redirect('/login');
+    }
+
+    // Se o usuário estiver logado e tentar acessar /login ou /cadastro, redireciona para /home
+    if (req.session.user && (req.path === '/login' || req.path === '/cadastro')) {
+        return res.redirect('/home');
+    }
+
+    next();
+});
+
 app.use('/', routes);
 
 app.use('/usuarios', usuarioRoutes);
