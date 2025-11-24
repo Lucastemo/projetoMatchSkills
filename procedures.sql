@@ -206,7 +206,7 @@ CREATE PROCEDURE buscar_foto_por_usuario(
     IN p_id_usuario INT
 )
 BEGIN
-    SELECT foto FROM usuarios WHERE id_usuario = p_id_usuario;
+    SELECT foto, foto_public_id FROM usuarios WHERE id_usuario = p_id_usuario;
 END //
 DELIMITER ;
 
@@ -214,10 +214,11 @@ DELIMITER ;
 DELIMITER //
 CREATE PROCEDURE atualizar_foto_usuario(
     IN p_id_usuario INT,
-    IN p_foto_url VARCHAR(255)
+    IN p_foto_url VARCHAR(255),
+    IN p_foto_public_id VARCHAR(255)
 )
 BEGIN
-    UPDATE usuarios SET foto = p_foto_url WHERE id_usuario = p_id_usuario;
+    UPDATE usuarios SET foto = p_foto_url, foto_public_id = p_foto_public_id WHERE id_usuario = p_id_usuario;
 END //
 DELIMITER ;
 
@@ -358,7 +359,7 @@ CREATE PROCEDURE buscar_curriculo_por_candidato(
     IN p_id_candidato INT
 )
 BEGIN
-    SELECT curriculo_link FROM candidatos WHERE id_candidato = p_id_candidato;
+    SELECT curriculo_link, curriculo_public_id FROM candidatos WHERE id_candidato = p_id_candidato;
 END //
 DELIMITER ;
 
@@ -366,10 +367,11 @@ DELIMITER ;
 DELIMITER //
 CREATE PROCEDURE atualizar_curriculo_candidato(
     IN p_id_candidato INT,
-    IN p_curriculo_link VARCHAR(255)
+    IN p_curriculo_link VARCHAR(255),
+    IN p_curriculo_public_id VARCHAR(255)
 )
 BEGIN
-    UPDATE candidatos SET curriculo_link = p_curriculo_link WHERE id_candidato = p_id_candidato;
+    UPDATE candidatos SET curriculo_link = p_curriculo_link, curriculo_public_id = p_curriculo_public_id WHERE id_candidato = p_id_candidato;
 END //
 DELIMITER ;
 

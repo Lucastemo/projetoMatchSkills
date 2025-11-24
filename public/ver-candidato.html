@@ -96,7 +96,7 @@
                     }
                     const info = await res.json();
 
-                    document.getElementById('candidato-foto').src = `/${info.foto || 'img/fotos-perfil/candidato-sem-foto.png'}`;
+                    document.getElementById('candidato-foto').src = `${info.foto || 'img/fotos-perfil/candidato-sem-foto.png'}`;
                     document.getElementById('candidato-nome').textContent = info.nome;
                     document.getElementById('candidato-email').textContent = info.email;
                     document.getElementById('candidato-descricao').textContent = info.descricao || 'Nenhuma descrição pessoal fornecida.';
@@ -106,7 +106,7 @@
                     
                     let curriculoHTML = '<p>Nenhum currículo disponível.</p>';
                     if (info.curriculo_link) {
-                        curriculoHTML = `<a href="/${info.curriculo_link}" target="_blank" class="btn btn-primary" style="width: 100%; margin-top: 20px;">Ver Currículo (PDF)</a>`;
+                        curriculoHTML = `<a href="${info.curriculo_link}" target="_blank" class="btn btn-primary" style="width: 100%; margin-top: 20px;">Ver Currículo (PDF)</a>`;
                     }
 
                     infoCard.innerHTML = `

@@ -1,17 +1,24 @@
+require('dotenv').config();
 const usuarioModel = require('../models/usuarios-model.js');
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('cloudinary').v2;
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 // Configuração do multer para upload de imagens
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'public/img/fotos-perfil/');
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'fotos-perfil',
+        allowed_formats: ['jpg', 'jpeg', 'png'],
+        public_id: (req, file) => 'foto-' + Date.now(),
     },
-    filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
-    }
 });
 
 const upload = multer({
@@ -119,26 +126,22 @@ module.exports = {
 
     atualizar_foto_usuario: async (req, res) => {
         const { id_usuario } = req.body;
-        const foto_url = req.file ? `img/fotos-perfil/${req.file.filename}` : null;
+        const foto_url = req.file ? req.file.path : null; // URL from Cloudinary
+        const foto_public_id = req.file ? req.file.filename : null; // public_id from Cloudinary
 
         try {
             if (!id_usuario || !foto_url) {
                 return res.status(400).json({ error: 'ID do usuário e foto são obrigatórios.' });
             }
 
-            // Buscar a foto antiga para deletar
-            const fotoAntiga = await usuarioModel.buscar_foto_por_usuario(id_usuario);
+            // Buscar a foto antiga para deletar do Cloudinary
+            const fotoAntiga = await usuarioModel.buscar_foto_por_id(id_usuario);
 
-            if (fotoAntiga) {
-                const caminhoFotoAntiga = path.join(__dirname, '..', 'public', fotoAntiga);
-                fs.unlink(caminhoFotoAntiga, (err) => {
-                    if (err) {
-                        // Log do erro, mas não impede a atualização da nova foto
-                        console.error('Erro ao deletar a foto antiga:', err);
-                    }
-                });
+            if (fotoAntiga && fotoAntiga.foto_public_id) {
+                await cloudinary.uploader.destroy(fotoAntiga.foto_public_id);
             }
-            const atualizarFoto = await usuarioModel.atualizar_foto_usuario(id_usuario, foto_url);
+
+            const atualizarFoto = await usuarioModel.atualizar_foto_usuario(id_usuario, foto_url, foto_public_id);
 
             if (atualizarFoto) {
                 // Atualiza a sessão do usuário se ele estiver logado
@@ -158,6 +161,11 @@ module.exports = {
             }
         } catch (error) {
             console.error('Erro ao atualizar a foto do usuário:', error);
+            // Se o upload para o Cloudinary falhou, o multer-storage-cloudinary não deixa o arquivo lá,
+            // mas se o erro for no banco, precisamos deletar o que acabamos de subir.
+            if (foto_public_id) {
+                await cloudinary.uploader.destroy(foto_public_id);
+            }
             return res.status(500).json({
                 error: 'Erro interno no servidor.'
             });

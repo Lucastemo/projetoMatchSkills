@@ -15,6 +15,7 @@ CREATE TABLE usuarios (
     senha VARCHAR(255) NOT NULL COMMENT 'Senha',
     tipo_usuario ENUM('empresa', 'candidato') NOT NULL COMMENT 'Tipo',
     foto VARCHAR(255) NULL COMMENT 'URL da foto de perfil',
+    foto_public_id VARCHAR(255) NULL COMMENT 'Cloudinary public_id for the photo',
     descricao TEXT NULL COMMENT 'Descrição do usuário',
     data_criacao DATETIME NOT NULL COMMENT 'Registro',
     premium BOOLEAN NOT NULL DEFAULT FALSE COMMENT 'Indica se o usuário é premium'
@@ -41,6 +42,7 @@ CREATE TABLE candidatos (
     id_candidato INT PRIMARY KEY COMMENT 'Relaciona com usuários',
     cpf VARCHAR(14) UNIQUE NOT NULL COMMENT 'Cadastro PF',
     curriculo_link VARCHAR(255) NULL COMMENT 'PDF ou link',
+    curriculo_public_id VARCHAR(255) NULL COMMENT 'Cloudinary public_id for the CV',
     FOREIGN KEY (id_candidato) REFERENCES usuarios(id_usuario)
 );
 

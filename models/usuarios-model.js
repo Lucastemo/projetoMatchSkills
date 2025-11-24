@@ -36,24 +36,24 @@ const usuarioModel = {
         }
     },
     
-   buscar_foto_por_usuario: async (id_usuario) => {
+   buscar_foto_por_id: async (id_usuario) => {
        try {
            const sql = 'CALL buscar_foto_por_usuario(?)';
            const [rows] = await db.execute(sql, [id_usuario]);
            if (rows[0] && rows[0].length > 0) {
-               return rows[0][0].foto;
+               return rows[0][0]; // Returns { foto, foto_public_id }
            }
            return null;
        } catch (error) {
-           console.log('Erro ao buscar a foto do usuário.', error);
+           console.log('Erro ao buscar a foto do usuário por ID.', error);
            throw error;
        }
    },
    
-       atualizar_foto_usuario: async (id_usuario, foto_url) => {
+       atualizar_foto_usuario: async (id_usuario, foto_url, foto_public_id) => {
            try {
-               const sql = 'CALL atualizar_foto_usuario(?, ?)';
-               await db.execute(sql, [id_usuario, foto_url]);
+               const sql = 'CALL atualizar_foto_usuario(?, ?, ?)';
+               await db.execute(sql, [id_usuario, foto_url, foto_public_id]);
                return true;
            } catch (error) {
                console.log('Erro ao atualizar a foto do usuário.', error);

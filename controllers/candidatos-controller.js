@@ -1,18 +1,24 @@
+require('dotenv').config();
 const Candidato = require('../models/candidatos-model');
 const multer = require('multer');
 const path = require('path');
-const fs = require('fs');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('cloudinary').v2;
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 // Configuração do multer para upload de currículos
-const storageCurriculo = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, 'public/curriculos-candidatos/');
+const storageCurriculo = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'curriculos-candidatos',
+        allowed_formats: ['pdf'],
+        public_id: (req, file) => 'curriculo-' + Date.now(),
     },
-    filename: function (req, file, cb) {
-        const { id_candidato } = req.body;
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, `curriculo-${uniqueSuffix}${path.extname(file.originalname)}`);
-    }
 });
 
 const uploadCurriculo = multer({
@@ -101,30 +107,30 @@ class CandidatosController {
 
     static async atualizar_curriculo_candidato(req, res) {
         const { id_candidato } = req.body;
-        const curriculo_link = req.file ? `curriculos-candidatos/${req.file.filename}` : null;
+        const curriculo_link = req.file ? req.file.path : null; // URL from Cloudinary
+        const curriculo_public_id = req.file ? req.file.filename : null; // public_id from Cloudinary
 
         if (!id_candidato || !curriculo_link) {
             return res.status(400).json({ error: 'ID do candidato e arquivo do currículo são obrigatórios.' });
         }
 
         try {
-            // Buscar o currículo antigo para deletar
+            // Buscar o currículo antigo para deletar do Cloudinary
             const curriculoAntigo = await Candidato.buscar_curriculo_por_candidato(id_candidato);
 
-            if (curriculoAntigo) {
-                const caminhoCurriculoAntigo = path.join(__dirname, '..', 'public', curriculoAntigo);
-                fs.unlink(caminhoCurriculoAntigo, (err) => {
-                    if (err) {
-                        // Log do erro, mas não impede a atualização do novo currículo
-                        console.error('Erro ao deletar o currículo antigo:', err);
-                    }
-                });
+            if (curriculoAntigo && curriculoAntigo.curriculo_public_id) {
+                await cloudinary.uploader.destroy(curriculoAntigo.curriculo_public_id, { resource_type: 'raw' });
             }
 
-            await Candidato.atualizar_curriculo_candidato(id_candidato, curriculo_link);
+            await Candidato.atualizar_curriculo_candidato(id_candidato, curriculo_link, curriculo_public_id);
             res.status(200).json({ message: 'Currículo do candidato atualizado com sucesso.', curriculo_link });
         } catch (error) {
             console.error('Erro ao atualizar currículo do candidato:', error);
+            // Se o upload para o Cloudinary falhou, o multer-storage-cloudinary não deixa o arquivo lá,
+            // mas se o erro for no banco, precisamos deletar o que acabamos de subir.
+            if (curriculo_public_id) {
+                await cloudinary.uploader.destroy(curriculo_public_id, { resource_type: 'raw' });
+            }
             res.status(500).json({ error: 'Erro interno no servidor ao atualizar o currículo do candidato.' });
         }
     }

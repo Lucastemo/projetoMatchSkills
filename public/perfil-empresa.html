@@ -300,7 +300,7 @@
 
                     const result = await res.json();
                     if (res.ok) {
-                        profilePicImg.src = `/${result.foto_url}`;
+                        profilePicImg.src = `${result.foto_url}`;
                         window.showNotification('Foto de perfil atualizada com sucesso!');
                         // Atualiza a UI (incluindo a navbar) com os novos dados da sessão
                         window.updateUIAfterLogin(result.user);

@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const profilePic = navUserLogged.querySelector('.profile-pic');
             const profileLink = navUserLogged.querySelector('a');
             if (profilePic) {
-                profilePic.src = user.foto ? `/${user.foto}` : (user.tipo === 'candidato' ? '/img/fotos-perfil/candidato-sem-foto.png' : '/img/fotos-perfil/empresa-sem-foto.png');
+                profilePic.src = user.foto ? `${user.foto}` : (user.tipo === 'candidato' ? '/img/fotos-perfil/candidato-sem-foto.png' : '/img/fotos-perfil/empresa-sem-foto.png');
             }
             if (profileLink) {
                 profileLink.href = '/perfil'; // Link unificado para o perfil
