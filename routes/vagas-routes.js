@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
+const { isCandidato, isEmpresa } = require('../middlewares/roleAuth.js');
 const vagasController = require('../controllers/vagas-controller.js');
 
 // API
@@ -17,15 +18,15 @@ router.delete('/api/vagas/:id', vagasController.deletar_vaga_por_id);
 
 // Front-end
 
-router.get('/buscar-vagas', (req, res) => {
+router.get('/buscar-vagas', isCandidato, (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'public', 'buscar-vagas.html'));
 });
 
-router.get('/minhas-vagas', (req, res) => {
+router.get('/minhas-vagas', isEmpresa, (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'public', 'minhas-vagas.html'));
 });
 
-router.get('/candidaturas/:id', (req, res) => {
+router.get('/candidaturas/:id', isEmpresa, (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'public', 'candidaturas.html'));
 });
 

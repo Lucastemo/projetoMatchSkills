@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
+const { isCandidato, isEmpresa } = require('../middlewares/roleAuth');
 const candidatosController = require('../controllers/candidatos-controller');
 
 // API
@@ -14,11 +15,7 @@ router.post('/api/candidatos/candidatura', candidatosController.criar_candidatur
 
 // Front-end
 
-router.get('/perfil-candidato', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'public', 'perfil-candidato.html'));
-});
-
-router.get('/ver-candidato/:id', (req, res) => {
+router.get('/ver-candidato/:id', isEmpresa, (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'public', 'ver-candidato.html'));
 });
 
