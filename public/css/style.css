@@ -348,6 +348,11 @@ select:disabled {
     }
     .navbar .nav-links {
         margin: 15px 0;
+        flex-direction: column;
+        text-align: center;
+    }
+    .navbar .logo{
+        transform: translate(0, 25%);
     }
     .footer .container {
         flex-direction: column;
