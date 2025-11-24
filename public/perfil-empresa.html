@@ -305,6 +305,9 @@
                         // Atualiza a UI (incluindo a navbar) com os novos dados da sessão
                         window.updateUIAfterLogin(result.user);
                     } else {
+                        if (res.status === 413) { // Payload Too Large
+                            throw new Error('O arquivo da foto é muito grande. O limite é de 5MB.');
+                        }
                         throw new Error(result.message || 'Falha ao atualizar a foto.');
                     }
                 } catch (error) {

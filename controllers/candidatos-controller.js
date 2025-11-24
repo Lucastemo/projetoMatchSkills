@@ -17,6 +17,9 @@ const storageCurriculo = multer.diskStorage({
 
 const uploadCurriculo = multer({
     storage: storageCurriculo,
+    limits: {
+        fileSize: 5 * 1024 * 1024 // 5 MB
+    },
     fileFilter: function (req, file, cb) {
         if (path.extname(file.originalname).toLowerCase() !== '.pdf') {
             return cb(new Error('Somente arquivos PDF são permitidos!'));
