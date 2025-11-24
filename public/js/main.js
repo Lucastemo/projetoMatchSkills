@@ -58,7 +58,8 @@ document.addEventListener("DOMContentLoaded", () => {
         // Atualiza o Título da Página (Ex: em index.html)
         const pageTitle = document.querySelector('.page-title');
         if (pageTitle && pageTitle.textContent.includes('Olá,')) { // Para candidatos
-            pageTitle.textContent = `Olá, ${user.nome}! Pronto para o próximo passo?`;
+            const firstName = user.nome.split(' ')[0];
+            pageTitle.textContent = `Olá, ${firstName}! Pronto para o próximo passo?`;
         } else if (pageTitle && pageTitle.textContent.includes('Bem-vinda,')) { // Para empresas
             pageTitle.textContent = `Bem-vinda, ${user.nome}!`;
         }
